@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PointStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+enum TicketType {
+  PAID
+  FREE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum TransactionStatus {
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_ADMIN_CONFIRMATION
+  DONE
+  REJECTED
+  EXPIRED
+  CANCELED
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String
+  pictureUrl   String?  @map("picture_url")
+  name         String
+  referralCode String   @unique @map("referral_code")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  UserRoles    UserRole?
+  referred     Point[]        @relation("Referred")
+  referrer     Point[]        @relation("Referrer")
+  Event        Event[]
+  Review       Review[]
+  Transactions Transactions[]
+
+  @@map("users")
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  UserRoles UserRole?
+
+  @@map("roles")
+}
+
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique @map("user_id")
+  roleId    Int      @unique @map("role_id")
+  isActive  Boolean  @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@map("user_roles")
+}
+
+model Point {
+  id               Int         @id @default(autoincrement())
+  referredId       Int         @unique @map("referred_id")
+  referrerId       Int         @unique @map("referrer_id")
+  points           Int
+  pointsExpiryDate DateTime    @map("points_expiry_date")
+  status           PointStatus
+  createdAt        DateTime    @default(now()) @map("created_at")
+
+  referred User @relation("Referred", fields: [referredId], references: [id])
+  referrer User @relation("Referrer", fields: [referrerId], references: [id])
+
+  @@map("points")
+}
+
+model Province {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Location Location[]
+
+  @@map("provinces")
+}
+
+model Location {
+  id            Int      @id @default(autoincrement())
+  streetAddress String   @map("street_address") @db.Text
+  city          String
+  provinceId    Int      @map("province_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  province Province @relation(fields: [provinceId], references: [id])
+  Event    Event[]
+
+  @@map("locations")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Event Event[]
+
+  @@map("categories")
+}
+
+model Event {
+  id                    Int        @id @default(autoincrement())
+  slug                  String     @unique
+  title                 String
+  description           String     @db.Text
+  bannerUrl             String     @map("banner_url")
+  registrationStartDate DateTime   @map("registration_start_date")
+  registrationEndDate   DateTime   @map("registration_end_date")
+  eventStartDate        DateTime   @map("event_start_date")
+  eventEndDate          DateTime   @map("event_end_date")
+  price                 Int
+  availableSeats        Int        @map("available_seats")
+  locationId            Int        @map("location_id")
+  categoryId            Int        @map("category_id")
+  ticketType            TicketType @map("ticket_type")
+  organizerId           Int        @map("organizer_id")
+  createdAt             DateTime   @default(now()) @map("created_at")
+  updatedAt             DateTime   @updatedAt @map("updated_at")
+
+  location     Location       @relation(fields: [locationId], references: [id])
+  category     Category       @relation(fields: [categoryId], references: [id])
+  organizer    User           @relation(fields: [organizerId], references: [id])
+  Promotion    Promotion[]
+  Review       Review[]
+  Transactions Transactions[]
+
+  @@map("events")
+}
+
+model Promotion {
+  id             Int          @id @default(autoincrement())
+  title          String
+  eventId        Int          @map("event_id")
+  voucherCode    String       @unique @map("voucher_code")
+  startDate      DateTime     @map("start_date")
+  endDate        DateTime     @map("end_date")
+  discountAmount Int          @map("discount_amount")
+  discountType   DiscountType @map("discount_type")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@map("promotions")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  eventId   Int      @map("event_id")
+  content   String   @db.Text
+  rating    Decimal
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@map("reviews")
+}
+
+model Transactions {
+  id                Int               @id @default(autoincrement())
+  userId            Int               @map("user_id")
+  eventId           Int               @map("event_id")
+  transactionStatus TransactionStatus @map("transaction_status")
+  paymentProofImage String?           @map("payment_proof_image")
+  totalPrice        Int               @map("total_price")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@map("transactions")
+}
