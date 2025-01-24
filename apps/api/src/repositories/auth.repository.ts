@@ -74,20 +74,30 @@ class AuthRepository {
         })
 
         if (referredUser) {
+          // insert points for the referrer
           const points = await trx.point.create({
             data: {
               points: 10000,
               pointsExpiryDate: calculatePointsExpiryDate(),
-              referredId: referredUser.id,
-              referrerId: user.id,
+              userId: user.id,
               status: 'ACTIVE'
             }
           })
 
+          // insert points for the referred
+          await trx.point.create({
+            data: {
+              points: 10000,
+              pointsExpiryDate: calculatePointsExpiryDate(),
+              userId: referredUser.id,
+              status: 'ACTIVE'
+            }
+          })
+
+          // add referral data for the referrer
           referral = {
             id: points.id,
-            referrerId: points.referrerId,
-            referredId: points.referredId,
+            userId: points.userId,
             pointsAwarded: points.points,
             pointsExpiryDate: points.pointsExpiryDate,
             createdAt: points.createdAt

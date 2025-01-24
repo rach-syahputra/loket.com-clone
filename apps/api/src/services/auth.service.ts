@@ -10,6 +10,17 @@ import { putAccessToken } from '../helpers/jwt.handler'
 
 class AuthService {
   async register(req: RegisterRequest) {
+    // REGISTER FLOW:
+    // 1. Validate the request.
+    // 2. Hash the password.
+    // 3. begin sql transaction.
+    //    - insert new user to user table.
+    //    - insert new user's roles to user_roles table.
+    //    - if a referral code is provided:
+    //      • insert points for the referrer/new user.
+    //      • insert points for the referred user.
+    // 4. commit the sql transaction.
+
     validate(RegisterSchema, req)
 
     req.password = await generateHashedPassword(req.password)
