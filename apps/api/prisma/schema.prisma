@@ -49,11 +49,10 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   UserRoles    UserRole[]
-  referred     Point[]        @relation("Referred")
-  referrer     Point[]        @relation("Referrer")
   Event        Event[]
   Review       Review[]
   Transactions Transactions[]
+  Point        Point[]
 
   @@map("users")
 }
@@ -76,23 +75,21 @@ model UserRole {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onUpdate: Cascade)
 
   @@map("user_roles")
 }
 
 model Point {
   id               Int         @id @default(autoincrement())
-  referredId       Int         @map("referred_id")
-  referrerId       Int         @map("referrer_id")
+  userId           Int         @map("user_id")
   points           Int
   pointsExpiryDate DateTime    @map("points_expiry_date")
   status           PointStatus
   createdAt        DateTime    @default(now()) @map("created_at")
 
-  referred User @relation("Referred", fields: [referredId], references: [id])
-  referrer User @relation("Referrer", fields: [referrerId], references: [id])
+  user User @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("points")
 }
@@ -113,7 +110,7 @@ model Location {
   provinceId    Int      @map("province_id")
   createdAt     DateTime @default(now()) @map("created_at")
 
-  province Province @relation(fields: [provinceId], references: [id])
+  province Province @relation(fields: [provinceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Event    Event[]
 
   @@map("locations")
@@ -147,9 +144,9 @@ model Event {
   createdAt             DateTime   @default(now()) @map("created_at")
   updatedAt             DateTime   @updatedAt @map("updated_at")
 
-  location     Location       @relation(fields: [locationId], references: [id])
-  category     Category       @relation(fields: [categoryId], references: [id])
-  organizer    User           @relation(fields: [organizerId], references: [id])
+  location     Location       @relation(fields: [locationId], references: [id], onUpdate: Cascade)
+  category     Category       @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
+  organizer    User           @relation(fields: [organizerId], references: [id], onUpdate: Cascade)
   Promotion    Promotion[]
   Review       Review[]
   Transactions Transactions[]
@@ -168,7 +165,7 @@ model Promotion {
   discountType   DiscountType @map("discount_type")
   createdAt      DateTime     @default(now()) @map("created_at")
 
-  event Event @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("promotions")
 }
@@ -181,8 +178,8 @@ model Review {
   rating    Decimal
   createdAt DateTime @default(now()) @map("created_at")
 
-  user  User  @relation(fields: [userId], references: [id])
-  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("reviews")
 }
@@ -197,8 +194,8 @@ model Transactions {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  user  User  @relation(fields: [userId], references: [id])
-  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onUpdate: Cascade)
 
   @@map("transactions")
 }
