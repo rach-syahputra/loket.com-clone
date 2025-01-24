@@ -48,7 +48,7 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  UserRoles    UserRole?
+  UserRoles    UserRole[]
   referred     Point[]        @relation("Referred")
   referrer     Point[]        @relation("Referrer")
   Event        Event[]
@@ -63,15 +63,15 @@ model Role {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
 
-  UserRoles UserRole?
+  UserRoles UserRole[]
 
   @@map("roles")
 }
 
 model UserRole {
   id        Int      @id @default(autoincrement())
-  userId    Int      @unique @map("user_id")
-  roleId    Int      @unique @map("role_id")
+  userId    Int      @map("user_id")
+  roleId    Int      @map("role_id")
   isActive  Boolean  @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
