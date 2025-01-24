@@ -14,3 +14,11 @@ export const RegisterSchema = z.object({
     .max(30, 'Name should not exceed 40 characters'),
   referralCode: z.string().optional()
 })
+
+export const LoginSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required.')
+    .email('Email format is invalid.'),
+  password: z.string().min(1, 'Password is required.')
+})

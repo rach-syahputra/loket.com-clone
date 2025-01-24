@@ -1,8 +1,42 @@
 import { prisma } from '../helpers/prisma'
 import { calculatePointsExpiryDate } from '../helpers/utils'
-import { RegisterRequest } from '../types/auth.types'
+import { RegisterRequest, UpdateUserRoleRequest } from '../types/auth.types'
 
 class AuthRepository {
+  async findUserByEmail(email: string) {
+    const res = await prisma.user.findUnique({
+      where: {
+        email
+      }
+    })
+
+    return res
+  }
+
+  async findLastLoggedInRole(userId: number) {
+    const res = await prisma.userRole.findFirst({
+      where: {
+        userId
+      },
+      orderBy: {
+        updatedAt: 'desc'
+      }
+    })
+
+    return res
+  }
+
+  async updateUserRole(req: UpdateUserRoleRequest) {
+    await prisma.userRole.update({
+      data: {
+        isActive: req.isActive
+      },
+      where: {
+        id: req.id
+      }
+    })
+  }
+
   async register(req: RegisterRequest) {
     const res = await prisma.$transaction(async (trx) => {
       const user = await trx.user.create({
