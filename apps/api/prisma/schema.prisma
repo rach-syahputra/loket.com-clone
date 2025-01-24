@@ -84,8 +84,8 @@ model UserRole {
 
 model Point {
   id               Int         @id @default(autoincrement())
-  referredId       Int         @unique @map("referred_id")
-  referrerId       Int         @unique @map("referrer_id")
+  referredId       Int         @map("referred_id")
+  referrerId       Int         @map("referrer_id")
   points           Int
   pointsExpiryDate DateTime    @map("points_expiry_date")
   status           PointStatus
