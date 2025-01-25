@@ -35,7 +35,10 @@ class AuthRepository {
         isActive: req.isActive
       },
       where: {
-        id: req.id
+        userId_roleId: {
+          userId: req.userId,
+          roleId: req.roleId
+        }
       }
     })
   }

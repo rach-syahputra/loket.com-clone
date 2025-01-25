@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-// email, password, name, referral_code
-
 export const RegisterSchema = z.object({
   email: z
     .string()

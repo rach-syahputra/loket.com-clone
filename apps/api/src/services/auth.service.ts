@@ -36,7 +36,7 @@ class AuthService {
     // 2. Check if the user exists in the database.
     // 3. Compare the provided password with the stored hash.
     // 4. Retrieve the user's last logged-in role.
-    // 5. Generate an access token for the session.
+    // 5. Generate an access token.
     // 6. Set the userRole's `isActive` status to true in the database.
 
     validate(LoginSchema, req)
@@ -63,7 +63,11 @@ class AuthService {
         })
 
         if (accessToken) {
-          await authRepository.updateUserRole({ id: lastLoggedInUser.id })
+          await authRepository.updateUserRole({
+            userId: lastLoggedInUser.userId,
+            roleId: lastLoggedInUser.roleId,
+            isActive: true
+          })
 
           return { accessToken }
         } else {

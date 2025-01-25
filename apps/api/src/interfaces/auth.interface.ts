@@ -11,13 +11,17 @@ export interface LoginRequest {
 }
 
 export interface UpdateUserRoleRequest {
-  id?: number
-  userId?: number
-  roleId?: number
-  isActive?: boolean
+  userId: number
+  roleId: number
+  isActive: boolean
 }
 
-export interface TokenBody {
+export interface SwitchUserRoleRequest {
+  userId: number
+  roleId: number
+}
+
+export interface Token {
   email: string
   name: string
   roleId: number
