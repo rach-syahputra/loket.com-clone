@@ -28,7 +28,9 @@ export class App {
   private handleError() {
     //not found handler
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      res.status(404).send('Not found.')
+      res.status(404).json({
+        message: 'Not Found.'
+      })
     })
 
     //error handler
