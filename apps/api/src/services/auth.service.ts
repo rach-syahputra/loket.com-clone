@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 
 import authRepository from '../repositories/auth.repository'
-import { LoginRequest, RegisterRequest } from '../types/auth.types'
+import { LoginRequest, RegisterRequest } from '../interfaces/auth.interface'
 import { validate } from '../helpers/validation.handler'
 import { LoginSchema, RegisterSchema } from '../validations/auth.validation'
 import { generateHashedPassword } from '../helpers/utils'

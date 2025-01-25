@@ -1,6 +1,9 @@
 import { prisma } from '../helpers/prisma'
 import { calculatePointsExpiryDate } from '../helpers/utils'
-import { RegisterRequest, UpdateUserRoleRequest } from '../types/auth.types'
+import {
+  RegisterRequest,
+  UpdateUserRoleRequest
+} from '../interfaces/auth.interface'
 
 class AuthRepository {
   async findUserByEmail(email: string) {

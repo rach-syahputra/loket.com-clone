@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import { TokenBody } from '../types/auth.types'
+import { TokenBody } from '../interfaces/auth.interface'
 import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from '../config'
 
 export async function putAccessToken(data: TokenBody) {
