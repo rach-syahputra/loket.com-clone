@@ -2,7 +2,7 @@ import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import { ZodError } from 'zod'
 
-import { PORT } from './config'
+import { corsOptions, PORT } from './config'
 import { ResponseError } from './helpers/error.handler'
 import authRoute from './routers/auth.route'
 
@@ -16,13 +16,14 @@ export class App {
     this.handleError()
   }
 
-  private routes() {
-    this.app.use('/auth', authRoute)
+  private configure() {
+    this.app.use(cors(corsOptions))
+    this.app.use(express.json())
+    this.app.use(express.urlencoded({ extended: true }))
   }
 
-  private configure() {
-    this.app.use(express.json())
-    this.app.use(cors())
+  private routes() {
+    this.app.use('/auth', authRoute)
   }
 
   private handleError() {
