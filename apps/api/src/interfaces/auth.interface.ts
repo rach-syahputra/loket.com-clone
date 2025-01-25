@@ -1,3 +1,9 @@
+import { Request } from 'express'
+
+export interface UserRequest extends Request {
+  user?: Token
+}
+
 export interface RegisterRequest {
   email: string
   password: string
@@ -16,12 +22,19 @@ export interface UpdateUserRoleRequest {
   isActive: boolean
 }
 
-export interface SwitchUserRoleRequest {
+export interface SwitchUserRoleServiceRequest {
   userId: number
   roleId: number
 }
 
+export interface SwitchUserRoleRepositoryRequest {
+  userId: number
+  currentRoleId: number
+  nextRoleId: number
+}
+
 export interface Token {
+  id: number
   email: string
   name: string
   roleId: number

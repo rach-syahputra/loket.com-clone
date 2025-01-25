@@ -1,7 +1,11 @@
 import bcrypt from 'bcrypt'
 
 import authRepository from '../repositories/auth.repository'
-import { LoginRequest, RegisterRequest } from '../interfaces/auth.interface'
+import {
+  LoginRequest,
+  RegisterRequest,
+  SwitchUserRoleServiceRequest
+} from '../interfaces/auth.interface'
 import { validate } from '../helpers/validation.handler'
 import { LoginSchema, RegisterSchema } from '../validations/auth.validation'
 import { generateHashedPassword } from '../helpers/utils'
@@ -56,6 +60,7 @@ class AuthService {
 
       if (lastLoggedInUser) {
         const accessToken = await putAccessToken({
+          id: user.id,
           email: user.email,
           roleId: lastLoggedInUser?.roleId || 0,
           name: user.name,
@@ -75,6 +80,38 @@ class AuthService {
         }
       }
     }
+  }
+
+  async switchUserRole(req: SwitchUserRoleServiceRequest) {
+    // SWITCH USER ROLE FLOW
+    // 1. begin sql transaction
+    //  - Set the userRole's `isActive` to false for current role
+    //  - Set the userRole's `isActive` to true for next role
+    // 2. commit the sql transaction
+
+    const user = await authRepository.switchUserRole({
+      userId: req.userId,
+      currentRoleId: req.roleId,
+      nextRoleId: req.roleId === 1 ? 2 : 1
+    })
+
+    if (user) {
+      const accessToken = await putAccessToken({
+        id: user.id,
+        email: user.email,
+        roleId: user.roleId,
+        name: user.name,
+        image: user.image || ''
+      })
+
+      if (accessToken) {
+        return { accessToken }
+      } else {
+        throw new ResponseError(500, 'Unable to generate access token.')
+      }
+    }
+
+    return user
   }
 }
 

@@ -2,6 +2,7 @@ import { prisma } from '../helpers/prisma'
 import { calculatePointsExpiryDate } from '../helpers/utils'
 import {
   RegisterRequest,
+  SwitchUserRoleRepositoryRequest,
   UpdateUserRoleRequest
 } from '../interfaces/auth.interface'
 
@@ -122,6 +123,54 @@ class AuthRepository {
           updatedAt: user.updatedAt
         },
         referral
+      }
+    })
+
+    return res
+  }
+
+  async switchUserRole(req: SwitchUserRoleRepositoryRequest) {
+    const res = await prisma.$transaction(async (trx) => {
+      // signing out the current role
+      await trx.userRole.update({
+        data: {
+          isActive: false
+        },
+        where: {
+          userId_roleId: {
+            userId: req.userId,
+            roleId: req.currentRoleId
+          }
+        }
+      })
+
+      // signing in the next role
+      const nextRole = await trx.userRole.update({
+        data: {
+          isActive: true
+        },
+        where: {
+          userId_roleId: {
+            userId: req.userId,
+            roleId: req.nextRoleId
+          }
+        }
+      })
+
+      const user = await trx.user.findUnique({
+        where: {
+          id: req.userId
+        }
+      })
+
+      if (user) {
+        return {
+          id: user.id,
+          roleId: nextRole.roleId,
+          email: user.email,
+          name: user.name,
+          image: user.pictureUrl || ''
+        }
       }
     })
 
