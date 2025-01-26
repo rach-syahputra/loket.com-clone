@@ -7,13 +7,16 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export default function Button({ variant = 'default', ...props }: ButtonProps) {
   return (
     <button
+      disabled={props.disabled}
       className={cn(
-        'h-12 w-fit rounded-lg px-4 text-sm md:text-base',
+        'h-12 w-fit rounded-lg px-4 font-semibold',
         props.className,
         {
-          'bg-blue-primary text-white': variant === 'default',
+          'bg-blue-primary hover:bg-blue-secondary text-white transition-all duration-300 ease-in-out':
+            variant === 'default',
           'text-dark-primary border-dark-primary border bg-white':
-            variant === 'outline'
+            variant === 'outline',
+          'bg-background-inactive hover:bg-background-inactive': props.disabled
         }
       )}
     >
