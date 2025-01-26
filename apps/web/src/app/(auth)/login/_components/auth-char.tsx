@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function AuthChar() {
   return (
-    <div className='hidden w-full max-w-[450px] flex-col items-center justify-center place-self-end lg:flex'>
+    <div className='hidden w-full max-w-[450px] flex-col items-center justify-center place-self-start justify-self-end lg:flex'>
       <Image
         src='/auth-char.svg'
         alt='Auth character'

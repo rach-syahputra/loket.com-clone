@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { handleCredentialsSignin } from '@/app/actions/actions'
 import { LoginFormSchema } from '@/lib/validations/auth.validation'
 import { LoginFormSchemaType } from '@/lib/interfaces/auth.interface'
+import { cn } from '@/lib/utils'
 import Button from '@/components/button'
 
 export default function LoginForm() {
@@ -59,9 +60,17 @@ export default function LoginForm() {
           </label>
           <input
             id='email'
-            className='w-full rounded-lg border border-gray-200 px-4 py-3 focus-within:outline-none'
+            className={cn(
+              'w-full rounded-lg border border-gray-200 px-4 py-3 focus-within:outline-none',
+              {
+                'border border-red-500': errors.email
+              }
+            )}
             {...register('email')}
           />
+          {errors.email && (
+            <p className='text-sm text-red-500'>{errors.email.message}</p>
+          )}
         </div>
 
         <div className='flex w-full flex-col gap-2'>
@@ -71,18 +80,20 @@ export default function LoginForm() {
           <input
             id='password'
             type='password'
-            className='w-full rounded-lg border border-gray-200 px-4 py-3 focus-within:outline-none'
+            className={cn(
+              'w-full rounded-lg border border-gray-200 px-4 py-3 focus-within:outline-none',
+              {
+                'border border-red-500': errors.email
+              }
+            )}
             {...register('password')}
           />
+          {errors.password && (
+            <p className='text-sm text-red-500'>{errors.password.message}</p>
+          )}
         </div>
       </div>
 
-      {errors.email && (
-        <p className='text-sm text-red-500'>{errors.email.message}</p>
-      )}
-      {errors.password && (
-        <p className='text-sm text-red-500'>{errors.password.message}</p>
-      )}
       {errors.root && (
         <p className='text-sm text-red-500'>{errors.root.message}</p>
       )}
