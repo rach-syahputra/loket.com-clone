@@ -5,7 +5,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "kill-port": "kill-port 3000 8000"
   },
   "devDependencies": {
     "@repo/typescript-config": "^0.0.0",
@@ -20,8 +21,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "dependencies": {
-    "install": "^0.13.0"
-  }
+  ]
 }

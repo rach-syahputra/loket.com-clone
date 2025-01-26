@@ -19,7 +19,6 @@ export class App {
   private configure() {
     this.app.use(cors(corsOptions))
     this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: true }))
   }
 
   private routes() {
