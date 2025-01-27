@@ -27,6 +27,15 @@ class AuthService {
 
     validate(RegisterSchema, req)
 
+    if (req.referralCode) {
+      const userWithReferralCode = await authRepository.findUserByReferralCode(
+        req.referralCode
+      )
+
+      if (!userWithReferralCode)
+        throw new ResponseError(400, 'Kode referral tidak valid.')
+    }
+
     req.password = await generateHashedPassword(req.password)
 
     const user = await authRepository.register(req)

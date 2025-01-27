@@ -30,6 +30,16 @@ class AuthRepository {
     return res
   }
 
+  async findUserByReferralCode(referralCode: string) {
+    const res = await prisma.user.findUnique({
+      where: {
+        referralCode
+      }
+    })
+
+    return res
+  }
+
   async updateUserRole(req: UpdateUserRoleRequest) {
     await prisma.userRole.update({
       data: {

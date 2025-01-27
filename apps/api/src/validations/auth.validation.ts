@@ -13,7 +13,7 @@ export const RegisterSchema = z.object({
     .string()
     .min(1, 'Name is required.')
     .max(30, 'Name should not exceed 40 characters'),
-  referralCode: z.string().optional()
+  referralCode: z.string().optional().nullable()
 })
 
 export const LoginSchema = z.object({
