@@ -13,6 +13,7 @@ export function verifyToken(
   try {
     const { authorization } = req.headers
     const token = String(authorization || '').split('Bearer ')[1]
+    if (!token) throw new ResponseError(401, 'Unauthorized.')
 
     const verifiedUser = jwt.verify(token, JWT_ACCESS_SECRET)
     if (!verifiedUser) throw new ResponseError(401, 'Unauthorized.')
