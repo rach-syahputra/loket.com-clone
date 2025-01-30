@@ -307,7 +307,7 @@ export default function Eventbrowsing() {
                 <div className="fixed bottom-0 border-t w-full h-[70px] bg-white py-[15px] lg:px-[100px] px-[20px] md:px-[80px]">
                     <div className="flex justify-between items-center">
                         <p className="text-[14px] text-black hidden md:block "><span className="text-black text-[24px] font-semibold">Yeay!</span> Tinggal Selangkah lagi dan event kamu berhasil dibuat.</p>
-                        <button className="bg-[#0049CC]  md:w-[190px] lg:w-[190px]   h-[39px] rounded-lg font-bold">Buat Event Sekarang</button>
+                        <button className="bg-[#0049CC]  md:w-[190px] lg:w-[190px]   h-[39px] rounded-lg font-bold text-white">Buat Event Sekarang</button>
                     </div>
 
                 </div>

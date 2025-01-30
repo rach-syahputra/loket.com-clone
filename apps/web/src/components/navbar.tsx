@@ -1,12 +1,11 @@
-import Image from 'next/image'
-import SectionContainer from './section-container'
-import Link from 'next/link'
+import Image from "next/image"
+import Link from "next/link"
 
-export default function NavigationBar() {
-  return (
-    <nav className='bg-navy-tertiary flex h-16 items-center'>
-      <SectionContainer>
-      <div className="flex justify-between items-center">
+
+export  function MainNavbar(){
+    return(
+        <div className="w-full h-[70px] bg-[#152955] lg:px-[50px] px-[20px] py-[10px] ">
+            <div className="flex justify-between items-center">
                 <Link href="/"><Image className="" src="https://assets.loket.com/images/logo-loket-white.png" height={35} width={136} alt=""/></Link>
                 <form className="lg:w-[600px] hidden md:w-[300px] md:block lg:block">
                         <div className="flex ">
@@ -48,7 +47,23 @@ export default function NavigationBar() {
                         </div>
                     </div>
             </div>
-      </SectionContainer>
-    </nav>
-  )
+            
+        </div>
+    )
+}
+
+export function SecondNavbar(){
+    return(
+        <div className="h-[80px] w-full bg-white border-b">
+            <div className="flex justify-between lg:px-[100px] px-[20px] py-[20px] items-center">
+            <Link href="/"><Image src="https://assets.loket.com/images/logo-loket-blue.png" height={35} width={160} alt=""/></Link>
+
+            <Link href="/">
+            <span className="text-black font-normal">
+                BANTUAN
+            </span></Link>
+            </div>
+          
+        </div>
+    )
 }
