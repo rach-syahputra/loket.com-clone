@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import SectionContainer from './section-container'
 import Link from 'next/link'
+import Button from './button'
 
 export default function NavigationBar() {
   return (
@@ -24,29 +25,40 @@ export default function NavigationBar() {
                         </div>
                     </form>
                     <div  className="flex gap-[30px] items-center">
-                    <Link href="/eventbrowsing">
-                    <div className="lg:flex md:flex hidden gap-4 items-center ">
+                    <Link href="/eventcreate">
+                    <div className="lg:flex md:flex hidden gap-4 items-center text-white">
                             <Image src="https://assets.loket.com/web/assets/img/ic_schedule.svg" height={20} width={20} alt=""/>
                             <span>Buat Event</span>
                         </div></Link>
                         <Link href="/explore">
-                        <div className="lg:flex md:flex hidden gap-4 items-center">
+                        <div className="lg:flex md:flex hidden gap-4 items-center text-white">
                         <Image src="https://assets.loket.com/web/assets/img/ic_explore_compass.svg" height={20} width={20} alt=""/>
 
                             <span>Jelajah</span>
                         </div></Link>
-                        <div className="lg:hidden md:hidden block">
+                        <div className="lg:hidden md:hidden block ">
                         <Image src="https://assets.loket.com/web/assets/img/search-new.svg" height={30} width={20} alt=""/>
 
                         </div>
-                        <div className="w-[40px] h-[40px] dropdown dropdown-hover dropdown-end">
+                        {/*Avatar after log in */}
+                        {/* <div className="w-[40px] h-[40px] dropdown dropdown-hover dropdown-end">
                         <Image src="https://assets.loket.com/web/assets/img/avatar.svg" height={40} width={40} alt=""/>
                         <ul tabIndex={0} className="dropdown-content menu bg-white rounded-box z-[1] w-52 p-2 shadow text-black">
     <li><a>Item 1</a></li>
     <li><a>Item 2</a></li>
   </ul>
+                        </div> */}
+
+
+                        {/*Button before log in */}
+                        <div className='flex gap-4'>
+                        <Button variant="outline">Daftar</Button>
+
+                        <Button variant="default">Masuk</Button>
+
                         </div>
-                    </div>
+
+                        </div>
             </div>
       </SectionContainer>
     </nav>

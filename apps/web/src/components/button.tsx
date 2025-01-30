@@ -14,7 +14,7 @@ export default function Button({ variant = 'default', ...props }: ButtonProps) {
         {
           'bg-blue-primary hover:bg-blue-secondary text-white transition-all duration-300 ease-in-out':
             variant === 'default',
-          'text-dark-primary border-dark-primary border bg-white':
+          'text-white border-white border bg-navy-tertiary':
             variant === 'outline',
           'bg-background-inactive hover:bg-background-inactive': props.disabled
         }

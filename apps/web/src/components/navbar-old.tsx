@@ -23,7 +23,7 @@ export  function MainNavbar(){
                         </div>
                     </form>
                     <div  className="flex gap-[30px] items-center">
-                    <Link href="/eventbrowsing">
+                    <Link href="/event">
                     <div className="lg:flex md:flex hidden gap-4 items-center ">
                             <Image src="https://assets.loket.com/web/assets/img/ic_schedule.svg" height={20} width={20} alt=""/>
                             <span>Buat Event</span>

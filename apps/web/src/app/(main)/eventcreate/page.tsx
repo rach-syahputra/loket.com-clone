@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup"  
 import { log } from "console";
 
-export default function Eventbrowsing() {
+export default function EventCreate() {
     const [activeTab, setActiveTab] = useState(1);
     const [modalDate, setModalDate] = useState(false)
     const [modalTime, setModalTime] = useState(false)
