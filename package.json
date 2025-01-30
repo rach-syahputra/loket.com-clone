@@ -21,5 +21,11 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "formik": "^2.4.6",
+    "react-datepicker": "^7.6.0",
+    "react-time-picker": "^7.0.0",
+    "yup": "^1.6.1"
+  }
 }
