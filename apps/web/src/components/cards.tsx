@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export  function Card() {
     return (
-       <Link href="/detailpage"> <div className="border sm:w-[290px] min-w-[300px] h-auto rounded-[10px]">
+       <Link href="/detail"> <div className="border sm:w-[290px] min-w-[300px] h-auto rounded-[10px]">
             <div className="flex flex-col">
                 <div className="relative w-full h-[137px]">
                     <Image
@@ -34,7 +34,7 @@ export  function Card() {
 
 export  function CardExplore() {
     return (
-       <Link href="/detailpage"> <div className="border sm:w-[290px] w-full h-auto rounded-[10px]">
+       <Link href="/detail"> <div className="border sm:w-[290px] w-full h-auto rounded-[10px]">
             <div className="flex flex-col">
                 <div className="relative w-full h-[137px]">
                     <Image
