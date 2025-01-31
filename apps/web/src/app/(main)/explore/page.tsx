@@ -1,11 +1,28 @@
+"use client"
 import { CardExplore } from "@/components/cards";
 import Link from "next/link";
-
+import { useEffect, useState } from "react";
+interface Province {
+    id:string
+    name:string
+  }
 export default function Explore() {
+    const [province,setProvince] = useState<Province[]>([])
+    useEffect(()=>{
+        fetch("http://localhost:8000/api/explore")
+        .then((res)=>res.json())
+        .then((data)=>{
+            if (data.data){
+                setProvince(data.data)
+            }
+        }).catch((error)=>
+            console.log("Error fetching provinces: ",error)
+        )
+    },[])
     return (
         <div className="w-full h-full bg-white p-[20px] sm:p-0">
             <div className="sm:flex block gap-4">
-                <div className="sm:block hidden bg-white border w-[300px] h-screen sticky top-0 p-[50px] md:p-[20px]">
+                <div className="sm:block hidden bg-white border w-[300px] min-h-[100%] sticky top-0 p-[50px] md:p-[20px]">
                     <div>
                         <span className="text-[20px] text-black font-bold">Filter</span>
                         <hr />
@@ -15,10 +32,17 @@ export default function Explore() {
                                     Lokasi
                                 </summary>
                                 <div className="collapse-content">
-                                    <div className="text-black">
-                                        <Link href="#" className="text-black no-underline">Aceh</Link><br />
-                                        <Link href="#" className="text-black no-underline">Sumatra Utara</Link><br />
-                                        {/* Add more locations as needed */}
+                                    <div className="text-black flex flex-col gap-4">
+                                        {
+                                            province.length>0?(
+                                                province.map((province)=>(
+                                                    <Link href="#" key={province.id} className="text-black no-underline">
+                                                        {province.name}
+
+                                                    </Link>
+                                                ))
+                                            ):null
+                                        }
                                     </div>
                                 </div>
                             </details>
