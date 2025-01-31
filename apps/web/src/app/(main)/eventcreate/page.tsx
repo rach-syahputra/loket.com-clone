@@ -40,21 +40,36 @@ export default function EventCreate() {
     id: string
     name: string
   }
+  interface Province {
+    id: string
+    name: string
+  }
   const [category, setCategory] = useState<Category[]>([])
+  const [province, setProvince] = useState<Province[]>([])
 
-  useEffect(()=>{
-    fetch("http://localhost:8000/api/eventcreate")
-    .then((res)=>res.json())
-    .then((data)=>{
-        if (data.data){
-            setCategory(data.data)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const categoryResponse = await fetch(
+          'http://localhost:8000/api/eventcreate'
+        )
+        const categoryData = await categoryResponse.json()
+        if (categoryData.data) {
+          setCategory(categoryData.data)
         }
-    }).catch((err)=>
-        console.log("Error fetching categories: ",err)
-
-    )
-    
-  },[])
+        const provinceResponse = await fetch(
+          'http://localhost:8000/api/explore'
+        )
+        const provinceData = await provinceResponse.json()
+        if (provinceData.data) {
+          setProvince(provinceData.data)
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error)
+      }
+    }
+    fetchData()
+  }, [])
   return (
     <div className='h-full w-full bg-white py-[100px]'>
       <div className='flex flex-col items-center justify-center gap-[50px]'>
@@ -88,21 +103,20 @@ export default function EventCreate() {
               className='border-none p-0 text-[24px] focus:outline-none focus:ring-0'
               placeholder='Nama Event*'
             />
-            <details className='dropdown '>
-              <summary className='btn btn-ghost border bg-white hover:bg-white text-[#ADBAD1] font-light p-0 m-0 w-full flex justify-start'>
+            <details className='dropdown'>
+              <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-0 font-light text-[#ADBAD1] hover:bg-white'>
                 Pilih Kategory*
               </summary>
-              <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white p-2 shadow '>
-              {
-                category.length>0?(
-                    category.map((category)=>
-                        <li key={category.id}>
-                    <Link href="#"className='text-black no-underline'>{category.name}</Link>
-                </li>
-                    )
-                  
-                ):null
-              }
+              <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white p-2 shadow'>
+                {province.length > 0
+                  ? province.map((province) => (
+                      <li key={province.id}>
+                        <Link href='#' className='text-black no-underline'>
+                          {province.name}
+                        </Link>
+                      </li>
+                    ))
+                  : null}
               </ul>
             </details>
             <hr />
@@ -145,14 +159,18 @@ export default function EventCreate() {
 
                   {startDate && endDate ? (
                     <div className='flex flex-col gap-2'>
-                      <span className='font-light text-[#ADBAD1]'>
+                      <span
+                        className={`font-light ${startDate ? 'text-black' : 'text-[#ADBAD1]'} `}
+                      >
                         {startDate.toLocaleDateString('en-US', {
                           day: '2-digit',
                           month: 'long',
                           year: 'numeric'
                         })}
                       </span>
-                      <span className='font-light text-[#ADBAD1]'>
+                      <span
+                        className={`font-light ${startDate ? 'text-black' : 'text-[#ADBAD1]'} `}
+                      >
                         {endDate.toLocaleDateString('en-US', {
                           day: '2-digit',
                           month: 'long',
@@ -161,7 +179,7 @@ export default function EventCreate() {
                       </span>
                     </div>
                   ) : (
-                    <span>Pilih Tanggal</span>
+                    <span className='text-[#ADBAD1]'>Pilih Tanggal</span>
                   )}
                 </div>
                 <div
@@ -281,72 +299,76 @@ export default function EventCreate() {
         </div>
 
         {modalDate && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-            <div className='relative h-[300px] w-[300px] rounded-xl bg-white'>
-              <button
-                className='absolute right-0 m-[10px] h-[20px] w-[20px]'
-                onClick={() => setModalDate(false)}
-              >
-                X
-              </button>
-              <div className='flex h-full w-full flex-col items-center justify-center p-[20px]'>
-                <label htmlFor=''>Tanggal Mulai</label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date: Date | null) => setStartDate(date)}
-                  className='w-full rounded border p-2'
-                  placeholderText='Select a date'
-                />
+          <form action='' onSubmit={formik.handleSubmit}>
+            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+              <div className='relative h-[300px] w-[300px] rounded-xl bg-white'>
+                <button
+                  className='absolute right-0 m-[10px] h-[20px] w-[20px]'
+                  onClick={() => setModalDate(false)}
+                >
+                  X
+                </button>
+                <div className='flex h-full w-full flex-col items-center justify-center p-[20px]'>
+                  <label htmlFor=''>Tanggal Mulai</label>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date: Date | null) => setStartDate(date)}
+                    className='w-full rounded border p-2'
+                    placeholderText='Select a date'
+                  />
 
-                <label htmlFor=''>Tanggal Berakhir</label>
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date: Date | null) => setEndDate(date)}
-                  className='w-full rounded border p-2'
-                  placeholderText='Select a date'
-                />
+                  <label htmlFor=''>Tanggal Berakhir</label>
+                  <DatePicker
+                    selected={endDate}
+                    onChange={(date: Date | null) => setEndDate(date)}
+                    className='w-full rounded border p-2'
+                    placeholderText='Select a date'
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         )}
 
         {modalTime && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-            <div className='relative h-[300px] w-[300px] rounded-xl bg-white'>
-              <button
-                className='absolute right-0 m-[10px] h-[20px] w-[20px]'
-                onClick={() => setModalTime(false)}
-              >
-                X
-              </button>
-              <div className='flex h-full w-full flex-col items-center justify-center p-[20px]'>
-                <label htmlFor=''>Waktu Mulai</label>
+          <form action='' onSubmit={formik.handleSubmit}>
+            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+              <div className='relative h-[300px] w-[300px] rounded-xl bg-white'>
+                <button
+                  className='absolute right-0 m-[10px] h-[20px] w-[20px]'
+                  onClick={() => setModalTime(false)}
+                >
+                  X
+                </button>
+                <div className='flex h-full w-full flex-col items-center justify-center p-[20px]'>
+                  <label htmlFor=''>Waktu Mulai</label>
 
-                <input
-                  type='time'
-                  id='start-time'
-                  value={startTime || ''}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm leading-none text-gray-900 focus:border-blue-500 focus:ring-blue-500'
-                />
+                  <input
+                    type='time'
+                    id='start-time'
+                    value={startTime || ''}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm leading-none text-gray-900 focus:border-blue-500 focus:ring-blue-500'
+                  />
 
-                <label htmlFor=''>Waktu Berakhir</label>
+                  <label htmlFor=''>Waktu Berakhir</label>
 
-                <input
-                  type='time'
-                  id='start-time'
-                  value={endTime || ''}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm leading-none text-gray-900 focus:border-blue-500 focus:ring-blue-500'
-                />
+                  <input
+                    type='time'
+                    id='start-time'
+                    value={endTime || ''}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm leading-none text-gray-900 focus:border-blue-500 focus:ring-blue-500'
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         )}
 
         {modalLocation && (
           <form action='' onSubmit={formik.handleSubmit}>
-            <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
               <div className='relative h-auto w-[300px] rounded-xl bg-white'>
                 <button
                   className='absolute right-0 m-[10px] h-[20px] w-[20px]'
@@ -380,19 +402,26 @@ export default function EventCreate() {
                     onChange={formik.handleChange}
                     value={formik.values.kota}
                   />
-
-                  <label htmlFor=''>Provinsi</label>
-                  {formik.touched.provinsi && formik.errors.provinsi ? (
-                    <div>{formik.errors.provinsi}</div>
-                  ) : null}
-                  <input
-                    type='text'
-                    name='provinsi'
-                    id='provinsi'
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    value={formik.values.provinsi}
-                  />
+                    <span>Provinsi</span>
+                  <details className='dropdown'>
+                    <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-2 font-light text-black shadow hover:bg-white'>
+                      Pilih Provinsi
+                    </summary>
+                    <ul className='menu dropdown-content rounded-box z-[1] max-h-[230px] w-full overflow-y-auto bg-white p-2 shadow'>
+                    {province.length > 0
+                        ? province.map((province) => (
+                            <li key={province.id} className='truncate'>
+                              <Link
+                                href='#'
+                                className='text-black no-underline'
+                              >
+                                {province.name}
+                              </Link>
+                            </li>
+                          ))
+                        : null}
+                    </ul>
+                  </details>
                 </div>
               </div>
             </div>
