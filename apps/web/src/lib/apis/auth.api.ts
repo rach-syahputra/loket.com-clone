@@ -1,6 +1,5 @@
+import { BASE_URL } from '../constants'
 import { LoginRequest, RegisterRequest } from '../interfaces/auth.interface'
-
-const BASE_URL = 'http://localhost:8000'
 
 export async function fetchLogin(data: LoginRequest) {
   const user = await fetch(`${BASE_URL}/auth`, {

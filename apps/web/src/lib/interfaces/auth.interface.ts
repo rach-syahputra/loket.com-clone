@@ -7,6 +7,14 @@ import {
   ThirdRegisterFormSchema
 } from '../validations/auth.validation'
 
+export interface UserToken {
+  id: number
+  email: string
+  roleId: number
+  name: string
+  image: string | null
+}
+
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>
 
 export type FirstRegisterFormSchemaType = z.infer<

@@ -32,7 +32,7 @@ export const handleCredentialsSignin = async (
         default:
           return {
             error: {
-              message: error.message
+              message: 'Login gagal'
             }
           }
       }

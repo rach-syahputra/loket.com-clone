@@ -10,14 +10,14 @@
   --orange-primary: #fb7221;
   --gray-primary: #8e919b;
   --gray-secondary: #494a4a;
+  --gray-description: #666666;
   --light-primary: #8aa9c3;
   --background-inactive: #adb6c9;
   --dark-primary: #151416;
 }
 
-html,
-body {
-  max-width: 100vw;
+html {
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -95,4 +95,35 @@ a {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ICONS */
+
+@font-face {
+  font-family: 'icemoon';
+  src: url('/fonts/icomoon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+}
+
+.icon-loket {
+  font-family: 'icemoon' !important;
+  font-style: normal;
+  display: inline-block;
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+
+.icon-loket-basic-information::before {
+  content: '\e921';
+  color: var(--light-primary);
+}
+
+.icon-loket-ticket::before {
+  content: '\e948';
+  color: var(--light-primary);
 }
