@@ -35,6 +35,7 @@ export default function FormInput<T extends FieldValues>({
               <input
                 type={type}
                 {...field}
+                autoComplete='off'
                 onFocus={() => setIsFocused(true)}
                 onBlur={() =>
                   setTimeout(() => {

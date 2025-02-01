@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
@@ -40,6 +39,7 @@ export default function ProfileFormInput<T extends FieldValues>({
               <input
                 type={type}
                 {...field}
+                autoComplete='off'
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => {
                   setIsFocused(false)
