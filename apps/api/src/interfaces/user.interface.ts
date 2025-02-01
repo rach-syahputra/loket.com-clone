@@ -16,3 +16,7 @@ export interface UpdateUserRepositoryRequest {
   name?: string
   image?: string
 }
+
+export interface GetVouchersRequest {
+  userId: number
+}

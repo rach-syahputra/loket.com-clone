@@ -17,5 +17,6 @@ router.patch(
   uploadProfileImage.single('image'),
   userController.update
 )
+router.get('/vouchers', verifyToken, userController.getVouchers)
 
 export default router

@@ -1,4 +1,5 @@
 import { prisma } from '../helpers/prisma'
+import { convertToUTC7 } from '../helpers/utils'
 import { UpdateUserRepositoryRequest } from '../interfaces/user.interface'
 
 class UserRepository {
@@ -29,6 +30,22 @@ class UserRepository {
       pictureUrl: res.pictureUrl,
       updatedAt: res.updatedAt
     }
+  }
+
+  async findPoints(userId: number) {
+    const res = await prisma.point.findMany({
+      where: {
+        userId
+      }
+    })
+
+    const points = res.map((data) => ({
+      ...data,
+      pointsExpiryDate: convertToUTC7(data.pointsExpiryDate),
+      createdAt: convertToUTC7(data.createdAt)
+    }))
+
+    return points
   }
 }
 

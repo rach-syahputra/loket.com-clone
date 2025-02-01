@@ -37,6 +37,24 @@ class UserController {
       next(err)
     }
   }
+
+  async getVouchers(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      if (req.user?.id) {
+        const data = await userService.getVouchers({
+          userId: req.user?.id
+        })
+
+        res.status(200).json({
+          success: true,
+          message: 'User vouchers retrieved successfully.',
+          data
+        })
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default new UserController()
