@@ -18,26 +18,25 @@ export default function EventCreate() {
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
   const [startTime, setStartTime] = useState<string | null>(null)
-  const [endTime, setEndTime] = useState<string | null>("18:00")
-  const [time, setTime] = useState('10:00'); // Default time
-  const [modalTicketPaid,setModalTicketPaid] = useState(false)
-  const [modalTicketFree,setModalTicketFree] = useState(false)
-
+  const [endTime, setEndTime] = useState<string | null>('18:00')
+  const [time, setTime] = useState('10:00') // Default time
+  const [modalTicketPaid, setModalTicketPaid] = useState(false)
+  const [modalTicketFree, setModalTicketFree] = useState(false)
 
   const formik = useFormik({
     initialValues: {
       alamat: '',
       kota: '',
       provinsi: '',
-      jumlah_tiket_berbayar:0,
-      harga:0
+      jumlah_tiket_berbayar: 0,
+      harga: 0
     },
     validationSchema: Yup.object({
       alamat: Yup.string().required('Alamat Wajib Diisi'),
       kota: Yup.string().required('Kota Wajib Diisi'),
       provinsi: Yup.string().required('Provinsi Wajib Diisi'),
-      jumlah_tiket_berbayar:Yup.number().required('Jumlah Tiket Wajib Diisi'),
-      harga:Yup.number().required("Harga Wajib Diisi")
+      jumlah_tiket_berbayar: Yup.number().required('Jumlah Tiket Wajib Diisi'),
+      harga: Yup.number().required('Harga Wajib Diisi')
     }),
     onSubmit: (values) => {
       console.log(values)
@@ -262,7 +261,7 @@ export default function EventCreate() {
         </span>
         <div>
           <div className='flex flex-col justify-center gap-4 px-[20px] sm:flex-row sm:px-0'>
-            <Link href='#' onClick={()=>setModalTicketPaid(true)}>
+            <Link href='#' onClick={() => setModalTicketPaid(true)}>
               <div className='flex h-[90px] w-[400px] items-center justify-between rounded-lg border bg-white p-[20px]'>
                 <div className='flex flex-col gap-1 text-black'>
                   <span className=''>Buat Tiket</span>
@@ -278,7 +277,7 @@ export default function EventCreate() {
                 />
               </div>
             </Link>
-            <Link href='#' onClick={()=>setModalTicketFree(true)}>
+            <Link href='#' onClick={() => setModalTicketFree(true)}>
               <div className='flex h-[90px] w-[400px] items-center justify-between rounded-lg border bg-white p-[20px]'>
                 <div className='flex flex-col gap-1 text-black'>
                   <span className=''>Buat Tiket</span>
@@ -338,7 +337,7 @@ export default function EventCreate() {
           </form>
         )}
 
-{modalTime && (
+        {modalTime && (
           <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
             <div className='relative w-[300px] rounded-xl bg-white p-4'>
               <button
@@ -348,66 +347,66 @@ export default function EventCreate() {
                 X
               </button>
               <div className='flex flex-col gap-4'>
-                <label htmlFor="startTime">Waktu Mulai</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 pointer-events-none">
+                <label htmlFor='startTime'>Waktu Mulai</label>
+                <div className='relative'>
+                  <div className='pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3.5'>
                     <svg
-                      className="w-4 h-4 text-gray-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
+                      className='h-4 w-4 text-gray-500'
+                      aria-hidden='true'
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='currentColor'
+                      viewBox='0 0 24 24'
                     >
                       <path
-                        fillRule="evenodd"
-                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                        clipRule="evenodd"
+                        fillRule='evenodd'
+                        d='M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z'
+                        clipRule='evenodd'
                       />
                     </svg>
                   </div>
                   <input
-                    type="time"
-                    id="startTime"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    min="09:00"
-                    max="18:00"
-                    value={startTime || '09:00'}  // CHANGED: Using state with default fallback
-                    onChange={(e) => setStartTime(e.target.value)}  // CHANGED: Update state on change
+                    type='time'
+                    id='startTime'
+                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
+                    min='09:00'
+                    max='18:00'
+                    value={startTime || '09:00'} // CHANGED: Using state with default fallback
+                    onChange={(e) => setStartTime(e.target.value)} // CHANGED: Update state on change
                     required
                   />
                 </div>
 
-                <label htmlFor="endTime">Waktu Berakhir</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 pointer-events-none">
+                <label htmlFor='endTime'>Waktu Berakhir</label>
+                <div className='relative'>
+                  <div className='pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3.5'>
                     <svg
-                      className="w-4 h-4 text-gray-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
+                      className='h-4 w-4 text-gray-500'
+                      aria-hidden='true'
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='currentColor'
+                      viewBox='0 0 24 24'
                     >
                       <path
-                        fillRule="evenodd"
-                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                        clipRule="evenodd"
+                        fillRule='evenodd'
+                        d='M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z'
+                        clipRule='evenodd'
                       />
                     </svg>
                   </div>
                   <input
-                    type="time"
-                    id="endTime"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    min="09:00"
-                    max="18:00"
-                    value={endTime || '18:00'}  // CHANGED: Using state with default fallback
-                    onChange={(e) => setEndTime(e.target.value)}  // CHANGED: Update state on change
+                    type='time'
+                    id='endTime'
+                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
+                    min='09:00'
+                    max='18:00'
+                    value={endTime || '18:00'} // CHANGED: Using state with default fallback
+                    onChange={(e) => setEndTime(e.target.value)} // CHANGED: Update state on change
                     required
                   />
                 </div>
 
                 <button
-                  className="mt-4 rounded-lg bg-blue-500 text-white py-2"
+                  className='mt-4 rounded-lg bg-blue-500 py-2 text-white'
                   onClick={() => setModalTime(false)}
                 >
                   Save
@@ -453,13 +452,13 @@ export default function EventCreate() {
                     onChange={formik.handleChange}
                     value={formik.values.kota}
                   />
-                    <span>Provinsi</span>
+                  <span>Provinsi</span>
                   <details className='dropdown'>
                     <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-2 font-light text-black shadow hover:bg-white'>
                       Pilih Provinsi
                     </summary>
                     <ul className='menu dropdown-content rounded-box z-[1] max-h-[230px] w-full overflow-y-auto bg-white p-2 shadow'>
-                    {province.length > 0
+                      {province.length > 0
                         ? province.map((province) => (
                             <li key={province.id} className='truncate'>
                               <Link
@@ -479,49 +478,48 @@ export default function EventCreate() {
           </form>
         )}
 
-        {
-            modalTicketPaid && (
-                <form action='' onSubmit={formik.handleSubmit}>
-                <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-                  <div className='relative h-auto w-[300px] rounded-xl bg-white'>
-                    <button
-                      className='absolute right-0 m-[10px] h-[20px] w-[20px]'
-                      onClick={() => setModalTicketPaid(false)}
-                    >
-                      X
-                    </button>
-                    <div className='flex flex-col gap-4 p-[20px]'>
-                      <label htmlFor=''>Jumlah Tiket</label>
-                      {formik.touched.jumlah_tiket_berbayar && formik.errors.jumlah_tiket_berbayar ? (
+        {modalTicketPaid && (
+          <form action='' onSubmit={formik.handleSubmit}>
+            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+              <div className='relative h-auto w-[300px] rounded-xl bg-white'>
+                <button
+                  className='absolute right-0 m-[10px] h-[20px] w-[20px]'
+                  onClick={() => setModalTicketPaid(false)}
+                >
+                  X
+                </button>
+                <div className='flex flex-col gap-4 p-[20px]'>
+                  <label htmlFor=''>Jumlah Tiket</label>
+                  {formik.touched.jumlah_tiket_berbayar &&
+                  formik.errors.jumlah_tiket_berbayar ? (
                     <div>{formik.errors.jumlah_tiket_berbayar}</div>
                   ) : null}
-                     <input type="text"
-                       name='jumlah_tiket_berbayar'
-                       id='jumlah_tiket_berbayar'
-                       onBlur={formik.handleBlur}
-                       onChange={formik.handleChange}
-                       value={formik.values.jumlah_tiket_berbayar}
-                     />
-                      
-                     <label htmlFor=''>Harga</label>
-                     {formik.touched.harga && formik.errors.harga ? (
+                  <input
+                    type='text'
+                    name='jumlah_tiket_berbayar'
+                    id='jumlah_tiket_berbayar'
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.jumlah_tiket_berbayar}
+                  />
+
+                  <label htmlFor=''>Harga</label>
+                  {formik.touched.harga && formik.errors.harga ? (
                     <div>{formik.errors.harga}</div>
                   ) : null}
-                     <input type="text" 
-                      name='harga'
-                      id='harga'
-                      onBlur={formik.handleBlur}
-                      onChange={formik.handleChange}
-                      value={formik.values.harga}
-                     />
-
-                     
-                    </div>
-                  </div>
+                  <input
+                    type='text'
+                    name='harga'
+                    id='harga'
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.harga}
+                  />
                 </div>
-              </form>
-            )
-        }
+              </div>
+            </div>
+          </form>
+        )}
         <div className='fixed bottom-0 h-[70px] w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px]'>
           <div className='flex items-center justify-between'>
             <p className='hidden text-[14px] text-black md:block'>

@@ -1,10 +1,18 @@
+import { Prisma } from "@prisma/client";
+import { prisma } from "../helpers/prisma"
 import { Request } from "express";
-import provinceRepository from "../repositories/province.repository";
 
 class ProvinceService{
     async getList(req:Request){
         const {province} = req.query
-        return await provinceRepository.findProvinceByName(String(province))
+        return await prisma.province.findMany({
+            where:{
+                name:{
+                    contains:String(province || "")
+                },
+
+            }
+        })
     }
     
 
