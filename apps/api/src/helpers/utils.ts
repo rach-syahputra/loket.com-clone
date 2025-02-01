@@ -12,3 +12,9 @@ export async function generateHashedPassword(password: string) {
 
   return hashedPassword
 }
+
+export function convertToUTC7(date: Date) {
+  return new Date(
+    new Date(date).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
+  )
+}
