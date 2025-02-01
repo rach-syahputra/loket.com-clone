@@ -38,7 +38,7 @@ export interface Token {
   email: string
   name: string
   roleId: number
-  image: string
+  image: string | null
 }
 
 

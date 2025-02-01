@@ -1,3 +1,8 @@
+export interface VerifyPasswordRequest {
+  id: number
+  password: string
+}
+
 export interface UpdateUserServiceRequest {
   id: number
   password?: string

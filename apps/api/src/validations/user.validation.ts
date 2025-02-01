@@ -3,6 +3,13 @@ import { z } from 'zod'
 const MAX_IMAGE_SIZE = 1024000 //1MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
+export const VerifyPasswordSchema = z.object({
+  password: z
+    .string({ required_error: 'Password is required' })
+    .min(6, 'Password must contain at least 6 characters')
+    .max(20, 'Password should not exceed 20 characters')
+})
+
 export const UpdateUserSchema = z.object({
   password: z
     .string({ required_error: 'Password is required' })

@@ -1,13 +1,32 @@
+import bcrypt from 'bcrypt'
+
 import { getPublicId } from '../helpers/cloudinary'
 import { ResponseError } from '../helpers/error.handler'
 import { generateHashedPassword } from '../helpers/utils'
 import { validate } from '../helpers/validation.handler'
-import { UpdateUserServiceRequest } from '../interfaces/user.interface'
+import {
+  UpdateUserServiceRequest,
+  VerifyPasswordRequest
+} from '../interfaces/user.interface'
 import userImageRepository from '../repositories/user.image.repository'
 import userRepository from '../repositories/user.repository'
-import { UpdateUserSchema } from '../validations/user.validation'
+import {
+  UpdateUserSchema,
+  VerifyPasswordSchema
+} from '../validations/user.validation'
 
 class UserService {
+  async verifyPassword(req: VerifyPasswordRequest) {
+    validate(VerifyPasswordSchema, req)
+
+    const user = await userRepository.findById(req.id)
+
+    const passwordMatch = await bcrypt.compare(
+      req.password,
+      user?.password || ''
+    )
+    if (!passwordMatch) throw new ResponseError(400, `Password doesn't match`)
+  }
   async update(req: UpdateUserServiceRequest) {
     // UPDATE USER FLOW
     // 1. Validate the user's request.

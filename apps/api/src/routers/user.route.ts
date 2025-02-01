@@ -6,6 +6,11 @@ import userController from '../controllers/user.controller'
 
 const router = express.Router()
 
+router.post(
+  '/password-verification',
+  verifyToken,
+  userController.verifyPassword
+)
 router.patch(
   '/',
   verifyToken,

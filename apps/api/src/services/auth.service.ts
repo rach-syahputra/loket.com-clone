@@ -68,13 +68,15 @@ class AuthService {
       )
 
       if (lastLoggedInUser) {
-        const accessToken = await putAccessToken({
+        const userData = {
           id: user.id,
           email: user.email,
-          roleId: lastLoggedInUser?.roleId || 0,
+          roleId: lastLoggedInUser.roleId,
           name: user.name,
-          image: user.pictureUrl || ''
-        })
+          image: user.pictureUrl
+        }
+
+        const accessToken = await putAccessToken(userData)
 
         if (accessToken) {
           await authRepository.updateUserRole({
@@ -83,7 +85,10 @@ class AuthService {
             isActive: true
           })
 
-          return { accessToken }
+          return {
+            accessToken,
+            user: userData
+          }
         } else {
           throw new ResponseError(500, 'Unable to generate access token.')
         }
