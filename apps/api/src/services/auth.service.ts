@@ -86,8 +86,7 @@ class AuthService {
           })
 
           return {
-            accessToken,
-            user: userData
+            accessToken
           }
         } else {
           throw new ResponseError(500, 'Unable to generate access token.')
