@@ -123,8 +123,6 @@ class AuthService {
         throw new ResponseError(500, 'Unable to generate access token.')
       }
     }
-
-    return user
   }
 }
 

@@ -7,6 +7,6 @@ const router = express.Router()
 
 router.post('/new', authController.register)
 router.post('/', authController.login)
-router.post('/roles/active', verifyToken, authController.switchUserRole)
+router.post('/role-switch', verifyToken, authController.switchUserRole)
 
 export default router
