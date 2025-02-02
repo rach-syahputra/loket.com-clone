@@ -14,9 +14,9 @@ import {
 } from '@/lib/validations/user.validation'
 import { Form } from '@/components/shadcn-ui/form'
 import Button from '@/components/button'
-import ProfileImageInput from './profile-image-input'
-import ProfileFormInput from './profile-form-input'
-import { DisabledProfileFormInput } from './disabled-profile-form-input'
+import ProfileImageInput from '@/components/form/profile-image-input'
+import ProfileFormInput from '@/components/form/profile-form-input'
+import { DisabledProfileFormInput } from '@/components/form/disabled-profile-form-input'
 
 export default function UdpateProfileForm() {
   const { data: session, update } = useSession()

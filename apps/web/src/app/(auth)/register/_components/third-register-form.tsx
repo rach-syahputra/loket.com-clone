@@ -12,7 +12,7 @@ import {
   ThirdRegisterFormSchemaType
 } from '@/lib/interfaces/auth.interface'
 import Button from '@/components/button'
-import FormInput from '@/components/form-input'
+import FormInput from '@/components/form/form-input'
 import { Form } from '@/components/shadcn-ui/form'
 import RegisterFormHeader from './register-form-header'
 

@@ -3,9 +3,9 @@ import { HTMLInputTypeAttribute, useState } from 'react'
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
 
 import { cn } from '@/lib/utils'
-import { FormControl, FormField, FormItem, FormLabel } from './shadcn-ui/form'
-import ClearFormInputButton from './clear-form-input-button'
-import { Input } from './shadcn-ui/input'
+import { FormControl, FormField, FormItem, FormLabel } from '../shadcn-ui/form'
+import ClearFormInputButton from '../clear-form-input-button'
+import { Input } from '../shadcn-ui/input'
 
 type FormInputProps<T extends FieldValues> = {
   type: HTMLInputTypeAttribute
