@@ -10,3 +10,19 @@ export function truncateText(text: string, maxLength: number) {
 
   return text.slice(0, maxLength - 3) + '...'
 }
+
+export function formatDate(date: Date) {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Bangkok'
+  }).format(new Date(date))
+}
+
+export function formatNumber(number: number) {
+  return number.toLocaleString('id-ID')
+}
