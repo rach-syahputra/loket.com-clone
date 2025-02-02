@@ -11,6 +11,7 @@ import {
   FormItem,
   FormLabel
 } from '@/components/shadcn-ui/form'
+import { Input } from '@/components/shadcn-ui/input'
 
 type ProfileFormInputProps<T extends FieldValues> = {
   form: UseFormReturn<T, any, undefined>
@@ -36,7 +37,7 @@ export default function ProfileFormInput<T extends FieldValues>({
           <FormLabel className='text-gray-secondary'>{label}</FormLabel>
           <FormControl>
             <div className='group relative h-10'>
-              <input
+              <Input
                 type={type}
                 {...field}
                 autoComplete='off'
@@ -45,7 +46,7 @@ export default function ProfileFormInput<T extends FieldValues>({
                   setIsFocused(false)
                   field.onBlur()
                 }}
-                className='w-full border-none outline-none focus:border-none focus:ring-0'
+                className='border-none px-0 outline-none focus:border-none'
               />
               <div className='absolute bottom-0 left-0 h-[1px] w-full bg-gray-300'></div>
               <div className='absolute bottom-0 left-0 z-10 w-full'>

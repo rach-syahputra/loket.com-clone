@@ -5,6 +5,7 @@ import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 import { FormControl, FormField, FormItem, FormLabel } from './shadcn-ui/form'
 import ClearFormInputButton from './clear-form-input-button'
+import { Input } from './shadcn-ui/input'
 
 type FormInputProps<T extends FieldValues> = {
   type: HTMLInputTypeAttribute
@@ -32,7 +33,7 @@ export default function FormInput<T extends FieldValues>({
           <FormLabel className='text-sm text-[#666666]'>{label}</FormLabel>
           <div className='relative w-full'>
             <FormControl>
-              <input
+              <Input
                 type={type}
                 {...field}
                 autoComplete='off'
@@ -42,12 +43,9 @@ export default function FormInput<T extends FieldValues>({
                     setIsFocused(false)
                   }, 300)
                 }
-                className={cn(
-                  'w-full rounded-lg border border-gray-200 px-4 py-3 focus-within:bg-slate-100 focus-within:outline-none',
-                  {
-                    'border border-red-500': form.formState.errors[name]
-                  }
-                )}
+                className={cn({
+                  'border border-red-500': form.formState.errors[name]
+                })}
               />
             </FormControl>
             {isFocused && isDirty && (
