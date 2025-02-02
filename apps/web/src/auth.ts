@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth, { Session } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
@@ -13,7 +12,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 3
+    maxAge: 60 * 60 * 24
   },
   providers: [
     Credentials({
@@ -48,8 +47,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (trigger === 'update' && session?.user) {
-        token.name = session?.user.name
-        token.image = session?.user.image
+        const decoded = jwt.decode(session.user.accessToken) as UserToken
+
+        token.accessToken = session.user.accessToken
+        token.id = decoded.id
+        token.name = decoded.name
+        token.email = decoded.email
+        token.image = decoded.image
+        token.roleId = decoded.roleId
       }
 
       return token

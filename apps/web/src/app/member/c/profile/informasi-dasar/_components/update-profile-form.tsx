@@ -51,6 +51,7 @@ export default function UdpateProfileForm() {
       if (imageIsVerified.success) {
         setImagePreview(URL.createObjectURL(file))
         form.setValue('image', file)
+        form.setError('image', { message: '' })
       } else {
         form.setError('image', {
           message: imageIsVerified.error.issues[0]?.message
@@ -95,9 +96,7 @@ export default function UdpateProfileForm() {
         if (response?.success) {
           await update({
             user: {
-              ...session?.user,
-              name: response.data.name,
-              image: response.data.pictureUrl
+              accessToken: response.data.user.accessToken
             }
           })
 

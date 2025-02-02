@@ -1,3 +1,5 @@
+import { getSession } from 'next-auth/react'
+
 import { BASE_URL } from '../constants'
 import { LoginRequest, RegisterRequest } from '../interfaces/auth.interface'
 
@@ -23,4 +25,19 @@ export async function fetchRegister(data: RegisterRequest) {
   })
 
   return await user.json()
+}
+
+export async function fetchSwitchRole() {
+  const session = await getSession()
+  const token = session?.user.accessToken
+
+  const response = await fetch(`${BASE_URL}/auth/role-switch`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return await response.json()
 }

@@ -1,9 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { faTicketSimple } from '@fortawesome/free-solid-svg-icons'
 
+import { fetchSwitchRole } from '@/lib/apis/auth.api'
 import Icon from '../icon'
 import {
   Sidebar,
@@ -16,7 +18,8 @@ import {
 } from './dashboard-sidebar'
 
 export default function CustomerDashboardSidebar() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
+  const router = useRouter()
 
   const dashboardMenu = [
     {
@@ -53,6 +56,20 @@ export default function CustomerDashboardSidebar() {
     }
   ]
 
+  const handleSwitchRole = async () => {
+    const response = await fetchSwitchRole()
+
+    if (response.success) {
+      await update({
+        user: {
+          accessToken: response.data.accessToken
+        }
+      })
+
+      router.refresh()
+    }
+  }
+
   return (
     <Sidebar isLoading={Boolean(!session?.user)}>
       <SidebarGroup>
@@ -81,7 +98,7 @@ export default function CustomerDashboardSidebar() {
       </SidebarGroup>
 
       <SidebarGroup label='Mode User'>
-        <SidebarMenu>
+        <SidebarMenu onClick={handleSwitchRole}>
           <SidebarMenuIcon>
             <Image
               src='/ic-swap.svg'
