@@ -16,7 +16,9 @@ export default function PageContent() {
     try {
       const response = await fetchGetUserVouchers()
 
-      setVouchers(response.data.user.points)
+      if (response.success) {
+        setVouchers(response.data.user.points)
+      }
     } catch (error) {
       console.error(error)
     }
