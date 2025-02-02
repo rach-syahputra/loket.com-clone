@@ -21,7 +21,7 @@ type ProfileFormInputProps<T extends FieldValues> = {
 }
 
 export default function ProfileFormInput<T extends FieldValues>({
-  type,
+  type = 'text',
   name,
   label,
   form
@@ -46,7 +46,7 @@ export default function ProfileFormInput<T extends FieldValues>({
                   setIsFocused(false)
                   field.onBlur()
                 }}
-                className='border-none px-0 outline-none focus:border-none'
+                className='h-full border-none px-0 py-0 outline-none focus:border-none focus:bg-transparent'
               />
               <div className='absolute bottom-0 left-0 h-[1px] w-full bg-gray-300'></div>
               <div className='absolute bottom-0 left-0 z-10 w-full'>

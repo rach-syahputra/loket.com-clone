@@ -16,6 +16,7 @@ import { Form } from '@/components/shadcn-ui/form'
 import Button from '@/components/button'
 import ProfileImageInput from './profile-image-input'
 import ProfileFormInput from './profile-form-input'
+import { DisabledProfileFormInput } from './disabled-profile-form-input'
 
 export default function UdpateProfileForm() {
   const { data: session, update } = useSession()
@@ -135,6 +136,11 @@ export default function UdpateProfileForm() {
           inputRef={imageInputRef}
           onInputClick={handleImageUploadClick}
           onInputChange={updateImage}
+        />
+
+        <DisabledProfileFormInput
+          label='Email'
+          value={session?.user.email || ''}
         />
 
         <ProfileFormInput form={form} type='text' name='name' label='Name' />
