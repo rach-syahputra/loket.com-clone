@@ -26,3 +26,9 @@ export function formatDate(date: Date) {
 export function formatNumber(number: number) {
   return number.toLocaleString('id-ID')
 }
+
+export function convertToUTC7(date: Date) {
+  return new Date(
+    new Date(date).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
+  )
+}
