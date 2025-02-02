@@ -75,5 +75,9 @@ export default {
       }
     }
   },
-  plugins: [require("tailwindcss-animate"),require("daisyui"), require("flowbite/plugin")]
+  plugins: [
+    require('tailwindcss-animate'),
+    require('daisyui'),
+    require('flowbite/plugin')
+  ]
 } satisfies Config

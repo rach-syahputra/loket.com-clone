@@ -20,6 +20,10 @@ export default function NavbarDropdownMenu({
     {
       href: '/member/c/tiket-saya',
       label: 'Tiket Saya'
+    },
+    {
+      href: '/member/c/voucher-saya',
+      label: 'Voucher Saya'
     }
   ]
 

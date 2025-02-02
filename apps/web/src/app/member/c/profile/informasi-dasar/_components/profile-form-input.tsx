@@ -45,7 +45,7 @@ export default function ProfileFormInput<T extends FieldValues>({
                   setIsFocused(false)
                   field.onBlur()
                 }}
-                className='h-full w-full focus-within:outline-none'
+                className='w-full border-none outline-none focus:border-none focus:ring-0'
               />
               <div className='absolute bottom-0 left-0 h-[1px] w-full bg-gray-300'></div>
               <div className='absolute bottom-0 left-0 z-10 w-full'>
