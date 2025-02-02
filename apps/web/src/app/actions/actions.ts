@@ -1,7 +1,7 @@
 'use server'
 
 import { AuthError } from 'next-auth'
-import { signIn } from '@/auth'
+import { signIn, signOut } from '@/auth'
 
 import { LoginFormSchemaType } from '@/lib/interfaces/auth.interface'
 
@@ -40,4 +40,8 @@ export const handleCredentialsSignin = async (
 
     throw error
   }
+}
+
+export const handleSignOut = async () => {
+  await signOut()
 }

@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
+import jwt from 'jsonwebtoken'
 import { ZodError } from 'zod'
 
 import { corsOptions, PORT } from './config'
@@ -26,7 +27,7 @@ export class App {
   private routes() {
     this.app.use('/auth', authRoute)
     this.app.use('/users', userRoute)
-    this.app.use('/api',apiRouter)
+    this.app.use('/api', apiRouter)
   }
 
   private handleError() {
@@ -56,6 +57,13 @@ export class App {
           res.status(400).json({
             success: false,
             error: err.issues[0]
+          })
+        } else if (err instanceof jwt.TokenExpiredError) {
+          res.status(400).json({
+            success: false,
+            error: {
+              message: 'jwt is expired'
+            }
           })
         } else {
           res.status(500).json({

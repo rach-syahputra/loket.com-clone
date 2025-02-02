@@ -1,28 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import NextAuth from 'next-auth'
 import { JWT } from 'next-auth/jwt'
+import { UserToken } from './lib/interfaces/auth.interface'
 
 declare module 'next-auth' {
   interface User {
-    user: {
-      id: number
-      email: string
-      image: string | null
-      name: string
-      roleId: number
-      accessToken: string
-    }
+    user: UserToken & { accessToken: string }
   }
 
   interface Session {
-    user: {
-      id: number
-      email: string
-      image: string | null
-      name: string
-      roleId: number
-      accessToken: string
-    }
+    user: UserToken & { accessToken: string }
   }
 }
 
@@ -34,5 +21,6 @@ declare module 'next-auth/jwt' {
     image: string | null
     name: string
     roleId: number
+    expires: number
   }
 }
