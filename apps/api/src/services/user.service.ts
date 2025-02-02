@@ -15,6 +15,7 @@ import {
   UpdateUserSchema,
   VerifyPasswordSchema
 } from '../validations/user.validation'
+import { putAccessToken } from '../helpers/jwt.handler'
 
 class UserService {
   async verifyPassword(req: VerifyPasswordRequest) {
@@ -69,7 +70,26 @@ class UserService {
       image: userImage?.secure_url
     })
 
-    return updatedUser
+    if (updatedUser) {
+      const accessToken = await putAccessToken({
+        id: updatedUser.id,
+        email: updatedUser.email,
+        roleId: req.roleId,
+        name: updatedUser.name,
+        image: updatedUser.pictureUrl || ''
+      })
+
+      if (accessToken) {
+        return {
+          user: {
+            ...updatedUser,
+            accessToken
+          }
+        }
+      } else {
+        throw new ResponseError(500, 'Unable to generate access token.')
+      }
+    }
   }
 
   async getVouchers(req: GetVouchersRequest) {

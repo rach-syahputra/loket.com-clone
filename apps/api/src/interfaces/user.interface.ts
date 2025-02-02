@@ -5,6 +5,7 @@ export interface VerifyPasswordRequest {
 
 export interface UpdateUserServiceRequest {
   id: number
+  roleId: number
   password?: string
   name?: string
   image?: Express.Multer.File

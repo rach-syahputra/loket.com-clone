@@ -27,6 +27,7 @@ class UserRepository {
     return {
       id: res.id,
       name: res.name,
+      email: res.email,
       pictureUrl: res.pictureUrl,
       updatedAt: res.updatedAt
     }

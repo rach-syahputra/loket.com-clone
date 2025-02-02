@@ -25,6 +25,7 @@ class UserController {
       const data = await userService.update({
         ...req.body,
         id: req.user?.id,
+        roleId: req.user?.roleId,
         image: req.file
       })
 
