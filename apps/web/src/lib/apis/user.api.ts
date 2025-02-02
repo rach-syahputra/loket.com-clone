@@ -1,7 +1,10 @@
 import { getSession } from 'next-auth/react'
 
 import { BASE_URL } from '../constants'
-import { VerifyPasswordRequest } from '../interfaces/user.interface'
+import {
+  VerifyPasswordRequest,
+  VouchersJson
+} from '../interfaces/user.interface'
 
 export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
   const session = await getSession()
@@ -32,4 +35,18 @@ export async function fetchUpdateUser(data: FormData) {
   })
 
   return await user.json()
+}
+
+export async function fetchGetUserVouchers(): Promise<VouchersJson> {
+  const session = await getSession()
+  const token = session?.user.accessToken
+
+  const vouchers = await fetch(`${BASE_URL}/users/vouchers`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return await vouchers.json()
 }

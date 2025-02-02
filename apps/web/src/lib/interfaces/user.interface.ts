@@ -15,3 +15,27 @@ export interface UpdateUserRequest {
   password?: string
   image?: File | null
 }
+
+export type Status = 'ACTIVE' | 'USED' | 'EXPIRED'
+
+export interface Voucher {
+  id: number
+  userId: number
+  points: number
+  pointsExpiryDate: Date
+  status: Status
+  createdAt: Date
+}
+
+export interface VouchersJson {
+  success: boolean
+  message: string
+  error?: {
+    message: string
+  }
+  data: {
+    user: {
+      points: Voucher[]
+    }
+  }
+}

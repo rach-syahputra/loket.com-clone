@@ -2,7 +2,9 @@
 
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
+import { faTicketSimple } from '@fortawesome/free-solid-svg-icons'
 
+import Icon from '../icon'
 import {
   Sidebar,
   SidebarDivider,
@@ -34,6 +36,11 @@ export default function CustomerDashboardSidebar() {
       href: '/member/c/tiket-saya',
       label: 'Tiket Saya',
       icon: <i className='icon-loket icon-loket-ticket'></i>
+    },
+    {
+      href: '/member/c/voucher-saya',
+      label: 'Voucher Saya',
+      icon: <Icon icon={faTicketSimple} className='w-3.5' />
     }
   ]
 
