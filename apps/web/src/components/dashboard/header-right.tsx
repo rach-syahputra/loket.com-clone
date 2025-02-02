@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import {
   faCalendarDays,
@@ -12,7 +13,6 @@ import { cn, truncateText } from '@/lib/utils'
 import Button from '../button'
 import Icon from '../icon'
 import NavbarDropdownMenu from './navbar-dropdown-menu'
-import Image from 'next/image'
 
 export default function HeaderRight() {
   const { data: session } = useSession()

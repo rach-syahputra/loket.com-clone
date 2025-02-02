@@ -127,3 +127,13 @@ a {
   content: '\e948';
   color: var(--light-primary);
 }
+
+.icon-loket-home::before {
+  content: '\e91c';
+  color: var(--light-primary);
+}
+
+.icon-loket-my-events::before {
+  content: '\e941';
+  color: var(--light-primary);
+}

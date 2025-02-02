@@ -1,9 +1,10 @@
-import Link from 'next/link'
-import { signOut } from 'next-auth/react'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+'use client'
+
+import { signOut, useSession } from 'next-auth/react'
 
 import { cn } from '@/lib/utils'
-import Icon from '../icon'
+import CustomerDropdownMenu from './customer-dropdown-menu'
+import EventOrganizerDropdownMenu from './event-organizer-dropdown-menu'
 
 type NavbarDropdownMenuProps = {
   className?: string
@@ -12,27 +13,10 @@ type NavbarDropdownMenuProps = {
 export default function NavbarDropdownMenu({
   className
 }: NavbarDropdownMenuProps) {
-  const dashboardMenu = [
-    {
-      href: '/explore',
-      label: 'Jelajah Event'
-    },
-    {
-      href: '/member/c/tiket-saya',
-      label: 'Tiket Saya'
-    },
-    {
-      href: '/member/c/voucher-saya',
-      label: 'Voucher Saya'
-    }
-  ]
+  const { data: session } = useSession()
 
-  const accountMenu = [
-    {
-      href: '/member/c/profile/informasi-dasar',
-      label: 'Informasi Dasar'
-    }
-  ]
+  const isCustomer = session?.user.roleId === 1
+  const isEventOrganizer = session?.user.roleId === 2
 
   return (
     <div
@@ -53,43 +37,14 @@ export default function NavbarDropdownMenu({
         </button>
       </div>
       <div className='h-[1px] w-full bg-gray-200'></div>
-      <ul className='flex w-full flex-col'>
-        {dashboardMenu.map((item, index) => (
-          <li
-            key={index}
-            className='flex w-full items-center overflow-hidden rounded-md'
-          >
-            <Link
-              href={item.href}
-              aria-label={item.label}
-              className='text-gray-primary hover:text-gray-secondary flex h-11 w-full items-center justify-between px-3 text-sm hover:bg-gray-200'
-            >
-              {item.label}
-              <Icon icon={faChevronRight} className='text-gray-secondary w-2' />
-            </Link>
-          </li>
-        ))}
-      </ul>
 
-      <div className='h-[1px] w-full bg-gray-200'></div>
-
-      <ul className='flex w-full flex-col'>
-        {accountMenu.map((item, index) => (
-          <li
-            key={index}
-            className='flex w-full items-center overflow-hidden rounded-md'
-          >
-            <Link
-              href={item.href}
-              aria-label={item.label}
-              className='text-gray-primary hover:text-gray-secondary flex h-11 w-full items-center justify-between px-3 text-sm hover:bg-gray-200'
-            >
-              {item.label}
-              <Icon icon={faChevronRight} className='text-gray-secondary w-2' />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {isCustomer ? (
+        <CustomerDropdownMenu />
+      ) : isEventOrganizer ? (
+        <EventOrganizerDropdownMenu />
+      ) : (
+        ''
+      )}
 
       <div className='h-[1px] w-full bg-gray-200'></div>
 
