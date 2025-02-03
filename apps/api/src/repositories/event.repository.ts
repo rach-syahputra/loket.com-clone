@@ -14,9 +14,8 @@ class EventRepository{
         })
     }
 
-    async getEventById(eventId:number){
-        return await prisma.event.findUnique({
-            where:{id:eventId},
+    async getAllEvents(){
+        return await prisma.event.findMany({
             include:{location:true}
         })
     }

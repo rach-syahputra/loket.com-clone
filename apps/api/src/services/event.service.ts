@@ -19,8 +19,8 @@ class EventService{
         })
     }
 
-    async getEventById(eventId:number){
-        return await eventRepository.getEventById(eventId)
+    async getAllEvents(){
+        return await eventRepository.getAllEvents()
     }
 }
 

@@ -18,8 +18,7 @@ class EventController {
 
     async getEvent(req:Request,res:Response,next:NextFunction){
         try {
-            const id = Number(req.params.id)
-            const result = await eventService.getEventById(id)
+            const result = await eventService.getAllEvents()
             
             res.status(200).send({
                 message:"Event retrieved successfully",
