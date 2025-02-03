@@ -9,7 +9,7 @@ interface Province {
 export default function Explore() {
     const [province,setProvince] = useState<Province[]>([])
     useEffect(()=>{
-        fetch("http://localhost:8000/api/explore")
+        fetch("http://localhost:8000/api/provinces")
         .then((res)=>res.json())
         .then((data)=>{
             if (data.data){
