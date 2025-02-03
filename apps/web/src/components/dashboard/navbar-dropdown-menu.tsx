@@ -1,8 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 
 import { cn } from '@/lib/utils'
+import { fetchSwitchRole } from '@/lib/apis/auth.api'
 import CustomerDropdownMenu from './customer-dropdown-menu'
 import EventOrganizerDropdownMenu from './event-organizer-dropdown-menu'
 
@@ -13,10 +15,25 @@ type NavbarDropdownMenuProps = {
 export default function NavbarDropdownMenu({
   className
 }: NavbarDropdownMenuProps) {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
+  const router = useRouter()
 
   const isCustomer = session?.user.roleId === 1
   const isEventOrganizer = session?.user.roleId === 2
+
+  const handleSwitchRole = async () => {
+    const response = await fetchSwitchRole()
+
+    if (response.success) {
+      await update({
+        user: {
+          accessToken: response.data.accessToken
+        }
+      })
+
+      router.refresh()
+    }
+  }
 
   return (
     <div
@@ -29,12 +46,21 @@ export default function NavbarDropdownMenu({
         Pindah Akun
       </span>
       <div className='mb-1 flex h-full w-full items-center justify-center gap-2'>
-        <button className='bg-blue-primary h-9 w-full rounded-md px-4 text-sm text-white'>
-          Customer
-        </button>
-        <button className='h-9 w-full rounded-md border border-gray-400 px-4 text-sm'>
-          Event Organizer
-        </button>
+        {isCustomer ? (
+          <button
+            onClick={handleSwitchRole}
+            className='h-9 w-full rounded-md border border-gray-400 px-4 text-sm'
+          >
+            Event Organizer
+          </button>
+        ) : (
+          <button
+            onClick={handleSwitchRole}
+            className='bg-blue-primary h-9 w-full rounded-md px-4 text-sm text-white'
+          >
+            Customer
+          </button>
+        )}
       </div>
       <div className='h-[1px] w-full bg-gray-200'></div>
 
