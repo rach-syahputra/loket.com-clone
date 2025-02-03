@@ -26,7 +26,7 @@ export default function DesktopNavigationMenu() {
           </div>
         </Link>
         <Link
-          href='/eventcreate'
+          href='/member/c/tiket-saya'
           className='flex h-10 items-center justify-center px-4'
         >
           <div className='hidden items-center gap-3 text-white md:flex lg:flex'>
