@@ -647,7 +647,60 @@ export default function CreateEvent() {
               </div>
             </div>
           )}
-          
+          {
+            modalTicketFree && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="relative h-auto w-[300px] rounded-xl bg-white">
+                <button
+                  type="button"
+                  className="absolute right-0 m-[10px] h-[20px] w-[20px]"
+                  onClick={() => setModalTicketFree(false)}
+                >
+                  X
+                </button>
+                <div className="flex flex-col gap-4 p-[20px]">
+                  <label>Jumlah Tiket</label>
+                  {formik.touched.availableSeats && formik.errors.availableSeats ? (
+                    <div>{formik.errors.availableSeats}</div>
+                  ) : null}
+                  <input
+                    type="number"
+                    name="availableSeats"
+                    id="availableSeats"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.availableSeats}
+                  />
+                 
+                  <label>Tanggal Mulai</label>
+                  <DatePicker
+                    id="eventStartDate"
+                    name="eventStartDate"
+                    selected={startEventDate}
+                    onChange={(date: Date | null) => {
+                      setStartEventDate(date);
+                      formik.setFieldValue("eventStartDate", date ? toAdjustedISOString(date) : "");
+                    }}
+                    className="w-full rounded border p-2"
+                    placeholderText="Select a date"
+                  />
+                  <label>Tanggal Berakhir</label>
+                  <DatePicker
+                    id="eventEndDate"
+                    name="eventEndDate"
+                    selected={endEventDate}
+                    onChange={(date: Date | null) => {
+                      setEndEventDate(date);
+                      formik.setFieldValue("eventEndDate", date ? toAdjustedISOString(date) : "");
+                    }}
+                    className="w-full rounded border p-2"
+                    placeholderText="Select a date"
+                  />
+                </div>
+              </div>
+            </div>
+            )
+          }
 
           {/* Footer with submit button */}
           <div className="fixed bottom-0 h-[70px] w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px]">

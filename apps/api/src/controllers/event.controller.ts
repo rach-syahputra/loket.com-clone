@@ -15,6 +15,20 @@ class EventController {
             next(error)
         }
     }
+
+    async getEvent(req:Request,res:Response,next:NextFunction){
+        try {
+            const id = Number(req.params.id)
+            const result = await eventService.getEventById(id)
+            
+            res.status(200).send({
+                message:"Event retrieved successfully",
+                result
+            })
+        } catch (error) {
+            
+        }
+    }
 }
 
 export default new EventController()

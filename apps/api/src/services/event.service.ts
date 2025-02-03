@@ -18,6 +18,10 @@ class EventService{
             return {event,location}
         })
     }
+
+    async getEventById(eventId:number){
+        return await eventRepository.getEventById(eventId)
+    }
 }
 
 

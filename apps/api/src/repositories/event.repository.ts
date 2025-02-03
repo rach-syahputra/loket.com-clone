@@ -13,6 +13,13 @@ class EventRepository{
             data:locationData
         })
     }
+
+    async getEventById(eventId:number){
+        return await prisma.event.findUnique({
+            where:{id:eventId},
+            include:{location:true}
+        })
+    }
 }
 
 export default new EventRepository()
