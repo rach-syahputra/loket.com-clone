@@ -5,10 +5,10 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import {
   faCalendarDays,
-  faChevronRight,
-  faUser
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 
+import { useNavigationContenxt } from '@/context/navigation-context'
 import { cn, truncateText } from '@/lib/utils'
 import Button from '../button'
 import Icon from '../icon'
@@ -18,7 +18,7 @@ export default function HeaderRight() {
   const { data: session } = useSession()
   const isEventOrganizer = session?.user.roleId === 2
 
-  const [showDropdown, setShowDropdown] = useState<boolean>(false)
+  const { openDropdown, setOpenDropdown } = useNavigationContenxt()
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleMouseEnter = () => {
@@ -26,12 +26,12 @@ export default function HeaderRight() {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
-    setShowDropdown(true)
+    setOpenDropdown(true)
   }
 
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
-      setShowDropdown(false)
+      setOpenDropdown(false)
     }, 500)
   }
 
@@ -79,7 +79,7 @@ export default function HeaderRight() {
         <NavbarDropdownMenu
           className={cn({
             'invisible opacity-0 transition-all duration-300 ease-in-out':
-              !showDropdown
+              !openDropdown
           })}
         />
       </div>

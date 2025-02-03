@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { AuthError } from 'next-auth'
 import { signIn, signOut } from '@/auth'
 
@@ -14,6 +15,8 @@ export const handleCredentialsSignin = async (
       password: credentials.password,
       redirectTo: '/'
     })
+
+    revalidatePath('/')
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

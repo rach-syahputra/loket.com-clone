@@ -7,8 +7,9 @@ config.autoAddCss = false
 type IconProps = {
   icon: IconProp
   className?: string
+  onClick?: () => void
 }
 
-export default function Icon({ icon, className }: IconProps) {
-  return <FontAwesomeIcon icon={icon} className={className} />
+export default function Icon({ icon, onClick, className }: IconProps) {
+  return <FontAwesomeIcon icon={icon} onClick={onClick} className={className} />
 }

@@ -20,6 +20,7 @@ export default {
         'light-primary': 'var(--light-primary)',
         'background-inactive': 'var(--background-inactive)',
         'dark-primary': 'var(--dark-primary)',
+        'light-background': 'var(--light-background)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
