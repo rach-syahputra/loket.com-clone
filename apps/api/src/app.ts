@@ -5,9 +5,6 @@ import { ZodError } from 'zod'
 
 import { corsOptions, PORT } from './config'
 import { ResponseError } from './helpers/error.handler'
-import authRoute from './routers/auth.route'
-import userRoute from './routers/user.route'
-import { provinceRouter } from './routers/province.route'
 import apiRouter from './routers/api.route'
 export class App {
   private app: Application
@@ -25,8 +22,6 @@ export class App {
   }
 
   private routes() {
-    this.app.use('/auth', authRoute)
-    this.app.use('/users', userRoute)
     this.app.use('/api', apiRouter)
   }
 
