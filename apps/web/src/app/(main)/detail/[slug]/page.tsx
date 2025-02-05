@@ -137,7 +137,7 @@ export default function DetailPage() {
             </div>
 
             {/* Tabs Section */}
-            <div className="tabs tabs-bordered w-full">
+            <div className="tabs tabs-bordered w-full relative z-20">
               <button
                 type="button"
                 role="tab"
@@ -252,7 +252,7 @@ export default function DetailPage() {
       </div>
 
       {/* Mobile Bottom Section */}
-      <div className="lg:hidden fixed bottom-0 bg-white h-[120px] w-screen p-[20px] text-black flex flex-col gap-4">
+      <div className="lg:hidden fixed bottom-0 bg-white h-[120px] w-screen p-[20px] text-black flex flex-col gap-4 z-10">
         <div className="flex justify-between">
           <span>Total 1 tiket</span>
           <span>Rp5.000.000</span>
