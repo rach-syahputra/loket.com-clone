@@ -11,7 +11,10 @@ type DashboardContentProps = {
   children: React.ReactNode
 }
 
-export default function DashboardContent({ children }: DashboardContentProps) {
+type DashboardContentHeaderProps = {
+  children: React.ReactNode
+}
+export function DashboardContent({ children }: DashboardContentProps) {
   const { data: session } = useSession()
   const [showContent, setShowContent] = useState<boolean>(false)
 
@@ -51,4 +54,10 @@ export default function DashboardContent({ children }: DashboardContentProps) {
       </div>
     </div>
   )
+}
+
+export function DashboardContentHeader({
+  children
+}: DashboardContentHeaderProps) {
+  return <h2 className='text-gray-secondary text-xl font-medium'>{children}</h2>
 }
