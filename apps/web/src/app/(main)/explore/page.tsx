@@ -24,7 +24,7 @@ export default function Explore() {
     return (
         <div className="w-full h-full bg-white p-[20px] sm:p-0">
             <div className="sm:flex block gap-4">
-                <div className="sm:block hidden bg-white border w-[300px] min-h-[100%] sticky top-0 p-[50px] md:p-[20px]">
+                <div className="sm:block hidden bg-white border w-[300px] min-h-[100%] sticky top-0 p-[50px] md:p-[20px] relative z-20">
                     <div>
                         <span className="text-[20px] text-black font-bold">Filter</span>
                         <hr />
@@ -97,12 +97,12 @@ export default function Explore() {
                             >
                                 Urutkan
                                 <svg className="w-2.5 h-2.5 ms-3 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                                 </svg>
                             </button>
 
                             {/* Dropdown menu */}
-                            <div id="dropdownHover" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
+                            <div id=" dropdownHover" className="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
                                 <ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownHoverButton">
                                     <li>
                                         <a href="#" className="block px-4 py-2 hover:bg-gray-100">Dashboard</a>

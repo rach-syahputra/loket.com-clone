@@ -5,6 +5,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import { NavigationProvider } from '@/context/navigation-context'
 import { Toaster } from '@/components/shadcn-ui/toaster'
+import { SearchProvider } from '@/context/search-context'
 
 const basierCircle = localFont({
   src: [
@@ -44,8 +45,9 @@ export default function RootLayout({
       <body className='text-dark-primary font-[family-name:var(--font-basier-circle)] antialiased'>
         <SessionProvider refetchOnWindowFocus={false}>
           <NavigationProvider>
+            <SearchProvider>
             {children}
-
+            </SearchProvider>
             <Toaster />
           </NavigationProvider>
         </SessionProvider>

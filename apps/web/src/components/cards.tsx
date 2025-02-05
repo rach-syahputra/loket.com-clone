@@ -1,8 +1,8 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState } from "react"
-
+import { useCallback, useEffect, useState } from "react"
+import { useSearch } from "@/context/search-context";
 interface event{
     id:number
     title:string
@@ -10,11 +10,36 @@ interface event{
     registrationEndDate:string | Date
     price:number
     slug:string
+    description:string
    
 }
 
+   
+
 export  function Card() {
+    const { searchQuery } = useSearch(); 
     const [events,setEvents] = useState<event[]>([])
+    const [debounceQuery,setDebounceQuery] = useState("")
+  // Debounce the search query
+  const debounce = useCallback((callback: (value: string) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (value: string) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => callback(value), delay);
+    };
+  }, []);
+
+  // Apply debounce to the search query
+  const handleSearch = debounce((query) => setDebounceQuery(query), 300);
+
+  
+
+  // Filtered events based on the debounced query
+  const filteredEvents = events.filter(
+    (event) =>
+      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
     useEffect(()=>{
         fetch("http://localhost:8000/api/event")
         .then((res)=>res.json())
@@ -29,8 +54,8 @@ export  function Card() {
     },[])
     return (
         <div className="lg:grid  lg:grid-cols-4 lg:px-[50px] px-[20px] flex  gap-4 overflow-x-auto">
-        {events.length > 0 ? (
-            events.map((event) => (
+        {filteredEvents.length > 0 ? (
+            filteredEvents.map((event) => (
                 <Link key={event.id} href={`/detail/${event.slug}`}>
                     <div className="border sm:w-[290px] min-w-[300px] h-auto rounded-[10px]">
                         <div className="flex flex-col">
