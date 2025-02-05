@@ -19,6 +19,15 @@ class EventRepository{
             include:{location:true}
         })
     }
+    
+    async getEventBySlug(slug:string){
+        return await prisma.event.findUnique({
+            where:{
+                slug
+            },
+            include:{location:true}
+        })
+    }
 }
 
 export default new EventRepository()

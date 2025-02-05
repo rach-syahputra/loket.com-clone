@@ -6,6 +6,8 @@ interface Province {
     id:string
     name:string
   }
+
+
 export default function Explore() {
     const [province,setProvince] = useState<Province[]>([])
     useEffect(()=>{

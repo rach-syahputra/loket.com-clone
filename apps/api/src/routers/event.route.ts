@@ -6,5 +6,6 @@ export const eventRouter = () => {
   router.post('/eventcreate', eventController.createEvent)
 
   router.get('/event', eventController.getEvent)
+  router.get('/event/:slug',eventController.getEventBySlug)
   return router
 }

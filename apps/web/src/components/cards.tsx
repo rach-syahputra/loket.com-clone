@@ -9,6 +9,8 @@ interface event{
     registrationStartDate:string | Date
     registrationEndDate:string | Date
     price:number
+    slug:string
+   
 }
 
 export  function Card() {
@@ -29,7 +31,7 @@ export  function Card() {
         <div className="lg:grid  lg:grid-cols-4 lg:px-[50px] px-[20px] flex  gap-4 overflow-x-auto">
         {events.length > 0 ? (
             events.map((event) => (
-                <Link key={event.id} href={`/detail/${event.id}`}>
+                <Link key={event.id} href={`/detail/${event.slug}`}>
                     <div className="border sm:w-[290px] min-w-[300px] h-auto rounded-[10px]">
                         <div className="flex flex-col">
                             <div className="relative w-full h-[137px]">

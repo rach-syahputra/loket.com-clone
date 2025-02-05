@@ -22,6 +22,10 @@ class EventService{
     async getAllEvents(){
         return await eventRepository.getAllEvents()
     }
+
+    async getEventBySlug(slug:string){
+        return await eventRepository.getEventBySlug(slug)
+    }
 }
 
 
