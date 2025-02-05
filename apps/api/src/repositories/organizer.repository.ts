@@ -1,4 +1,5 @@
 import { prisma } from '../helpers/prisma'
+import { convertToUTC7 } from '../helpers/utils'
 
 class OrganizerRepository {
   async getPastEvents(organizerId: number) {
@@ -10,11 +11,14 @@ class OrganizerRepository {
       select: {
         id: true,
         title: true,
+        price: true,
+        bannerUrl: true,
         eventStartDate: true,
         eventEndDate: true,
         availableSeats: true,
         location: {
           select: {
+            streetAddress: true,
             city: true,
             province: { select: { name: true } }
           }
@@ -35,10 +39,13 @@ class OrganizerRepository {
 
     const formatedEventData = pastEvents.map((event) => ({
       id: event.id,
-      name: event.title,
-      eventStartDate: event.eventStartDate,
-      eventEndDate: event.eventEndDate,
+      title: event.title,
+      bannerUrl: event.bannerUrl,
+      price: event.price,
+      eventStartDate: convertToUTC7(event.eventStartDate),
+      eventEndDate: convertToUTC7(event.eventEndDate),
       location: {
+        address: event.location.streetAddress,
         city: event.location.city,
         province: event.location.province.name
       },
@@ -74,11 +81,14 @@ class OrganizerRepository {
       select: {
         id: true,
         title: true,
+        bannerUrl: true,
+        price: true,
         eventStartDate: true,
         eventEndDate: true,
         availableSeats: true,
         location: {
           select: {
+            streetAddress: true,
             city: true,
             province: { select: { name: true } }
           }
@@ -99,10 +109,13 @@ class OrganizerRepository {
 
     const formatedEventData = activeEvents.map((event) => ({
       id: event.id,
-      name: event.title,
-      eventStartDate: event.eventStartDate,
-      eventEndDate: event.eventEndDate,
+      title: event.title,
+      bannerUrl: event.bannerUrl,
+      price: event.price,
+      eventStartDate: convertToUTC7(event.eventStartDate),
+      eventEndDate: convertToUTC7(event.eventEndDate),
       location: {
+        address: event.location.streetAddress,
         city: event.location.city,
         province: event.location.province.name
       },
