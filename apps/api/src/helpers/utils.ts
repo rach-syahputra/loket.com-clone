@@ -18,3 +18,14 @@ export function convertToUTC7(date: Date) {
     new Date(date).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
   )
 }
+
+export function generateSlug(name: string): string {
+  const formattedName = name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+
+  const uniqueId = Date.now()
+
+  return `${formattedName}-${uniqueId}`
+}

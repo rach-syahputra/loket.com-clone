@@ -1,16 +1,55 @@
 export interface EventCreate {
-    slug: string;
-    title: string;
-    description: string;
-    bannerUrl: string;
-    registrationStartDate: string | Date; // Accept both strings and Date objects
-    registrationEndDate: string | Date;
-    eventStartDate: string | Date;
-    eventEndDate: string | Date;
-    price: number;
-    availableSeats: number;
-    locationId: number;
-    categoryId: number;
-    ticketType: "FREE" | "PAID"; // Assuming TicketType is an enum with these values
-    organizerId: number;
+  slug: string
+  title: string
+  description: string
+  bannerUrl: string
+  registrationStartDate: string | Date // Accept both strings and Date objects
+  registrationEndDate: string | Date
+  eventStartDate: string | Date
+  eventEndDate: string | Date
+  price: number
+  availableSeats: number
+  locationId: number
+  categoryId: number
+  ticketType: 'FREE' | 'PAID' // Assuming TicketType is an enum with these values
+  organizerId: number
+}
+
+export interface VerifyEventOwnershipRequest {
+  organizerId: number
+  eventId: number
+}
+
+export interface UpdateEventServiceRequest {
+  eventId: number
+  organizerId: number
+  title?: string
+  description?: string
+  banner?: Express.Multer.File
+  registrationStartDate?: string
+  registrationEndDate?: string
+  eventStartDate?: string
+  eventEndDate?: string
+  price?: number
+  availableSeats?: number
+  locationId?: number
+  categoryId?: number
+  ticketType?: 'FREE' | 'PAID'
+}
+
+export interface UpdateEventRepositoryRequest {
+  eventId: number
+  organizerId: number
+  title?: string
+  description?: string
+  banner?: string
+  registrationStartDate?: string
+  registrationEndDate?: string
+  eventStartDate?: string
+  eventEndDate?: string
+  price?: number
+  availableSeats?: number
+  locationId?: number
+  categoryId?: number
+  ticketType?: 'FREE' | 'PAID'
 }
