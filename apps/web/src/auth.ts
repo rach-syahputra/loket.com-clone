@@ -24,13 +24,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user.success) return null
 
-        const decoded = jwt.decode(user.data.accessToken) as UserToken
-
         return {
-          user: {
-            accessToken: user.data.accessToken,
-            ...decoded
-          }
+          accessToken: user.data.accessToken
         }
       }
     })
@@ -38,23 +33,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.accessToken = user.user.accessToken
-        token.id = user.user.id
-        token.name = user.user.name
-        token.email = user.user.email
-        token.image = user.user.image
-        token.roleId = user.user.roleId
+        token.accessToken = user.accessToken
       }
 
       if (trigger === 'update' && session?.user) {
-        const decoded = jwt.decode(session.user.accessToken) as UserToken
-
         token.accessToken = session.user.accessToken
-        token.id = decoded.id
-        token.name = decoded.name
-        token.email = decoded.email
-        token.image = decoded.image
-        token.roleId = decoded.roleId
       }
 
       return token
@@ -62,11 +45,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
         session.user.accessToken = token.accessToken
-        session.user.id = token.id
-        session.user.name = token.name
-        session.user.email = token.email
-        session.user.image = token.image
-        session.user.roleId = token.roleId
+
+        const decoded = jwt.decode(token.accessToken) as UserToken
+
+        session.user.id = decoded.id
+        session.user.name = decoded.name
+        session.user.email = decoded.email
+        session.user.image = decoded.image
+        session.user.roleId = decoded.roleId
       }
 
       return session
