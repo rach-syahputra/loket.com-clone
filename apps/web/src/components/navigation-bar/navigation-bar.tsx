@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -9,26 +9,54 @@ import AuthToggle from './auth/auth-toggle'
 import MobileAuthToggle from './auth/mobile-auth-toggle'
 import DesktopNavigationMenu from './desktop-navigation-menu'
 import UnauthenticatedMenu from './auth/unauthenticated-menu'
-import { useSearch } from "@/context/search-context"; 
+import { useSearch } from '@/context/search-context'
 
 export default function NavigationBar() {
   const { data: session, status, update } = useSession()
-  const { searchQuery, setSearchQuery } = useSearch(); 
+  const [query, setQuery] = useState('');
+  const { setEvents,allEvents  } = useSearch(); // Access the global state updater
+  const [debouncedQuery, setDebouncedQuery] = useState(""); // Debounced query state
+
   useEffect(() => {
     update()
   }, [])
-  const debounce = useCallback((callback: (value: string) => void, delay: number) => {
-    let timer: NodeJS.Timeout;
-    return (value: string) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => callback(value), delay);
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query); // Update the debounced query
+    },1000); // 500ms debounce delay
+
+    return () => {
+      clearTimeout(handler); // Clear timeout if query changes before delay
     };
-  }, []);
-  const handleSearch = debounce((query) => setSearchQuery(query), 300);
+  }, [query]);
+
+  useEffect(() => {
+    if (debouncedQuery.trim() === '') {
+      setEvents(allEvents); // Reset to all events if input is empty
+    } else {
+      const filteredEvents = allEvents.filter((event) =>
+        event.title.toLowerCase().includes(debouncedQuery.toLowerCase()) // Case-insensitive match
+      );
+      setEvents(filteredEvents); // Update events with filtered results
+    }
+  }, [debouncedQuery, allEvents, setEvents]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleSearch(e.target.value); // ✅ Update global search state
-  };
+    setQuery(e.target.value); // Update query state dynamically
+};
+
+const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault(); // Prevent page reload
+  if (query.trim() === '') {
+    setEvents(allEvents); // Reset to all events if input is empty
+  } else {
+    const filteredEvents = allEvents.filter((event) =>
+      event.title.toLowerCase().includes(query.toLowerCase()) // Case-insensitive match
+    );
+    setEvents(filteredEvents); // Update events with filtered results
+  }
+};
   return (
     <nav className='bg-navy-primary relative z-40 grid h-20 w-full grid-cols-[1fr_auto] items-center justify-center gap-10 px-4 lg:px-10'>
       <div className='flex h-full w-full items-center gap-[60px]'>
@@ -41,7 +69,7 @@ export default function NavigationBar() {
             alt=''
           />
         </Link>
-        <form className='hidden w-full max-w-[800px] md:block md:flex-1'>
+        <form className='hidden w-full max-w-[800px] md:block md:flex-1' onSubmit={handleFormSubmit}>
           <div className='flex'>
             <label
               htmlFor='search-dropdown'
@@ -56,7 +84,7 @@ export default function NavigationBar() {
                 id='search-dropdown'
                 className='z-20 block w-full rounded-md border border-s-2 border-gray-300 border-s-gray-50 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:border-s-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500'
                 placeholder='Cari brand, produk, atau seller'
-                value={searchQuery}
+                value={query}
                 onChange={handleInputChange}
                 required
               />

@@ -45,10 +45,13 @@ export default function RootLayout({
       <body className='text-dark-primary font-[family-name:var(--font-basier-circle)] antialiased'>
         <SessionProvider refetchOnWindowFocus={false}>
           <NavigationProvider>
-            <SearchProvider>
+          <SearchProvider>
+
             {children}
-            </SearchProvider>
+
             <Toaster />
+            </SearchProvider>
+
           </NavigationProvider>
         </SessionProvider>
       </body>
