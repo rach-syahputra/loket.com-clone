@@ -135,6 +135,8 @@ model Event {
   registrationEndDate   DateTime   @map("registration_end_date")
   eventStartDate        DateTime   @map("event_start_date")
   eventEndDate          DateTime   @map("event_end_date")
+  eventStartTime        String     @default("00:00") @map("event_start_time")
+  eventEndTime          String     @default("00:00") @map("event_end_time")
   price                 Int
   availableSeats        Int        @map("available_seats")
   locationId            Int        @map("location_id")
@@ -194,8 +196,8 @@ model Transactions {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  user  User  @relation(fields: [userId], references: [id], onUpdate: Cascade)
-  event Event @relation(fields: [eventId], references: [id], onUpdate: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("transactions")
 }
