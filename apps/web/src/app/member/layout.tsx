@@ -20,10 +20,12 @@ export default async function MemberLayout({
   const isEventOrganizer = session?.user.roleId === 2
 
   return (
-    <div className='relative grid w-full items-start md:grid-cols-[270px_1fr]'>
+    <div className='relative w-full items-start'>
       {isCustomer && <CustomerDashboardSidebar />}
       {isEventOrganizer && <EventOrganizerDashboardSidebar />}
-      <main className='min-h-screen overflow-x-hidden'>{children}</main>
+      <main className='min-h-screen overflow-x-hidden md:ml-[270px]'>
+        {children}
+      </main>
     </div>
   )
 }

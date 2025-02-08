@@ -85,8 +85,8 @@ export default function EventCard({ event }: EventCardProps) {
           jumlahTiket: attendee.ticketQuantity,
           totalHarga: attendee.totalPrice
         }))}
+        openModal={openModal}
         handleClose={() => setOpenModal(false)}
-        className={cn({ 'invisible opacity-0': !openModal })}
       />
     </div>
   )

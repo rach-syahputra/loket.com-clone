@@ -114,14 +114,14 @@ export function DataTable<TData, TValue>({
                 .getColumn(searchColumn.id)
                 ?.setFilterValue(event.target.value)
             }
-            className='order-2 h-9 max-w-[200px] text-sm lg:order-1'
+            className='order-2 h-9 w-[140px] text-sm sm:w-[200px] lg:order-1'
           />
           <Select
             onValueChange={(value) => {
               setSearchColumn((prevState) => ({ ...prevState, id: value }))
             }}
           >
-            <SelectTrigger className='order-1 w-[200px] lg:order-2'>
+            <SelectTrigger className='order-1 w-[140px] sm:w-[200px] lg:order-2'>
               <SelectValue placeholder={searchColumn.label} />
             </SelectTrigger>
             <SelectContent>
@@ -166,7 +166,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className='min-h-[440px] overflow-x-auto rounded-md md:min-w-[768px]'>
+      <div className='min-h-[440px] w-full overflow-x-auto rounded-md md:min-w-[768px]'>
         <Table
         // add style below to apply custom column sizing
         // style={{ width: table.getCenterTotalSize() }}

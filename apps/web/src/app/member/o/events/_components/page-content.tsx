@@ -40,12 +40,12 @@ export default function PageContent() {
       <div className='flex flex-col justify-between gap-2.5'>
         <div className='grid h-[54px] grid-cols-3 border-b-[1.5px] border-gray-400 lg:grid-cols-4'>
           <EventTabLink
-            href='/member/o/event-saya?status=aktif'
+            href='/member/o/events?status=aktif'
             label='EVENT AKTIF'
             isActive={status !== 'lalu'}
           />
           <EventTabLink
-            href='/member/o/event-saya?status=lalu'
+            href='/member/o/events?status=lalu'
             label='EVENT LALU'
             isActive={status === 'lalu'}
           />

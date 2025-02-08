@@ -129,7 +129,7 @@ export function EventOrgnizerMobileAuthModalMenu() {
         group: 'Dashboard'
       },
       {
-        href: '/member/o/event-saya',
+        href: '/member/o/events',
         label: 'Event Saya'
       }
     ],

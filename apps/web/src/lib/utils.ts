@@ -11,20 +11,24 @@ export function truncateText(text: string, maxLength: number) {
   return text.slice(0, maxLength - 3) + '...'
 }
 
-export function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('en-GB', {
+export function formatDate(date: Date, options?: { includeTime?: boolean }) {
+  const format: Intl.DateTimeFormatOptions = {
     day: '2-digit',
     month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: 'Asia/Bangkok'
-  }).format(new Date(date))
+    year: 'numeric'
+  }
+
+  if (options?.includeTime) {
+    format.hour = '2-digit'
+    format.minute = '2-digit'
+    format.hour12 = false
+  }
+
+  return new Intl.DateTimeFormat('en-GB', format).format(date)
 }
 
-export function formatNumber(number: number) {
-  return number.toLocaleString('id-ID')
+export function formatNumber(value: number | string) {
+  return value.toLocaleString('id-ID')
 }
 
 export function convertToUTC7(date: Date) {

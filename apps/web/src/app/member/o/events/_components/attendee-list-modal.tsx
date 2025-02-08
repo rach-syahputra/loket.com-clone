@@ -6,10 +6,12 @@ import { cn } from '@/lib/utils'
 import { DataTable } from '@/components/table/data-table'
 import Icon from '@/components/icon'
 import { AttendeeTable, columns } from './table/column'
+import ModalContainer from '@/components/modal-container'
 
 type AttendeeListModalProps = {
   eventTitle: string
   attendees: AttendeeTable[]
+  openModal: boolean
   handleClose: () => void
   className?: string
 }
@@ -17,6 +19,7 @@ type AttendeeListModalProps = {
 export default function AttendeeListModal({
   eventTitle,
   attendees,
+  openModal,
   className,
   handleClose
 }: AttendeeListModalProps) {
@@ -28,18 +31,8 @@ export default function AttendeeListModal({
   ]
 
   return (
-    <div
-      className={cn(
-        'visible fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center px-4 opacity-100 transition-all duration-300 ease-in-out',
-        className
-      )}
-    >
-      <div
-        onClick={handleClose}
-        className='bg-dark-primary fixed left-0 top-0 h-screen w-full opacity-80'
-      ></div>
-
-      <div className='shadow-default z-20 flex flex-col gap-4 rounded-lg bg-white p-3 md:p-5'>
+    <ModalContainer isOpen={openModal} handleClose={handleClose}>
+      <div className='shadow-default mx-auto flex max-w-[800px] flex-col gap-4 rounded-lg bg-white p-3 md:p-5'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-10'>
             <div className='flex items-center justify-center gap-2.5'>
@@ -63,6 +56,6 @@ export default function AttendeeListModal({
           searchableColumns={searchableColumns}
         />
       </div>
-    </div>
+    </ModalContainer>
   )
 }

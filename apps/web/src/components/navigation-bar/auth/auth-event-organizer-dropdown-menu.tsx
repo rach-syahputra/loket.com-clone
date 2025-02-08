@@ -9,7 +9,7 @@ export default function AuthEventOrganizerDropdownMenu() {
         group: 'Dashboard'
       },
       {
-        href: '/member/o/event-saya',
+        href: '/member/o/events',
         label: 'Event Saya'
       }
     ],

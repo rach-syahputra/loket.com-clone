@@ -24,7 +24,7 @@ export const EVENT_ORGANIZER_MENU = {
       icon: <i className='icon-loket icon-loket-home'></i>
     },
     {
-      href: '/member/o/event-saya',
+      href: '/member/o/events',
       label: 'Event Saya',
       icon: <i className='icon-loket icon-loket-my-events'></i>
     }

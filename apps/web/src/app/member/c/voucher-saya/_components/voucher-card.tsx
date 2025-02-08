@@ -52,7 +52,7 @@ export default function VoucherCard({
         <div className='flex items-center gap-2'>
           <Icon icon={faClock} className='text-light-primary w-3.5' />
           <span className='text-gray-secondary text-sm'>
-            {formatDate(expiryDate)}
+            {formatDate(expiryDate, { includeTime: true })}
           </span>
         </div>
       </div>

@@ -55,7 +55,7 @@ function Sidebar({ isLoading, children }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'bg-navy-primary sticky left-0 top-0 hidden min-h-screen w-[270px] -translate-x-[100%] transition-all duration-700 ease-out md:block',
+        'bg-navy-primary fixed left-0 top-0 hidden h-screen w-[270px] -translate-x-[100%] transition-all duration-700 ease-out md:block',
         {
           'translate-x-0': showSidebar
         }
@@ -138,7 +138,7 @@ function SidebarMenuLink({
   const pathname = usePathname()
   const { setActiveMenu, setActiveGroupMenu } = useNavigationContenxt()
 
-  const isActive = href === pathname
+  const isActive = pathname.startsWith(href)
 
   useEffect(() => {
     if (isActive) {
