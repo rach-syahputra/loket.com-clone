@@ -1,3 +1,5 @@
+import { LocationUpdateRequest } from './location.interface'
+
 export interface EventCreate {
   slug: string
   title: string
@@ -26,13 +28,18 @@ export interface UpdateEventServiceRequest {
   title?: string
   description?: string
   banner?: Express.Multer.File
-  registrationStartDate?: string
-  registrationEndDate?: string
-  eventStartDate?: string
-  eventEndDate?: string
+  registrationStartDate?: Date
+  registrationEndDate?: Date
+  eventStartDate?: Date
+  eventEndDate?: Date
+  eventStartTime?: string
+  eventEndTime?: string
   price?: number
   availableSeats?: number
   locationId?: number
+  streetAddress?: string
+  city?: string
+  provinceId?: number
   categoryId?: number
   ticketType?: 'FREE' | 'PAID'
 }
@@ -43,13 +50,15 @@ export interface UpdateEventRepositoryRequest {
   title?: string
   description?: string
   banner?: string
-  registrationStartDate?: string
-  registrationEndDate?: string
-  eventStartDate?: string
-  eventEndDate?: string
+  registrationStartDate?: Date
+  registrationEndDate?: Date
+  eventStartDate?: Date
+  eventEndDate?: Date
+  eventStartTime?: string
+  eventEndTime?: string
   price?: number
   availableSeats?: number
-  locationId?: number
+  location?: LocationUpdateRequest
   categoryId?: number
   ticketType?: 'FREE' | 'PAID'
 }

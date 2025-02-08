@@ -33,23 +33,52 @@ class EventRepository {
   }
 
   async updateEvent(req: UpdateEventRepositoryRequest) {
-    return await prisma.event.update({
-      data: {
-        title: req.title,
-        slug: req.title ? generateSlug(req.title) : undefined,
-        description: req.description,
-        bannerUrl: req.banner,
-        availableSeats: req.availableSeats,
-        registrationStartDate: req.registrationStartDate,
-        registrationEndDate: req.registrationEndDate,
-        eventStartDate: req.eventStartDate,
-        eventEndDate: req.eventEndDate,
-        price: req.price,
-        ticketType: req.ticketType
-      },
-      where: {
-        id: req.eventId
+    return await prisma.$transaction(async (trx) => {
+      if (req.location?.id) {
+        await trx.location.update({
+          data: {
+            provinceId: req.location?.provinceId,
+            streetAddress: req.location?.streetAddress,
+            city: req.location?.city
+          },
+          where: {
+            id: req.location?.id
+          }
+        })
       }
+
+      const event = await trx.event.update({
+        data: {
+          title: req.title,
+          slug: req.title ? generateSlug(req.title) : undefined,
+          description: req.description,
+          bannerUrl: req.banner,
+          availableSeats: req.availableSeats,
+          registrationStartDate: req.registrationStartDate,
+          registrationEndDate: req.registrationEndDate,
+          eventStartDate: req.eventStartDate,
+          eventEndDate: req.eventEndDate,
+          eventStartTime: req.eventStartTime,
+          eventEndTime: req.eventEndTime,
+          price: req.price,
+          ticketType: req.ticketType
+        },
+        where: {
+          id: req.eventId
+        },
+        omit: {
+          locationId: true
+        },
+        include: {
+          location: {
+            include: {
+              province: true
+            }
+          }
+        }
+      })
+
+      return event
     })
   }
 

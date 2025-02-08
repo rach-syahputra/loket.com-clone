@@ -16,14 +16,18 @@ export const UpdateEventSchema = z.object({
     )
     .refine((file) => file?.size <= MAX_IMAGE_SIZE, 'Max image size is 2MB')
     .optional(),
-  registrationStartDate: z.string().optional(),
-  registrationEndDate: z.string().optional(),
-  eventStartDate: z.string().optional(),
-  eventEndDate: z.string().optional(),
+  registrationStartDate: z.date().optional(),
+  registrationEndDate: z.date().optional(),
+  eventStartDate: z.date().optional(),
+  eventEndDate: z.date().optional(),
+  eventStartTime: z.string().optional(),
+  eventEndTime: z.string().optional(),
   price: z.number().optional(),
   availableSeats: z.number().optional(),
   locationId: z.number().optional(),
+  provinceId: z.number().optional(),
   streetAddress: z.string().optional(),
+  city: z.string().optional(),
   categoryId: z.number().optional(),
   ticketType: z.enum(['FREE', 'PAID']).optional()
 })

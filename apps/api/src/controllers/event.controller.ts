@@ -37,7 +37,14 @@ class EventController {
       req.body.availableSeats &&= Number(req.body.availableSeats)
       req.body.categoryId &&= Number(req.body.categoryId)
       req.body.locationId &&= Number(req.body.locationId)
+      req.body.provinceId &&= Number(req.body.provinceId)
       req.body.price &&= Number(req.body.price)
+      req.body.registrationStartDate &&= new Date(
+        req.body.registrationStartDate
+      )
+      req.body.registrationEndDate &&= new Date(req.body.registrationEndDate)
+      req.body.eventStartDate &&= new Date(req.body.eventStartDate)
+      req.body.eventEndDate &&= new Date(req.body.eventEndDate)
 
       const data = await eventService.updateEvent({
         ...req.body,

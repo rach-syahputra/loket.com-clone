@@ -30,6 +30,27 @@ class OrganizerController {
       next(err)
     }
   }
+
+  async getEventBySlug(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        if (req.user.roleId !== 2) throw new ResponseError(401, 'Unauthorized.')
+
+        const data = await organizerService.getEventBySlug({
+          organizerId: req.user.id,
+          slug: req.params.slug
+        })
+
+        res.status(200).json({
+          success: true,
+          message: 'Event retrieved successfully.',
+          data
+        })
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default new OrganizerController()

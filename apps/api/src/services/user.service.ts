@@ -49,7 +49,10 @@ class UserService {
       if (userImage) {
         const user = await userRepository.findById(req.id)
 
-        if (user?.pictureUrl) {
+        if (
+          user?.pictureUrl &&
+          user.pictureUrl.includes('res.cloudinary.com')
+        ) {
           const publicId = getPublicId(user.pictureUrl)
           const deletedImage = await userImageRepository.delete(publicId)
 

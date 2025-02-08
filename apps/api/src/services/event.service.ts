@@ -5,7 +5,10 @@ import {
   UpdateEventServiceRequest,
   VerifyEventOwnershipRequest
 } from '../interfaces/event.interface'
-import { Location } from '../interfaces/location.interface'
+import {
+  Location,
+  LocationUpdateRequest
+} from '../interfaces/location.interface'
 import { prisma } from '../helpers/prisma'
 import { validate } from '../helpers/validation.handler'
 import { UpdateEventSchema } from '../validations/event.validation'
@@ -60,7 +63,10 @@ class EventService {
       if (eventBanner) {
         const event = await eventRepository.getEventById(req.eventId)
 
-        if (event?.bannerUrl) {
+        if (
+          event?.bannerUrl &&
+          event.bannerUrl.includes('res.cloudinary.com')
+        ) {
           const publicId = getPublicId(event.bannerUrl)
           const deletedBanner = await eventImageRepository.delete(publicId)
 
@@ -72,9 +78,20 @@ class EventService {
       }
     }
 
+    let location
+    if (req.locationId) {
+      location = {
+        id: req.locationId,
+        city: req.city,
+        streetAddress: req.streetAddress,
+        provinceId: req.provinceId
+      } as LocationUpdateRequest
+    }
+
     const updatedEvent = await eventRepository.updateEvent({
       ...req,
-      banner: eventBanner?.secure_url
+      banner: eventBanner?.secure_url,
+      location
     })
 
     return {
