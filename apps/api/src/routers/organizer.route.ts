@@ -8,5 +8,6 @@ export const organizerRouter = () => {}
 const router = express.Router()
 
 router.get('/events', verifyToken, organizerController.getEvents)
+router.get('/events/:slug', verifyToken, organizerController.getEventBySlug)
 
 export default router

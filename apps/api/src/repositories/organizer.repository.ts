@@ -8,52 +8,30 @@ class OrganizerRepository {
         organizerId: organizerId,
         eventEndDate: { lt: new Date() }
       },
-      select: {
-        id: true,
-        title: true,
-        price: true,
-        bannerUrl: true,
-        eventStartDate: true,
-        eventEndDate: true,
-        availableSeats: true,
+      omit: {
+        locationId: true
+      },
+      include: {
         location: {
-          select: {
-            streetAddress: true,
-            city: true,
-            province: { select: { name: true } }
+          omit: { provinceId: true },
+          include: {
+            province: true
           }
         },
         Transactions: {
-          select: {
-            totalPrice: true,
-            user: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
+          include: {
+            user: true
           }
         }
       }
     })
 
     const formatedEventData = pastEvents.map((event) => ({
-      id: event.id,
-      title: event.title,
-      bannerUrl: event.bannerUrl,
-      price: event.price,
-      eventStartDate: convertToUTC7(event.eventStartDate),
-      eventEndDate: convertToUTC7(event.eventEndDate),
-      location: {
-        address: event.location.streetAddress,
-        city: event.location.city,
-        province: event.location.province.name
-      },
-      availableSeats: event.availableSeats,
+      ...event,
       ticketSold: event.Transactions.length,
       totalPrice: event.Transactions.reduce((sum, t) => sum + t.totalPrice, 0),
       attendees: event.Transactions.map((t) => ({
-        id: t.user.id,
+        id: t.userId,
         name: t.user.name,
         ticketQuantity: 1,
         totalPrice: t.totalPrice
@@ -78,52 +56,30 @@ class OrganizerRepository {
           }
         ]
       },
-      select: {
-        id: true,
-        title: true,
-        bannerUrl: true,
-        price: true,
-        eventStartDate: true,
-        eventEndDate: true,
-        availableSeats: true,
+      omit: {
+        locationId: true
+      },
+      include: {
         location: {
-          select: {
-            streetAddress: true,
-            city: true,
-            province: { select: { name: true } }
+          omit: { provinceId: true },
+          include: {
+            province: true
           }
         },
         Transactions: {
-          select: {
-            totalPrice: true,
-            user: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
+          include: {
+            user: true
           }
         }
       }
     })
 
     const formatedEventData = activeEvents.map((event) => ({
-      id: event.id,
-      title: event.title,
-      bannerUrl: event.bannerUrl,
-      price: event.price,
-      eventStartDate: convertToUTC7(event.eventStartDate),
-      eventEndDate: convertToUTC7(event.eventEndDate),
-      location: {
-        address: event.location.streetAddress,
-        city: event.location.city,
-        province: event.location.province.name
-      },
-      availableSeats: event.availableSeats,
+      ...event,
       ticketSold: event.Transactions.length,
       totalPrice: event.Transactions.reduce((sum, t) => sum + t.totalPrice, 0),
       attendees: event.Transactions.map((t) => ({
-        id: t.user.id,
+        id: t.userId,
         name: t.user.name,
         ticketQuantity: 1,
         totalPrice: t.totalPrice
@@ -131,6 +87,29 @@ class OrganizerRepository {
     }))
 
     return formatedEventData
+  }
+
+  async getEventBySlug(slug: string) {
+    const event = await prisma.event.findUnique({
+      where: {
+        slug
+      },
+      omit: {
+        locationId: true
+      },
+      include: {
+        location: {
+          omit: {
+            provinceId: true
+          },
+          include: {
+            province: true
+          }
+        }
+      }
+    })
+
+    return event
   }
 }
 
