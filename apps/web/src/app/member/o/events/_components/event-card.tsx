@@ -12,6 +12,7 @@ import { EventByOrganizer } from '@/lib/interfaces/organizer.interface'
 import Icon from '@/components/icon'
 import Button from '@/components/button'
 import AttendeeListModal from './attendee-list-modal'
+import Link from 'next/link'
 
 type EventCardProps = {
   event: EventByOrganizer
@@ -45,14 +46,14 @@ export default function EventCard({ event }: EventCardProps) {
           <div className='flex items-center gap-3'>
             <Icon icon={faClock} className='text-light-primary w-3' />
             <span className='text-gray-secondary text-sm'>
-              {formatEventTime(event.eventStartDate, event.eventEndDate)}
+              {formatEventTime(event.eventStartTime, event.eventEndTime)}
             </span>
           </div>
           <div className='flex items-center gap-3'>
             <Icon icon={faLocationDot} className='text-light-primary w-3' />
             <span className='text-gray-secondary text-sm'>
-              {event.location.address}, {event.location.city},{' '}
-              {event.location.province}
+              {event.location.streetAddress}, {event.location.city},{' '}
+              {event.location.province.name}
             </span>
           </div>
           <div className='flex items-center gap-3'>
@@ -63,11 +64,25 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
         </div>
 
-        <span className='text-dark-primary py-1 font-semibold'>
-          Rp. {formatNumber(event.totalPrice)}
-        </span>
+        <div className='flex flex-col py-2'>
+          <span className='text-gray-secondary text-sm'>Total Pendapatan</span>
+          <span className='text-dark-primary py-1 font-semibold'>
+            Rp. {formatNumber(event.totalPrice)}
+          </span>
+        </div>
 
-        <Button onClick={() => setOpenModal(true)}>Daftar Peserta</Button>
+        <div className='flex w-fit items-center justify-center gap-4'>
+          <Button onClick={() => setOpenModal(true)}>Daftar Peserta</Button>
+          <Button variant='outline'>
+            <Link
+              href={`/member/o/events/${event.slug}`}
+              aria-label='detail and update event'
+              className='h-full w-full'
+            >
+              Lihat Detail
+            </Link>
+          </Button>
+        </div>
       </div>
       <Image
         src='https://assets.loket.com/neo/production/images/banner/20250110144523_6780d0137d5ff.jpg'
