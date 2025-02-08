@@ -1,8 +1,3 @@
-import Icon from '@/components/icon'
-import { cn } from '@/lib/utils'
-import { faPlane, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Plus } from 'lucide-react'
-import Image from 'next/image'
 import {
   createContext,
   Dispatch,
@@ -11,6 +6,17 @@ import {
   useEffect,
   useState
 } from 'react'
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
+import Image from 'next/image'
+import { Plus } from 'lucide-react'
+
+import { cn } from '@/lib/utils'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel
+} from '@/components/shadcn-ui/form'
 
 type ActiveTab = 'TICKET_CATEGORY' | 'EVENT_DESCRIPTION'
 type TicketType = 'FREE' | 'PAID'
@@ -21,10 +27,12 @@ type EventDetailsTabProps = {
   onActiveChange: () => void
 }
 
-type TicketCategoryTriggerProps = {
+type TicketCategoryButtonProps<T extends FieldValues> = {
   label: string
   isActive: boolean
-  onClick?: () => void
+  ticketType: TicketType
+  name: Path<T>
+  form: UseFormReturn<T, any, undefined>
 }
 
 type TicketCategoryTabProps = {
@@ -130,109 +138,114 @@ export function EventDetailsTab({
   )
 }
 
-export function TicketCategoryTrigger({
+export function TicketCategoryButton<T extends FieldValues>({
   label,
   isActive,
-  onClick
-}: TicketCategoryTriggerProps) {
+  ticketType,
+  form,
+  name
+}: TicketCategoryButtonProps<T>) {
+  const { setTicketType } = useEventDetailsContext()
+
   return (
-    <button
-      type='button'
-      onClick={onClick}
-      className={cn(
-        'ticket-category-button group relative flex h-[90px] items-center rounded-md border border-gray-400 transition-all duration-150 ease-in-out hover:overflow-hidden hover:border-none hover:bg-[#007aff]',
-        {
-          'overflow-hidden border-none bg-[#007aff]': isActive
-        }
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className='w-full'>
+          <FormLabel className='text-gray-secondary sr-only'>{label}</FormLabel>
+          <FormControl>
+            <button
+              type='button'
+              onClick={() => {
+                field.onChange(ticketType)
+                setTicketType(ticketType)
+              }}
+              className={cn(
+                'ticket-category-button group relative flex h-[90px] w-full items-center rounded-md border border-gray-400 transition-all duration-150 ease-in-out hover:overflow-hidden hover:border-none hover:bg-[#007aff]',
+                {
+                  'overflow-hidden border-none bg-[#007aff]': isActive
+                }
+              )}
+            >
+              <div
+                className={cn(
+                  'flex h-full w-[53px] items-center justify-center border-r-2 border-dashed border-gray-400 group-hover:border-none group-hover:bg-[#007bffd8]',
+                  {
+                    'border-none bg-[#007bffd8]': isActive
+                  }
+                )}
+              >
+                <Image
+                  src='/barcode.svg'
+                  alt='Barcode icon'
+                  width={9}
+                  height={58}
+                  className='w-[9px]'
+                />
+              </div>
+              <div className='ticket-label relative box-border flex h-full w-full items-center justify-between px-3 py-4 text-left'>
+                <div className='flex flex-col items-start'>
+                  <span
+                    className={cn(
+                      'text-gray-secondary text-sm group-hover:text-white',
+                      {
+                        'text-white': isActive
+                      }
+                    )}
+                  >
+                    Buat Tiket
+                  </span>
+                  <span
+                    className={cn(
+                      'text-gray-secondary text-lg font-medium leading-none group-hover:text-white',
+                      {
+                        'text-white': isActive
+                      }
+                    )}
+                  >
+                    {label}
+                  </span>
+                </div>
+                <div
+                  className={cn(
+                    'border-gray-primary z-20 flex aspect-square w-[42px] items-center justify-center rounded-full border group-hover:border-white',
+                    {
+                      'border-white': isActive
+                    }
+                  )}
+                >
+                  <Plus
+                    className={cn(
+                      'text-gray-primary w-6 group-hover:text-white',
+                      {
+                        'text-white': isActive
+                      }
+                    )}
+                  />
+                </div>
+                <div
+                  className={cn(
+                    'bg-blue-secondary invisible absolute -right-36 top-0 h-[100px] w-[240px] rotate-45 opacity-0 transition-opacity duration-150 ease-in-out group-hover:visible group-hover:opacity-100',
+                    {
+                      'visible opacity-100': isActive
+                    }
+                  )}
+                ></div>
+              </div>
+            </button>
+          </FormControl>
+        </FormItem>
       )}
-    >
-      <div
-        className={cn(
-          'flex h-full w-[53px] items-center justify-center border-r-2 border-dashed border-gray-400 group-hover:border-none group-hover:bg-[#007bffd8]',
-          {
-            'border-none bg-[#007bffd8]': isActive
-          }
-        )}
-      >
-        <Image
-          src='/barcode.svg'
-          alt='Barcode icon'
-          width={9}
-          height={58}
-          className='w-[9px]'
-        />
-      </div>
-      <div className='ticket-label relative box-border flex h-full w-full items-center justify-between px-3 py-4 text-left'>
-        <div className='flex flex-col items-start'>
-          <span
-            className={cn(
-              'text-gray-secondary text-sm group-hover:text-white',
-              {
-                'text-white': isActive
-              }
-            )}
-          >
-            Buat Tiket
-          </span>
-          <span
-            className={cn(
-              'text-gray-secondary text-lg font-medium leading-none group-hover:text-white',
-              {
-                'text-white': isActive
-              }
-            )}
-          >
-            {label}
-          </span>
-        </div>
-        <div
-          className={cn(
-            'border-gray-primary z-20 flex aspect-square w-[42px] items-center justify-center rounded-full border group-hover:border-white',
-            {
-              'border-white': isActive
-            }
-          )}
-        >
-          <Plus
-            className={cn('text-gray-primary w-6 group-hover:text-white', {
-              'text-white': isActive
-            })}
-          />
-        </div>
-        <div
-          className={cn(
-            'bg-blue-secondary invisible absolute -right-36 top-0 h-[100px] w-[240px] rotate-45 opacity-0 transition-opacity duration-150 ease-in-out group-hover:visible group-hover:opacity-100',
-            {
-              'visible opacity-100': isActive
-            }
-          )}
-        ></div>
-      </div>
-    </button>
+    />
   )
 }
 
 export function TicketCategoryTab({ children }: TicketCategoryTabProps) {
-  const { activeTab, setTicketType, ticketType } = useEventDetailsContext()
+  const { activeTab } = useEventDetailsContext()
 
   if (activeTab === 'TICKET_CATEGORY')
-    return (
-      <div className='flex flex-col'>
-        <div className='grid grid-cols-2 gap-4 py-7 lg:grid-cols-3'>
-          <TicketCategoryTrigger
-            label='Berbayar'
-            isActive={ticketType === 'PAID'}
-            onClick={() => setTicketType('PAID')}
-          />
-          <TicketCategoryTrigger
-            label='Gratis'
-            isActive={ticketType === 'FREE'}
-            onClick={() => setTicketType('FREE')}
-          />
-        </div>
-        {children}
-      </div>
-    )
+    return <div className='flex flex-col'>{children}</div>
 }
 
 export function PaidTicketForm({ children }: { children: React.ReactNode }) {

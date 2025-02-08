@@ -3,16 +3,24 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { ChevronsUpDown } from 'lucide-react'
 
+import { useToast } from '@/hooks/use-toast'
+import { fetchUpdateEvent } from '@/lib/apis/event.api'
 import {
   Event,
   UpdateEventFormSchemaType
-} from '@/lib/interfaces/event.interface'
+} from '@/lib/interfaces/organizer.interface'
 import {
   BannerSchema,
   UpdateEventFormSchema
 } from '@/lib/validations/event.validation'
 import { Category } from '@/lib/interfaces/category.interface'
+import { Province } from '@/lib/interfaces/location.interface'
+import { cn, formatEventDate, formatNumber } from '@/lib/utils'
+import { HOURS, MINUTES } from '@/lib/constants'
 import {
   Form,
   FormControl,
@@ -21,7 +29,6 @@ import {
   FormLabel
 } from '@/components/shadcn-ui/form'
 import Button from '@/components/button'
-import BannerInput from './banner-input'
 import { Input } from '@/components/shadcn-ui/input'
 import {
   Select,
@@ -38,22 +45,18 @@ import {
   EventDateTrigger,
   EventTimeTab
 } from './event-date'
-import { ChevronDown, ChevronsUpDown } from 'lucide-react'
-import { cn, formatEventDate, formatNumber } from '@/lib/utils'
-import { HOURS, MINUTES } from '@/lib/constants'
 import Icon from '@/components/icon'
-import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { Textarea } from '@/components/shadcn-ui/textarea'
 import { LocationModal, LocationProvider, LocationTrigger } from './location'
-import { Province } from '@/lib/interfaces/location.interface'
-import { faPencil, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import {
   EventDescriptionTab,
   EventDetailsProvider,
   FreeTicketForm,
   PaidTicketForm,
+  TicketCategoryButton,
   TicketCategoryTab
 } from './event-details'
-import { Textarea } from '@/components/shadcn-ui/textarea'
+import BannerInput from './banner-input'
 
 type UpdateEventFormProps = {
   event: Event
@@ -66,6 +69,8 @@ export default function UpdateEventForm({
   categories,
   provinces
 }: UpdateEventFormProps) {
+  const { toast } = useToast()
+
   const [bannerPreview, setBannerPreview] = useState<string>(
     '/default-banner.jpg'
   )
@@ -83,14 +88,16 @@ export default function UpdateEventForm({
       registrationEndDate: new Date(event.registrationEndDate),
       eventStartDate: new Date(event.eventStartDate),
       eventEndDate: new Date(event.eventEndDate),
-      eventStartHour: '13',
-      eventStartMinute: '00',
+      eventStartHour: event.eventStartTime.split(':')[0],
+      eventStartMinute: event.eventStartTime.split(':')[1],
+      eventEndHour: event.eventEndTime.split(':')[0],
+      eventEndMinute: event.eventEndTime.split(':')[1],
       price: event.price,
       availableSeats: event.availableSeats,
       locationId: event.location.id,
       provinceId: event.location.province.id,
       city: event.location.city,
-      streetAddress: event.location.address,
+      streetAddress: event.location.streetAddress,
       categoryId: event.categoryId,
       ticketType: event.ticketType
     }
@@ -120,7 +127,88 @@ export default function UpdateEventForm({
 
   const onSubmit = async (values: UpdateEventFormSchemaType) => {
     try {
-      console.log(values)
+      const formData = new FormData()
+      formData.append('eventId', values.eventId.toString())
+      formData.append('organizerId', values.organizerId.toString())
+      if (values.title && values.title !== event.title)
+        formData.append('title', values.title)
+      if (values.description && values.description !== event.description)
+        formData.append('description', values.description)
+      if (values.banner) formData.append('banner', values.banner)
+      if (
+        values.registrationStartDate &&
+        values.registrationStartDate.toISOString() !==
+          event.registrationStartDate
+      )
+        formData.append(
+          'registrationStartDate',
+          values.registrationStartDate.toISOString()
+        )
+      if (
+        values.registrationEndDate &&
+        values.registrationEndDate.toISOString() !== event.registrationEndDate
+      )
+        formData.append(
+          'registrationEndDate',
+          values.registrationEndDate.toISOString()
+        )
+      if (
+        values.eventStartDate &&
+        values.eventStartDate.toISOString() !== event.eventStartDate
+      )
+        formData.append('eventStartDate', values.eventStartDate.toISOString())
+      if (
+        values.eventEndDate &&
+        values.eventEndDate.toISOString() !== event.eventEndDate
+      )
+        formData.append('eventEndDate', values.eventEndDate.toISOString())
+      if (values.eventStartHour && values.eventStartMinute)
+        formData.append(
+          'eventStartTime',
+          `${values.eventStartHour}:${values.eventStartMinute}`
+        )
+      if (values.eventEndHour && values.eventEndMinute)
+        formData.append(
+          'eventEndTime',
+          `${values.eventEndHour}:${values.eventEndMinute}`
+        )
+      if (values.price)
+        formData.append(
+          'price',
+          values.ticketType === 'PAID' ? values.price.toString() : '0'
+        )
+      if (
+        values.availableSeats &&
+        values.availableSeats !== event.availableSeats
+      )
+        formData.append('availableSeats', values.availableSeats.toString())
+      if (values.locationId)
+        formData.append('locationId', values.locationId.toString())
+      if (values.provinceId && values.provinceId !== event.location.province.id)
+        formData.append('provinceId', values.provinceId.toString())
+      if (
+        values.streetAddress &&
+        values.streetAddress !== event.location.streetAddress
+      )
+        formData.append('streetAddress', values.streetAddress)
+      if (values.city && values.city !== event.location.city)
+        formData.append('city', values.city)
+      if (values.categoryId && values.categoryId !== event.categoryId)
+        formData.append('categoryId', values.categoryId.toString())
+      if (values.ticketType && values.ticketType !== event.ticketType)
+        formData.append('ticketType', values.ticketType)
+
+      const response = await fetchUpdateEvent(
+        values.eventId.toString(),
+        formData
+      )
+
+      if (response?.success) {
+        toast({
+          title: 'Success',
+          description: 'Update event berhasil.'
+        })
+      }
     } catch (error) {
       console.error(error)
     }
@@ -132,15 +220,11 @@ export default function UpdateEventForm({
     }
   }, [form, event])
 
-  useEffect(() => {
-    console.log(form.formState.errors)
-  }, [form.formState.errors])
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='flex max-w-[900px] flex-col gap-10 py-4 lg:px-10 lg:py-10'
+        className='flex max-w-[900px] flex-col gap-10 py-4 lg:px-6 lg:py-6'
       >
         <div className='flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2'>
           <BannerInput
@@ -231,6 +315,7 @@ export default function UpdateEventForm({
                     form.watch('eventStartDate')?.toISOString()!,
                     form.watch('eventEndDate')?.toISOString()!
                   )}
+                  eventTime={`${form.watch('eventStartHour')}:${form.watch('eventStartMinute')} - ${form.watch('eventEndHour')}:${form.watch('eventEndMinute')}`}
                 />
 
                 <EventDateModal>
@@ -268,7 +353,7 @@ export default function UpdateEventForm({
                                   <FormControl>
                                     <Select
                                       onValueChange={field.onChange}
-                                      defaultValue={field.value?.toString()}
+                                      defaultValue={field.value}
                                     >
                                       <FormControl>
                                         <SelectTrigger className='h-10 w-fit border-none p-0 px-2 text-base'>
@@ -346,7 +431,7 @@ export default function UpdateEventForm({
                           <div className='flex w-full items-center justify-between'>
                             <FormField
                               control={form.control}
-                              name='eventStartHour'
+                              name='eventEndHour'
                               render={({ field }) => (
                                 <FormItem className='space-y-0'>
                                   <FormLabel className='text-gray-secondary sr-only'>
@@ -384,7 +469,7 @@ export default function UpdateEventForm({
 
                             <FormField
                               control={form.control}
-                              name='eventStartMinute'
+                              name='eventEndMinute'
                               render={({ field }) => (
                                 <FormItem className='w-full space-y-0'>
                                   <FormLabel className='text-gray-secondary sr-only'>
@@ -515,6 +600,23 @@ export default function UpdateEventForm({
 
         <EventDetailsProvider activeTicketType={event.ticketType}>
           <TicketCategoryTab>
+            <div className='grid grid-cols-2 gap-4 py-7 lg:grid-cols-3'>
+              <TicketCategoryButton
+                label='Berbayar'
+                isActive={form.watch('ticketType') === 'PAID'}
+                form={form}
+                name='ticketType'
+                ticketType='PAID'
+              />
+
+              <TicketCategoryButton
+                label='Gratis'
+                isActive={form.watch('ticketType') === 'FREE'}
+                form={form}
+                name='ticketType'
+                ticketType='FREE'
+              />
+            </div>
             <PaidTicketForm>
               <div className='grid grid-cols-2 gap-8'>
                 <FormField
@@ -612,7 +714,11 @@ export default function UpdateEventForm({
         </EventDetailsProvider>
 
         <div className='w-full px-4 lg:px-0'>
-          <Button type='submit' className='w-full'>
+          <Button
+            type='submit'
+            disabled={form.formState.isSubmitting}
+            className='w-full'
+          >
             Simpan Perubahan
           </Button>
         </div>

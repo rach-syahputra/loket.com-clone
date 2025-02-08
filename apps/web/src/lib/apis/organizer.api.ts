@@ -1,7 +1,11 @@
 import { getSession } from 'next-auth/react'
 
+import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
-import { EventsByOrganizerJson } from '../interfaces/organizer.interface'
+import {
+  EventBySlugJson,
+  EventsByOrganizerJson
+} from '../interfaces/organizer.interface'
 import { BASE_URL } from '../constants'
 
 export async function fetchGetEventsByOrganizer(
@@ -25,4 +29,24 @@ export async function fetchGetEventsByOrganizer(
   if (events.error?.message === 'jwt is expired') await handleSignOut()
 
   return events
+}
+
+export async function fetchGetEventBySlug(
+  slug: string
+): Promise<EventBySlugJson> {
+  const session = await auth()
+  const token = session?.user.accessToken
+
+  const response = await fetch(`${BASE_URL}/organizers/events/${slug}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const event = await response.json()
+
+  if (event.error?.message === 'jwt is expired') await handleSignOut()
+
+  return event
 }
