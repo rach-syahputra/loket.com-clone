@@ -50,26 +50,16 @@ export function BannerOverlay({
   return (
     <div
       className={cn(
-        'absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-1',
+        'absolute left-0 top-0 flex h-full w-full cursor-pointer flex-col items-center justify-center gap-1',
         className
       )}
     >
-      <div className='absolute bottom-4 right-4 flex items-center justify-center gap-3'>
-        <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-gray-200'>
-          <Icon
-            icon={faPen}
-            onClick={onBannerChange}
-            className='text-blue-primary w-4'
-          />
-        </div>
-
-        <div className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-gray-200'>
-          <Icon
-            icon={faTrashCan}
-            onClick={onBannerRemove}
-            className='text-destructive w-3.5'
-          />
-        </div>
+      <div className='absolute bottom-4 right-4 flex h-8 w-8 items-center justify-center rounded-md bg-gray-200'>
+        <Icon
+          icon={faPen}
+          onClick={onBannerChange}
+          className='text-blue-primary w-4'
+        />
       </div>
     </div>
   )
