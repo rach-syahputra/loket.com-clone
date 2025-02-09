@@ -26,12 +26,20 @@ export type Event = {
   organizerId: number
 }
 
+export type Pagination = {
+  currentPage: number
+  totalPages: number
+  limit: number
+}
+
 export type Attendee = {
   id: number
   name: string
   ticketQuantity: number
   totalPrice: number
 }
+
+export type EventStatus = 'aktif' | 'lalu'
 
 export interface EventByOrganizer extends Event {
   totalPrice: number
@@ -47,6 +55,7 @@ export interface EventsByOrganizerJson {
   }
   data: {
     events: EventByOrganizer[]
+    pagination: Pagination
   }
 }
 

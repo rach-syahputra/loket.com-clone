@@ -4,18 +4,20 @@ import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
 import {
   EventBySlugJson,
-  EventsByOrganizerJson
+  EventsByOrganizerJson,
+  EventStatus
 } from '../interfaces/organizer.interface'
 import { BASE_URL } from '../constants'
 
 export async function fetchGetEventsByOrganizer(
-  status: 'aktif' | 'lalu' = 'aktif'
+  status: EventStatus = 'aktif',
+  page: number
 ): Promise<EventsByOrganizerJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
   const response = await fetch(
-    `${BASE_URL}/organizers/events?status=${status}`,
+    `${BASE_URL}/organizers/events?status=${status}&page=${page.toString()}`,
     {
       method: 'GET',
       headers: {

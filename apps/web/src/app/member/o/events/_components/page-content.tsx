@@ -6,34 +6,48 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
 import { fetchGetEventsByOrganizer } from '@/lib/apis/organizer.api'
-import { EventByOrganizer } from '@/lib/interfaces/organizer.interface'
+import {
+  EventByOrganizer,
+  EventStatus
+} from '@/lib/interfaces/organizer.interface'
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
 import LoadingDots from '@/components/loading-dots'
 import Button from '@/components/button'
+import {
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/pagination'
 import EventTabLink from './event-tab-link'
 import EventCard from './event-card'
 
 export default function PageContent() {
   const searchParams = useSearchParams()
   const status = searchParams.get('status')
+  const currentPage = Number(searchParams.get('page')) || 1
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [events, setEvents] = useState<EventByOrganizer[]>([])
+  const [totalPages, setTotalPages] = useState<number>(0)
 
   const getEventsByOrganizer = async () => {
     const response = await fetchGetEventsByOrganizer(
-      (status as 'aktif' | 'lalu') || 'aktif'
+      (status as EventStatus) || 'aktif',
+      currentPage
     )
 
     if (response.success) {
       setIsLoading(false)
       setEvents(response.data.events)
+      setTotalPages(response.data.pagination.totalPages)
     }
   }
 
   useEffect(() => {
     getEventsByOrganizer()
-  }, [status])
+  }, [status, currentPage])
 
   return (
     <DashboardContent>
@@ -88,6 +102,43 @@ export default function PageContent() {
           )}
         </div>
       </div>
+      <Pagination className={`${totalPages === 1 && 'hidden'} place-self-end`}>
+        <PaginationPrevious
+          href={`/member/o/events?status=${status}&page=${currentPage - 1}`}
+          className={`${currentPage === 1 && 'hidden'}`}
+        />
+        {Array.from({ length: totalPages >= 5 ? 5 : totalPages }).map(
+          (_, index) => {
+            let startPage = 1
+
+            if (
+              totalPages > 5 &&
+              currentPage > 2 &&
+              currentPage < totalPages - 2
+            ) {
+              startPage = currentPage - 2 // Keep active page in the middle
+            } else if (totalPages > 5 && currentPage >= totalPages - 2) {
+              startPage = totalPages - 4 // Adjust for last pages
+            }
+
+            const page = startPage + index
+
+            return (
+              <PaginationItem key={index} isActive={currentPage === page}>
+                <PaginationLink
+                  href={`/member/o/events?status=${status}&page=${page}`}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          }
+        )}
+        <PaginationNext
+          href={`/member/o/events?status=${status}&page=${currentPage + 1}`}
+          className={`${currentPage === totalPages && 'hidden'}`}
+        />
+      </Pagination>
     </DashboardContent>
   )
 }
