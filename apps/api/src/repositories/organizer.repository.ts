@@ -1,30 +1,41 @@
 import { prisma } from '../helpers/prisma'
-import { convertToUTC7 } from '../helpers/utils'
 
 class OrganizerRepository {
-  async getPastEvents(organizerId: number) {
-    const pastEvents = await prisma.event.findMany({
-      where: {
-        organizerId: organizerId,
-        eventEndDate: { lt: new Date() }
-      },
-      omit: {
-        locationId: true
-      },
-      include: {
-        location: {
-          omit: { provinceId: true },
-          include: {
-            province: true
+  async getPastEvents(organizerId: number, page: number) {
+    const limit = 4
+
+    const [totalEvents, pastEvents] = await prisma.$transaction([
+      prisma.event.count({
+        where: {
+          organizerId: organizerId,
+          eventEndDate: { lt: new Date() }
+        }
+      }),
+      prisma.event.findMany({
+        where: {
+          organizerId: organizerId,
+          eventEndDate: { lt: new Date() }
+        },
+        omit: {
+          locationId: true
+        },
+        include: {
+          location: {
+            omit: { provinceId: true },
+            include: {
+              province: true
+            }
+          },
+          Transactions: {
+            include: {
+              user: true
+            }
           }
         },
-        Transactions: {
-          include: {
-            user: true
-          }
-        }
-      }
-    })
+        take: limit,
+        skip: (page - 1) * limit
+      })
+    ])
 
     const formatedEventData = pastEvents.map((event) => ({
       ...event,
@@ -38,41 +49,60 @@ class OrganizerRepository {
       }))
     }))
 
-    return formatedEventData
+    return {
+      events: formatedEventData,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalEvents / limit),
+        limit
+      }
+    }
   }
 
-  async getActiveEvents(organizerId: number) {
-    const activeEvents = await prisma.event.findMany({
-      where: {
-        organizerId: organizerId,
-        OR: [
-          {
-            registrationStartDate: { lte: new Date() },
-            registrationEndDate: { gte: new Date() }
+  async getActiveEvents(organizerId: number, page: number) {
+    const limit = 4
+
+    const [totalEvents, activeEvents] = await prisma.$transaction([
+      prisma.event.count({
+        where: {
+          organizerId: organizerId,
+          eventEndDate: { lt: new Date() }
+        }
+      }),
+      prisma.event.findMany({
+        where: {
+          organizerId: organizerId,
+          OR: [
+            {
+              registrationStartDate: { lte: new Date() },
+              registrationEndDate: { gte: new Date() }
+            },
+            {
+              eventStartDate: { lte: new Date() },
+              eventEndDate: { gte: new Date() }
+            }
+          ]
+        },
+        omit: {
+          locationId: true
+        },
+        include: {
+          location: {
+            omit: { provinceId: true },
+            include: {
+              province: true
+            }
           },
-          {
-            eventStartDate: { lte: new Date() },
-            eventEndDate: { gte: new Date() }
-          }
-        ]
-      },
-      omit: {
-        locationId: true
-      },
-      include: {
-        location: {
-          omit: { provinceId: true },
-          include: {
-            province: true
+          Transactions: {
+            include: {
+              user: true
+            }
           }
         },
-        Transactions: {
-          include: {
-            user: true
-          }
-        }
-      }
-    })
+        take: limit,
+        skip: (page - 1) * limit
+      })
+    ])
 
     const formatedEventData = activeEvents.map((event) => ({
       ...event,
@@ -86,7 +116,14 @@ class OrganizerRepository {
       }))
     }))
 
-    return formatedEventData
+    return {
+      events: formatedEventData,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalEvents / limit),
+        limit
+      }
+    }
   }
 
   async getEventBySlug(slug: string) {

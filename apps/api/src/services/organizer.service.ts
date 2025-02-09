@@ -8,20 +8,12 @@ import organizerRepository from '../repositories/organizer.repository'
 import { GetEventBySlugSchema } from '../validations/organizer.validation'
 
 class OrganizerService {
-  async getPastEvents(organizerId: number) {
-    const events = await organizerRepository.getPastEvents(organizerId)
-
-    return {
-      events
-    }
+  async getPastEvents(organizerId: number, page: number) {
+    return await organizerRepository.getPastEvents(organizerId, page)
   }
 
-  async getActiveEvents(organizerId: number) {
-    const events = await organizerRepository.getActiveEvents(organizerId)
-
-    return {
-      events
-    }
+  async getActiveEvents(organizerId: number, page: number) {
+    return await organizerRepository.getActiveEvents(organizerId, page)
   }
 
   async verifyEventOwnership(req: VerifyEventOwnershipRequest) {

@@ -10,15 +10,18 @@ class OrganizerController {
       if (req.user) {
         if (req.user.roleId !== 2) throw new ResponseError(401, 'Unauthorized.')
 
-        const { status } = req.query
+        const { status, page } = req.query
 
         let data
 
         if (status === 'aktif')
-          data = await organizerService.getActiveEvents(req.user.id)
+          data = await organizerService.getActiveEvents(
+            req.user.id,
+            Number(page)
+          )
 
         if (status === 'lalu')
-          data = await organizerService.getPastEvents(req.user.id)
+          data = await organizerService.getPastEvents(req.user.id, Number(page))
 
         res.status(200).json({
           success: true,
