@@ -1,8 +1,11 @@
 import { prisma } from '../helpers/prisma'
+import { GetEventsQuery } from '../interfaces/organizer.interface'
+import { OrderType } from '../interfaces/shared.interface'
 
 class OrganizerRepository {
-  async getPastEvents(organizerId: number, page: number) {
+  async getPastEvents(organizerId: number, query: GetEventsQuery) {
     const limit = 4
+    const ORDER_TYPES: OrderType[] = ['asc', 'desc']
 
     const [totalEvents, pastEvents] = await prisma.$transaction([
       prisma.event.count({
@@ -15,6 +18,11 @@ class OrganizerRepository {
         where: {
           organizerId: organizerId,
           eventEndDate: { lt: new Date() }
+        },
+        orderBy: {
+          eventStartDate: ORDER_TYPES.includes(query.order)
+            ? query.order
+            : 'desc'
         },
         omit: {
           locationId: true
@@ -33,7 +41,7 @@ class OrganizerRepository {
           }
         },
         take: limit,
-        skip: (page - 1) * limit
+        skip: ((query.page ? query.page : 1) - 1) * limit
       })
     ])
 
@@ -52,21 +60,32 @@ class OrganizerRepository {
     return {
       events: formatedEventData,
       pagination: {
-        currentPage: page,
+        currentPage: query.page,
         totalPages: Math.ceil(totalEvents / limit),
         limit
-      }
+      },
+      totalEvents
     }
   }
 
-  async getActiveEvents(organizerId: number, page: number) {
+  async getActiveEvents(organizerId: number, query: GetEventsQuery) {
     const limit = 4
+    const ORDER_TYPES: OrderType[] = ['asc', 'desc']
 
     const [totalEvents, activeEvents] = await prisma.$transaction([
       prisma.event.count({
         where: {
           organizerId: organizerId,
-          eventEndDate: { lt: new Date() }
+          OR: [
+            {
+              registrationStartDate: { lte: new Date() },
+              registrationEndDate: { gte: new Date() }
+            },
+            {
+              eventStartDate: { lte: new Date() },
+              eventEndDate: { gte: new Date() }
+            }
+          ]
         }
       }),
       prisma.event.findMany({
@@ -82,6 +101,11 @@ class OrganizerRepository {
               eventEndDate: { gte: new Date() }
             }
           ]
+        },
+        orderBy: {
+          eventStartDate: ORDER_TYPES.includes(query.order)
+            ? query.order
+            : 'desc'
         },
         omit: {
           locationId: true
@@ -100,7 +124,7 @@ class OrganizerRepository {
           }
         },
         take: limit,
-        skip: (page - 1) * limit
+        skip: ((query.page ? query.page : 1) - 1) * limit
       })
     ])
 
@@ -119,10 +143,11 @@ class OrganizerRepository {
     return {
       events: formatedEventData,
       pagination: {
-        currentPage: page,
+        currentPage: query.page,
         totalPages: Math.ceil(totalEvents / limit),
         limit
-      }
+      },
+      totalEvents
     }
   }
 

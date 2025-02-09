@@ -1,3 +1,10 @@
+import { OrderType } from './shared.interface'
+
+export interface GetEventsQuery {
+  page: number
+  order: OrderType
+}
+
 export interface VerifyEventOwnershipRequest {
   organizerId: number
   slug: string

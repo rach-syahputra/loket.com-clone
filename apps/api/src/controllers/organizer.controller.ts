@@ -3,6 +3,7 @@ import { NextFunction, Response } from 'express'
 import { UserRequest } from '../interfaces/auth.interface'
 import { ResponseError } from '../helpers/error.handler'
 import organizerService from '../services/organizer.service'
+import { OrderType } from '../interfaces/shared.interface'
 
 class OrganizerController {
   async getEvents(req: UserRequest, res: Response, next: NextFunction) {
@@ -10,18 +11,21 @@ class OrganizerController {
       if (req.user) {
         if (req.user.roleId !== 2) throw new ResponseError(401, 'Unauthorized.')
 
-        const { status, page } = req.query
+        const { status, page, order } = req.query
 
         let data
 
         if (status === 'aktif')
-          data = await organizerService.getActiveEvents(
-            req.user.id,
-            Number(page)
-          )
+          data = await organizerService.getActiveEvents(req.user.id, {
+            page: Number(page),
+            order: order as OrderType
+          })
 
         if (status === 'lalu')
-          data = await organizerService.getPastEvents(req.user.id, Number(page))
+          data = await organizerService.getPastEvents(req.user.id, {
+            page: Number(page),
+            order: order as OrderType
+          })
 
         res.status(200).json({
           success: true,
