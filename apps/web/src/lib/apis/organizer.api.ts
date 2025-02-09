@@ -5,19 +5,21 @@ import { handleSignOut } from '@/app/actions/actions'
 import {
   EventBySlugJson,
   EventsByOrganizerJson,
-  EventStatus
+  EventStatus,
+  OrderType
 } from '../interfaces/organizer.interface'
 import { BASE_URL } from '../constants'
 
 export async function fetchGetEventsByOrganizer(
   status: EventStatus = 'aktif',
-  page: number
+  page: number,
+  order: OrderType = 'desc'
 ): Promise<EventsByOrganizerJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
   const response = await fetch(
-    `${BASE_URL}/organizers/events?status=${status}&page=${page.toString()}`,
+    `${BASE_URL}/organizers/events?status=${status}&page=${page.toString()}&order=${order}`,
     {
       method: 'GET',
       headers: {

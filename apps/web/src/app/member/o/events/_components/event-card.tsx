@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import {
   faCalendar,
@@ -7,12 +8,11 @@ import {
   faTicket
 } from '@fortawesome/free-solid-svg-icons'
 
-import { cn, formatEventDate, formatEventTime, formatNumber } from '@/lib/utils'
+import { formatEventDate, formatEventTime, formatNumber } from '@/lib/utils'
 import { EventByOrganizer } from '@/lib/interfaces/organizer.interface'
 import Icon from '@/components/icon'
 import Button from '@/components/button'
 import AttendeeListModal from './attendee-list-modal'
-import Link from 'next/link'
 
 type EventCardProps = {
   event: EventByOrganizer

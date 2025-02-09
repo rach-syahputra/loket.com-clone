@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 import { fetchGetEventsByOrganizer } from '@/lib/apis/organizer.api'
 import {
   EventByOrganizer,
-  EventStatus
+  EventStatus,
+  OrderType
 } from '@/lib/interfaces/organizer.interface'
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
 import LoadingDots from '@/components/loading-dots'
@@ -22,32 +24,57 @@ import {
 } from '@/components/pagination'
 import EventTabLink from './event-tab-link'
 import EventCard from './event-card'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/shadcn-ui/select'
+import Icon from '@/components/icon'
+import EventCardSkeleton from './event-card-skeleton'
 
 export default function PageContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const status = searchParams.get('status')
+  const status = searchParams.get('status') || 'status'
   const currentPage = Number(searchParams.get('page')) || 1
+  const order = searchParams.get('order') || 'desc'
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [events, setEvents] = useState<EventByOrganizer[]>([])
   const [totalPages, setTotalPages] = useState<number>(0)
+  const [totalDisplayedEvents, setTotalDisplayedEvents] = useState<number>(0)
+  const [totalEvents, setTotalEvents] = useState<number>(0)
 
   const getEventsByOrganizer = async () => {
-    const response = await fetchGetEventsByOrganizer(
-      (status as EventStatus) || 'aktif',
-      currentPage
-    )
+    try {
+      setIsLoading(true)
 
-    if (response.success) {
+      const response = await fetchGetEventsByOrganizer(
+        status as EventStatus,
+        currentPage,
+        order as OrderType
+      )
+
+      if (response.success) {
+        setEvents(response.data.events)
+        setTotalPages(response.data.pagination.totalPages)
+        setTotalDisplayedEvents(response.data.events.length)
+        setTotalEvents(response.data.totalEvents)
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
       setIsLoading(false)
-      setEvents(response.data.events)
-      setTotalPages(response.data.pagination.totalPages)
     }
   }
 
   useEffect(() => {
     getEventsByOrganizer()
-  }, [status, currentPage])
+  }, [status, currentPage, order, searchParams])
 
   return (
     <DashboardContent>
@@ -65,10 +92,52 @@ export default function PageContent() {
           />
         </div>
         <div className='flex flex-col gap-5 py-5'>
-          {isLoading ? (
-            <div className='flex h-[400px] w-full items-center justify-center'>
-              <LoadingDots />
+          <div className='flex w-full items-center justify-between'>
+            <div className='text-gray-secondary text-sm'>
+              Menampilkan{' '}
+              <span className='text-dark-primary font-semibold'>
+                {totalDisplayedEvents}
+              </span>{' '}
+              dari total{' '}
+              <span className='text-dark-primary font-semibold'>
+                {totalEvents}
+              </span>{' '}
+              events
             </div>
+            <div className='flex items-center justify-center gap-2'>
+              <span className='text-gray-secondary text-sm font-semibold'>
+                Urutkan:
+              </span>
+              <Select
+                defaultValue={order || 'desc'}
+                onValueChange={(value) =>
+                  router.push(
+                    `/member/o/events?status=${status}&order=${value}`
+                  )
+                }
+              >
+                <SelectTrigger className='text-gray-secondary w-[220px]'>
+                  <SelectValue />
+                  <Icon icon={faChevronDown} className='w-3' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Urutan Event</SelectLabel>
+                    <SelectItem value='desc'>Waktu Mulai (Terdekat)</SelectItem>
+                    <SelectItem value='asc'>Waktu Mulai (Terjauh)</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <>
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+            </>
           ) : events.length > 0 ? (
             events.map((event, index) => (
               <EventCard key={index} event={event} />
@@ -104,7 +173,7 @@ export default function PageContent() {
       </div>
       <Pagination className={`${totalPages === 1 && 'hidden'} place-self-end`}>
         <PaginationPrevious
-          href={`/member/o/events?status=${status}&page=${currentPage - 1}`}
+          href={`/member/o/events?status=${status}&page=${currentPage - 1}&order=${order}`}
           className={`${currentPage === 1 && 'hidden'}`}
         />
         {Array.from({ length: totalPages >= 5 ? 5 : totalPages }).map(
@@ -126,7 +195,7 @@ export default function PageContent() {
             return (
               <PaginationItem key={index} isActive={currentPage === page}>
                 <PaginationLink
-                  href={`/member/o/events?status=${status}&page=${page}`}
+                  href={`/member/o/events?status=${status}&page=${page}&order=${order}`}
                 >
                   {page}
                 </PaginationLink>
@@ -135,7 +204,7 @@ export default function PageContent() {
           }
         )}
         <PaginationNext
-          href={`/member/o/events?status=${status}&page=${currentPage + 1}`}
+          href={`/member/o/events?status=${status}&page=${currentPage + 1}&order=${order}`}
           className={`${currentPage === totalPages && 'hidden'}`}
         />
       </Pagination>

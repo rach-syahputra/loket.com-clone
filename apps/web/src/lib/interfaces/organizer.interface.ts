@@ -40,6 +40,7 @@ export type Attendee = {
 }
 
 export type EventStatus = 'aktif' | 'lalu'
+export type OrderType = 'asc' | 'desc'
 
 export interface EventByOrganizer extends Event {
   totalPrice: number
@@ -56,6 +57,7 @@ export interface EventsByOrganizerJson {
   data: {
     events: EventByOrganizer[]
     pagination: Pagination
+    totalEvents: number
   }
 }
 
