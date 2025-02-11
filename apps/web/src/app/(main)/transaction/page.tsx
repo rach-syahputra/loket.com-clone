@@ -1,11 +1,26 @@
 "use client"
+import { useSession } from "next-auth/react";
 import Image from "next/image"
 import { useSearchParams } from "next/navigation";
 import { title } from "process";
+import { useEffect, useState } from "react";
 
 
 export default function Transaction() {
+    const { data: session, status } = useSession()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const[id,setId] = useState(0)
+  useEffect(() => {
+    if (session?.user) {
+      setName(session.user.name || '')
+      setEmail(session.user.email || '')
+      setId(session.user.id)
+    }
+  }, [session])
+
     const searchParams = useSearchParams();
+    const eventId = searchParams.get("id")
     const title = searchParams.get("title") || "Event";
     const price = parseInt(searchParams.get("price") || "0");
     const quantity = parseInt(searchParams.get("quantity") || "1");
@@ -13,7 +28,33 @@ export default function Transaction() {
     const startDate = searchParams.get("startDate") || "";
     const endDate = searchParams.get("endDate") || "";
 
-    const totalPrice = (price * quantity).toLocaleString()
+    const totalPrice = (price * quantity)
+    const handleBuyTicket = async()=>{
+        try {
+            const res = await fetch("http://localhost:8000/api/transaction",{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+
+                },
+                body:JSON.stringify({
+                    userId:id,
+                    eventId:Number(eventId),
+                    transactionStatus:"WAITING_FOR_PAYMENT",
+                    totalPrice:totalPrice
+
+                })
+            })
+          
+        
+            const data = await res.json();
+            alert("Transaction created successfully!");
+            console.log("Server response:", data);
+        } catch (error) {
+            console.error("Error creating transaction:", error);
+            alert(`Error creating transaction: ${error}`);
+        }
+    }
     return (
         <div className="bg-white w-full h-full">
             <div className="flex lg:gap-[50px] lg:p-[100px] p-[20px]">
@@ -79,18 +120,15 @@ export default function Transaction() {
                         </div>
                     </div>
                     <span className="text-[21px] font-bold">Detail Pemesanan</span>
-                    <div className="border rounded-lg p-[20px] flex flex-col gap-4 w-full">
+                    <div className="border rounded-lg p-[20px] flex flex-col gap-4 w-full ">
                         <label htmlFor="">Nama Lengkap</label>
-                        <label htmlFor="">Gunakan nama yang tertera di KTP/Paspor.</label>
 
-                        <input className=" w-full h-[47px] rounded-lg" type="text" placeholder="Andi Farrel Athalla Pasha" />
-                        <label htmlFor="">Nomor Ponsel
-                        </label>
-                        <input className=" w-full h-[47px] rounded-lg" type="text" placeholder="+6282112162464" />
+                        <input className=" w-full h-[47px] rounded-lg z-50" type="text" value={name} />
+                      
                         <label htmlFor="">Email</label>
                         <label htmlFor="">E-tiket akan dikirim ke email kamu.</label>
 
-                        <input className="w-full h-[47px] rounded-lg" type="text" placeholder="andi@gmail.com" />
+                        <input className="w-full h-[47px] rounded-lg" type="text" value={email} />
                     </div>
                     <span className="text-[21px] font-bold">Pembayaran</span>
                     <div className="flex items-center justify-center w-full ">
@@ -110,14 +148,14 @@ export default function Transaction() {
                         <div className="flex justify-between">
                             <span>Total Harga Tiket
                             </span>
-                            <span>{totalPrice}
+                            <span>{totalPrice.toLocaleString()}
                             </span>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <span>Total Bayar
                             </span>
-                            <span>{totalPrice}
+                            <span>{totalPrice.toLocaleString()}
                             </span>
                         </div>
                         <div>
@@ -140,23 +178,23 @@ export default function Transaction() {
                         </span>
 
                     </div>
-                    <div className="border rounded-lg p-[30px] flex flex-col w-[383px] h-[300px] justify-between text-black">
+                    <div className="border rounded-lg p-[30px] flex flex-col w-[383px] h-[300px] justify-between text-black z-50">
                         <span>Detail Harga</span>
                         <div className="flex justify-between">
                             <span>Total Harga Tiket
                             </span>
-                            <span>{totalPrice}
+                            <span>{totalPrice.toLocaleString()}
                             </span>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <span>Total Bayar
                             </span>
-                            <span>{totalPrice}
+                            <span>{totalPrice.toLocaleString()}
                             </span>
                         </div>
                         <div>
-                            <button  className="w-full h-[48px] bg-[#0049CC] rounded-lg text-white font-bold">Bayar Tiket</button>
+                            <button  className="w-full h-[48px] bg-[#0049CC] rounded-lg text-white font-bold" onClick={handleBuyTicket}>Bayar Tiket</button>
                         </div>
                     </div>
                 </div>

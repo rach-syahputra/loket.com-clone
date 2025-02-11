@@ -1,6 +1,6 @@
 "use client";
 
-import { error } from "console";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,10 @@ export default function DetailPage() {
   const [ticketQuantity,setTicketQuantity] = useState(1)
   const {slug} = useParams()
   const router = useRouter(); // 🚀 Initialize Next.js router
-
+  const { data: session, status } = useSession()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const[id,setId] = useState(0)
   interface Event{
     id:number
     title:string
@@ -46,7 +49,13 @@ export default function DetailPage() {
       hour12: false, // Ensures 24-hour format
     });
   }
-  
+  useEffect(() => {
+    if (session?.user) {
+      setName(session.user.name || '')
+      setEmail(session.user.email || '')
+      setId(session.user.id)
+    }
+  }, [session])
   useEffect(() => {
     // Only fetch if slug is defined
     if (!slug) return;
@@ -69,12 +78,40 @@ export default function DetailPage() {
     return <div>Loading...</div>;
   }
   
-  const handleBuyTicket = ()=>{
-    router.push(
-      `/transaction?title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(event.location.streetAddress + ", " + event.location.city)}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}`
-    )
-  }
+  // const handleBuyTicket = ()=>{
+  //   router.push(
+  //     `/transaction?id=${event.id}&title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(event.location.streetAddress + ", " + event.location.city)}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}`
+  //   )
+  // }
 
+  const handleBuyTicket = async () => {
+    try {
+      router.push(
+        `/transaction?id=${event.id}&title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(event.location.streetAddress + ", " + event.location.city)}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}`
+      )
+      const totalPrice = event.price * ticketQuantity;
+      const res = await fetch("http://localhost:8000/api/transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: id, // or from session
+          eventId: event.id,
+          transactionStatus: "WAITING_FOR_PAYMENT",
+          totalPrice: totalPrice,
+        }),
+      });
+
+    
+      const data = await res.json();
+      console.log("Transaction created successfully", data);
+
+     
+    
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      alert(`Error creating transaction: ${error}`);
+    }
+  };
   return (
     <div className="bg-white w-full min-h-full lg:p-[100px] pb-[120px]">
       <div className="p-[20px] lg:p-0">
