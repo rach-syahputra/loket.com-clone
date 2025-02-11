@@ -10,7 +10,7 @@ export default function Button({ variant = 'default', ...props }: ButtonProps) {
       {...props}
       disabled={props.disabled}
       className={cn(
-        'h-12 w-fit rounded-lg px-4 font-semibold',
+        'min-h-12 w-fit rounded-lg px-4 py-2 font-semibold',
         props.className,
         {
           'bg-blue-primary hover:bg-blue-secondary text-white transition-all duration-300 ease-in-out':

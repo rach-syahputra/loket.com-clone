@@ -39,7 +39,7 @@ import EventCardSkeleton from './event-card-skeleton'
 export default function PageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const status = searchParams.get('status') || 'status'
+  const status = searchParams.get('status') || 'aktif'
   const currentPage = Number(searchParams.get('page')) || 1
   const order = searchParams.get('order') || 'desc'
 
@@ -92,8 +92,8 @@ export default function PageContent() {
           />
         </div>
         <div className='flex flex-col gap-5 py-5'>
-          <div className='flex w-full items-center justify-between'>
-            <div className='text-gray-secondary text-sm'>
+          <div className='flex w-full items-start justify-between gap-4 lg:items-center'>
+            <div className='text-gray-secondary text-sm max-md:hidden'>
               Menampilkan{' '}
               <span className='text-dark-primary font-semibold'>
                 {totalDisplayedEvents}
@@ -104,7 +104,7 @@ export default function PageContent() {
               </span>{' '}
               events
             </div>
-            <div className='flex items-center justify-center gap-2'>
+            <div className='flex items-center justify-center gap-2 md:flex-col md:items-end lg:flex-row lg:items-center'>
               <span className='text-gray-secondary text-sm font-semibold'>
                 Urutkan:
               </span>
