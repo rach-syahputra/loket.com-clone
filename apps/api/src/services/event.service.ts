@@ -2,6 +2,7 @@ import eventRepository from '../repositories/event.repository'
 
 import {
   EventCreate,
+  FilterOptions,
   UpdateEventServiceRequest,
   VerifyEventOwnershipRequest
 } from '../interfaces/event.interface'
@@ -40,6 +41,10 @@ class EventService {
     return await eventRepository.getEventBySlug(slug)
   }
 
+  async filterAll(filters:FilterOptions){
+    return await eventRepository.filterAll(filters)
+  }
+  
   async getEventsWithoutReviews(userId:number){
     return await eventRepository.getEventsWithoutReviews(userId)
 }

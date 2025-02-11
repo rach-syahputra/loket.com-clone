@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -129,9 +129,10 @@ export default function Review() {
   }
   return (
     <div className='min-h-screen bg-gray-100 p-5'>
-      {loading ? (
-        <p>Loading events...</p>
-      ) : events.length === 0 ? (
+    {loading ? (
+      <p>Loading events...</p>
+    ) : (
+      events.length === 0 ? (
         <p>No events available to review.</p>
       ) : (
         events.map((event) => (
@@ -141,7 +142,9 @@ export default function Review() {
             eventReviewOnSubmitted={handleReviewSubmitted}
           />
         ))
-      )}
-    </div>
+      )
+    )}
+  </div>
+  
   )
 }

@@ -10,6 +10,7 @@ export const eventRouter = () => {
   router.get('/event', eventController.getEvent)
   router.get('/event/:slug', eventController.getEventBySlug)
   router.get('/events/reviews',eventController.getEventsWithoutReviews)
+  router.get('/events/filter',eventController.filterAll)
   router.patch(
     '/events/:eventId',
     verifyToken,

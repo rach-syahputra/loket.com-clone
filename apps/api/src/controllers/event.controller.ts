@@ -32,6 +32,46 @@ class EventController {
     } catch (error) {}
   }
 
+  async filterAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Extract from query
+      const { locationId, categoryId, ticketType } = req.query;
+  
+      // Convert them to numbers if they exist
+      let parsedLocationId: number | undefined;
+      if (locationId) {
+        const tmp = parseInt(locationId as string, 10);
+        if (!isNaN(tmp)) {
+          parsedLocationId = tmp;
+        }
+      }
+  
+      let parsedCategoryId: number | undefined;
+      if (categoryId) {
+        const tmp = parseInt(categoryId as string, 10);
+        if (!isNaN(tmp)) {
+          parsedCategoryId = tmp;
+        }
+      }
+  
+      // Now pass the correct numeric types to the service
+      const result = await eventService.filterAll({
+        locationId: parsedLocationId,
+        categoryId: parsedCategoryId,
+        ticketType: ticketType as 'FREE' | 'PAID' | undefined,
+      });
+  
+      res.status(200).send({
+        message: 'Filter retrieved successfully',
+        result
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
+  
+
   async updateEvent(req: UserRequest, res: Response, next: NextFunction) {
     try {
       req.body.availableSeats &&= Number(req.body.availableSeats)
