@@ -7,7 +7,7 @@ import userRouter from './user.route'
 import organizerRouter from './organizer.route'
 import { searchRouter } from './search.route'
 import { reviewRouter } from './review.route'
-import { transactionRouter } from './transaction.route'
+import transactionRouter from './transaction.route'
 
 const apiRouter = Router()
 
@@ -15,10 +15,10 @@ apiRouter.use('/', provinceRouter())
 apiRouter.use('/', categoryRouter())
 apiRouter.use('/', eventRouter())
 apiRouter.use('/', searchRouter())
-apiRouter.use('/',reviewRouter())
-apiRouter.use('/',transactionRouter())
+apiRouter.use('/', reviewRouter())
 apiRouter.use('/auth', authRouter)
 apiRouter.use('/users', userRouter)
 apiRouter.use('/organizers', organizerRouter)
+apiRouter.use('/transactions', transactionRouter)
 
 export default apiRouter
