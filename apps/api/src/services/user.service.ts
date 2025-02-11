@@ -9,13 +9,14 @@ import {
   UpdateUserServiceRequest,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
-import userImageRepository from '../repositories/user.image.repository'
 import userRepository from '../repositories/user.repository'
 import {
   UpdateUserSchema,
   VerifyPasswordSchema
 } from '../validations/user.validation'
 import { putAccessToken } from '../helpers/jwt.handler'
+import imageRepository from '../repositories/image.repository'
+import { CLOUDINARY_USER_PROFILE_IMAGE_FOLDER } from '../config'
 
 class UserService {
   async verifyPassword(req: VerifyPasswordRequest) {
@@ -44,7 +45,10 @@ class UserService {
     let userImage
 
     if (req.image) {
-      userImage = await userImageRepository.upload(req.image.path)
+      userImage = await imageRepository.upload(
+        req.image.path,
+        CLOUDINARY_USER_PROFILE_IMAGE_FOLDER
+      )
 
       if (userImage) {
         const user = await userRepository.findById(req.id)
@@ -54,10 +58,10 @@ class UserService {
           user.pictureUrl.includes('res.cloudinary.com')
         ) {
           const publicId = getPublicId(user.pictureUrl)
-          const deletedImage = await userImageRepository.delete(publicId)
+          const deletedImage = await imageRepository.delete(publicId)
 
           if (deletedImage.result !== 'ok') {
-            await userImageRepository.delete(userImage.public_id)
+            await imageRepository.delete(userImage.public_id)
             throw new ResponseError(400, 'Uploading image failed')
           }
         }

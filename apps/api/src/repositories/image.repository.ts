@@ -1,9 +1,9 @@
 import cloudinary from '../helpers/cloudinary'
 
-class UserImageRepository {
-  async upload(imagePath: string) {
+class ImageRepository {
+  async upload(imagePath: string, folder: string) {
     const res = await cloudinary.uploader.upload(imagePath, {
-      folder: 'loket-user-profile-images'
+      folder
     })
 
     return res
@@ -16,4 +16,4 @@ class UserImageRepository {
   }
 }
 
-export default new UserImageRepository()
+export default new ImageRepository()

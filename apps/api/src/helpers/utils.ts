@@ -14,9 +14,7 @@ export async function generateHashedPassword(password: string) {
 }
 
 export function convertToUTC7(date: Date) {
-  return new Date(
-    new Date(date).toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
-  )
+  return new Date(date.getTime() + 7 * 60 * 60 * 1000).toISOString()
 }
 
 export function generateSlug(name: string): string {

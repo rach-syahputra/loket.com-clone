@@ -15,7 +15,9 @@ import { validate } from '../helpers/validation.handler'
 import { UpdateEventSchema } from '../validations/event.validation'
 import { ResponseError } from '../helpers/error.handler'
 import { getPublicId } from '../helpers/cloudinary'
-import eventImageRepository from '../repositories/event.image.repository'
+import imageRepository from '../repositories/image.repository'
+import { CLOUDINARY_EVENT_BANNER_FOLDER } from '../config'
+
 class EventService {
   async createEventWithLocation(
     eventData: EventCreate,
@@ -67,7 +69,10 @@ class EventService {
     let eventBanner
 
     if (req.banner) {
-      eventBanner = await eventImageRepository.upload(req.banner.path)
+      eventBanner = await imageRepository.upload(
+        req.banner.path,
+        CLOUDINARY_EVENT_BANNER_FOLDER
+      )
 
       if (eventBanner) {
         const event = await eventRepository.getEventById(req.eventId)
@@ -77,10 +82,10 @@ class EventService {
           event.bannerUrl.includes('res.cloudinary.com')
         ) {
           const publicId = getPublicId(event.bannerUrl)
-          const deletedBanner = await eventImageRepository.delete(publicId)
+          const deletedBanner = await imageRepository.delete(publicId)
 
           if (deletedBanner.result !== 'ok') {
-            await eventImageRepository.delete(eventBanner.public_id)
+            await imageRepository.delete(eventBanner.public_id)
             throw new ResponseError(400, 'Uploading image failed')
           }
         }
