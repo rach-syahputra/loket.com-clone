@@ -175,7 +175,7 @@ model Promotion {
 model Review {
   id        Int      @id @default(autoincrement())
   userId    Int      @map("user_id")
-  eventId   Int      @map("event_id")
+  eventId   Int      @map("event_id") 
   content   String   @db.Text
   rating    Decimal
   createdAt DateTime @default(now()) @map("created_at")

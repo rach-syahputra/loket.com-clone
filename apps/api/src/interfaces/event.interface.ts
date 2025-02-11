@@ -9,6 +9,8 @@ export interface EventCreate {
   registrationEndDate: string | Date
   eventStartDate: string | Date
   eventEndDate: string | Date
+  eventStartTime:string
+  eventEndTime:string
   price: number
   availableSeats: number
   locationId: number

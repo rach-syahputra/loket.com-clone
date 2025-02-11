@@ -1,7 +1,19 @@
+"use client"
 import Image from "next/image"
+import { useSearchParams } from "next/navigation";
+import { title } from "process";
 
 
-export default function TransactionPage() {
+export default function Transaction() {
+    const searchParams = useSearchParams();
+    const title = searchParams.get("title") || "Event";
+    const price = parseInt(searchParams.get("price") || "0");
+    const quantity = parseInt(searchParams.get("quantity") || "1");
+    const location = searchParams.get("location") || "Unknown Location";
+    const startDate = searchParams.get("startDate") || "";
+    const endDate = searchParams.get("endDate") || "";
+
+    const totalPrice = (price * quantity).toLocaleString()
     return (
         <div className="bg-white w-full h-full">
             <div className="flex lg:gap-[50px] lg:p-[100px] p-[20px]">
@@ -24,7 +36,7 @@ export default function TransactionPage() {
                         <div className="flex gap-4">
                             <Image className="rounded-lg hidden lg:block" src="https://assets.loket.com/neo/production/images/banner/VGSBz_1733741307486312.jpeg" width={260} height={122} alt="" />
                             <div className="flex flex-col gap-4">
-                                <span>A Musical Drama: Symphony of Dreams
+                                <span>{title}
                                 </span>
                                 <div className="flex gap-4">
                                     <span><Image src="/calendar.png" width={20} height={20} alt="" /></span>
@@ -43,7 +55,7 @@ export default function TransactionPage() {
                                 <div className="flex gap-4">
                                     <span><Image src="/location.png" width={20} height={20} alt="" /></span>
 
-                                    <span>Northen Bali Diving, Bali</span>
+                                    <span>{location}</span>
 
                                 </div>
                             </div>
@@ -58,11 +70,11 @@ export default function TransactionPage() {
                         </div>
                         <hr />
                         <div className="flex justify-between">
-                            <span>SILVER // SHOW 1 (14.00-16.00)</span>
+                            <span>{title}</span>
                             <div className="flex gap-[50px]">
-                                <span>Rp200.000
+                                <span>{`Rp ${price.toLocaleString()}`}
                                 </span>
-                                <span>x1</span>
+                                <span>{`x${quantity}`}</span>
                             </div>
                         </div>
                     </div>
@@ -98,14 +110,14 @@ export default function TransactionPage() {
                         <div className="flex justify-between">
                             <span>Total Harga Tiket
                             </span>
-                            <span>Rp350.000
+                            <span>{totalPrice}
                             </span>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <span>Total Bayar
                             </span>
-                            <span>Rp350.000
+                            <span>{totalPrice}
                             </span>
                         </div>
                         <div>
@@ -133,14 +145,14 @@ export default function TransactionPage() {
                         <div className="flex justify-between">
                             <span>Total Harga Tiket
                             </span>
-                            <span>Rp350.000
+                            <span>{totalPrice}
                             </span>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <span>Total Bayar
                             </span>
-                            <span>Rp350.000
+                            <span>{totalPrice}
                             </span>
                         </div>
                         <div>

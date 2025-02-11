@@ -3,13 +3,16 @@
 import { error } from "console";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 export default function DetailPage() {
   const [activeTab, setActiveTab] = useState(1);
   const [event,setEvent] = useState<Event|null>(null)
+  const [ticketQuantity,setTicketQuantity] = useState(1)
   const {slug} = useParams()
+  const router = useRouter(); // 🚀 Initialize Next.js router
 
   interface Event{
     id:number
@@ -64,6 +67,12 @@ export default function DetailPage() {
 
   if (!event) {
     return <div>Loading...</div>;
+  }
+  
+  const handleBuyTicket = ()=>{
+    router.push(
+      `/transaction?title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(event.location.streetAddress + ", " + event.location.city)}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}`
+    )
   }
 
   return (
@@ -127,7 +136,9 @@ export default function DetailPage() {
                       <span>Rp5.000.000</span>
                     </div>
                     <div>
-                      <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg">
+                      <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg"
+                      onClick={handleBuyTicket}
+                      >
                         Beli Tiket
                       </button>
                     </div>
@@ -180,11 +191,15 @@ export default function DetailPage() {
                       <div className="flex justify-between font-bold">
                         <span>{`Rp ${event?.price.toLocaleString()}`}</span>
                         <div className="flex gap-4">
-                          <button className="relative border border-[#0049CC] rounded-[20px] w-[24px] h-[24px] bg-[#EBF5FF]">
+                          <button className="relative border border-[#0049CC] rounded-[20px] w-[24px] h-[24px] bg-[#EBF5FF] z-50"
+                          onClick={()=>setTicketQuantity((prev)=>Math.max(prev-1,1))}
+                          >
                             <div className="absolute bottom-[1px] left-[9px]">-</div>
                           </button>
-                          <span>1</span>
-                          <button className="relative border border-[#0049CC] rounded-[20px] w-[24px] h-[24px] bg-[#EBF5FF]">
+                          <span>{ticketQuantity}</span>
+                          <button className="relative border border-[#0049CC] rounded-[20px] w-[24px] h-[24px] bg-[#EBF5FF] z-50"
+                          onClick={()=>setTicketQuantity((prev)=>prev+1)}
+                          >
                             <div className="absolute bottom-[0px] left-[8px]">+</div>
                           </button>
                         </div>
@@ -234,15 +249,19 @@ export default function DetailPage() {
             <div className="hidden lg:flex border rounded-xl bg-white h-[270px] w-[360px] p-[30px] text-black flex-col gap-4 justify-between">
               <div className="flex justify-between">
                 <span>Tiket</span>
-                <span>Rp5.000.000</span>
+                <span>{`Rp ${(event?.price* ticketQuantity).toLocaleString() }`}
+                </span>
               </div>
               <hr />
               <div className="flex justify-between">
                 <span>Total 1 tiket</span>
-                <span>Rp5.000.000</span>
-              </div>
+                <span>{`Rp ${(event?.price* ticketQuantity).toLocaleString() }`}
+                </span>              </div>
               <div>
-                <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg">
+                <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg z-50"
+                onClick={handleBuyTicket}
+
+                >
                   Beli Tiket
                 </button>
               </div>
@@ -258,7 +277,10 @@ export default function DetailPage() {
           <span>Rp5.000.000</span>
         </div>
         <div>
-          <button className="bg-[#0049CC] w-full h-[48px] p-[10px] text-white font-bold rounded-lg">
+          <button className="bg-[#0049CC] w-full h-[48px] p-[10px] text-white font-bold rounded-lg"
+          onClick={handleBuyTicket}
+
+          >
             Beli Tiket
           </button>
         </div>

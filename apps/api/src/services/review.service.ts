@@ -1,6 +1,5 @@
 
 import { Review } from '@prisma/client'
-import { prisma } from '../helpers/prisma'
 import reviewRepository from '../repositories/review.repository'
 
 class reviewService{
@@ -9,6 +8,12 @@ class reviewService{
         const {userId,eventId,content,rating} = reviewData
         return await reviewRepository.createReview(reviewData)
     }
+
+    async getReviewByEventId(eventId:number){
+        return await reviewRepository.getReviewByEventId(eventId)
+    }
+
+   
 
 }
 

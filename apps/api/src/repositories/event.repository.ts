@@ -32,6 +32,18 @@ class EventRepository {
     })
   }
 
+  async getEventsWithoutReviews(userId:number){
+    return await prisma.event.findMany({
+        where:{
+            Review:{
+                none:{
+                    userId:userId
+                }
+            }
+        }
+    })
+}
+
   async updateEvent(req: UpdateEventRepositoryRequest) {
     return await prisma.$transaction(async (trx) => {
       if (req.location?.id) {
@@ -90,6 +102,8 @@ class EventRepository {
       include: { location: true }
     })
   }
+
+  
 }
 
 export default new EventRepository()

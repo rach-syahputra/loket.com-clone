@@ -7,6 +7,20 @@ class reviewRepository{
             data:reviewData
         })
     }
+
+    async getReviewByEventId(eventId:number){
+        return await prisma.review.findFirst({
+            where:{
+                eventId:eventId
+            },
+            include:{
+                event:true,
+                user:true
+            }
+        })
+    }
+
+   
 }
 
 export default new reviewRepository()

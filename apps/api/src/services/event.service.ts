@@ -40,6 +40,10 @@ class EventService {
     return await eventRepository.getEventBySlug(slug)
   }
 
+  async getEventsWithoutReviews(userId:number){
+    return await eventRepository.getEventsWithoutReviews(userId)
+}
+
   async verifyEventOwnership(req: VerifyEventOwnershipRequest) {
     const event = await eventRepository.getEventById(req.eventId)
 

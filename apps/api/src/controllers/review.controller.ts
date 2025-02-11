@@ -15,6 +15,22 @@ class reviewController{
             next(error)
         }
     }
+
+    async getReviewsByEventId(req:Request,res:Response,next:NextFunction){
+        try {
+            const eventId = Number(req.params.eventId);
+            const result = await reviewService.getReviewByEventId(eventId )
+
+            res.status(200).send({
+                message:"Event title fetched successfully",
+                result
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+  
 }
 
 export default new reviewController()

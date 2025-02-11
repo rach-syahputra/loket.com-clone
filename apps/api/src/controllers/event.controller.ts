@@ -76,6 +76,20 @@ class EventController {
       next(error)
     }
   }
+
+  async getEventsWithoutReviews(req:Request,res:Response,next:NextFunction){
+        try {
+            const userId = Number(req.params.userId)
+
+            const result = await eventService.getEventsWithoutReviews(userId)
+
+            res.status(200).send({
+                message:"Events Without Reviews Fetched Successfully"
+            })
+        } catch (error) {
+            next(error)
+        }
+  }
 }
 
 export default new EventController()
