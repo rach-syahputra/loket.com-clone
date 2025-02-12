@@ -27,6 +27,10 @@ class AuthService {
 
     validate(RegisterSchema, req)
 
+    const registeredUser = await authRepository.findUserByEmail(req.email)
+
+    if (registeredUser) throw new ResponseError(409, 'User already exists')
+
     if (req.referralCode) {
       const userWithReferralCode = await authRepository.findUserByReferralCode(
         req.referralCode
