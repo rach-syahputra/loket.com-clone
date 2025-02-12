@@ -73,11 +73,11 @@ export default function EventCard({ event }: EventCardProps) {
 
         <div className='flex w-fit items-center justify-center gap-4'>
           <Button onClick={() => setOpenModal(true)}>Daftar Peserta</Button>
-          <Button variant='outline'>
+          <Button variant='outline' asChild>
             <Link
               href={`/member/o/events/${event.slug}`}
               aria-label='detail and update event'
-              className='h-full w-full'
+              className='flex items-center justify-center'
             >
               Lihat Detail
             </Link>

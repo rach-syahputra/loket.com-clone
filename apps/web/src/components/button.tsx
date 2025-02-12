@@ -1,12 +1,20 @@
+import { Slot } from '@radix-ui/react-slot'
 import { cn } from '@/lib/utils'
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'default' | 'outline' | 'secondary-outline'
+  asChild?: boolean
 }
 
-export default function Button({ variant = 'default', ...props }: ButtonProps) {
+export default function Button({
+  variant = 'default',
+  asChild = false,
+  ...props
+}: ButtonProps) {
+  const Comp = asChild ? Slot : 'button'
+
   return (
-    <button
+    <Comp
       {...props}
       disabled={props.disabled}
       className={cn(
@@ -25,8 +33,6 @@ export default function Button({ variant = 'default', ...props }: ButtonProps) {
             (variant === 'outline' || variant === 'secondary-outline')
         }
       )}
-    >
-      {props.children}
-    </button>
+    />
   )
 }
