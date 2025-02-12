@@ -12,9 +12,22 @@ import { validate } from '../helpers/validation.handler'
 import imageRepository from '../repositories/image.repository'
 import { CLOUDINARY_PAYMENT_PROOF_IMAGE_FOLDER } from '../config'
 import { getPublicId } from '../helpers/cloudinary'
+import { CLOUDINARY_EVENT_BANNER_FOLDER } from '../config'
 
 class TransactionService {
-  async createTransaction(transactionData: Prisma.TransactionsCreateInput) {
+  async createTransaction(transactionData: Prisma.TransactionsCreateInput,    paymentProofImage?: Express.Multer.File
+  ) {
+
+
+    if (paymentProofImage) {
+        const transactionPayment = await imageRepository.upload(
+            paymentProofImage.path,
+          CLOUDINARY_EVENT_BANNER_FOLDER
+        )
+        if (transactionPayment && transactionPayment.secure_url) {
+            transactionData.paymentProofImage = transactionPayment.secure_url
+        }
+      }
     const transaction =
       await transactionRepository.createTransaction(transactionData)
 

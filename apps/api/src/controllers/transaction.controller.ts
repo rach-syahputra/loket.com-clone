@@ -8,8 +8,16 @@ import { OrderType } from '../interfaces/shared.interface'
 class TransactionController {
   async createTransaction(req: Request, res: Response, next: NextFunction) {
     try {
-      const transactionData = req.body
-      const result = await transactionService.createTransaction(transactionData)
+        const { userId, eventId, totalPrice, ...rest } = req.body;
+        const transactionData = {
+          ...rest,
+          userId: Number(userId),
+          eventId: Number(eventId),
+          totalPrice: Number(totalPrice),
+        };      const paymentProofFile = req.file;
+
+      const result = await transactionService.createTransaction(transactionData,paymentProofFile
+      )
 
       res.status(200).send({
         message: 'Transaction sent successfully',
