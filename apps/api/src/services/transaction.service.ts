@@ -3,6 +3,7 @@ import transactionRepository from '../repositories/transaction.repository'
 import { ResponseError } from '../helpers/error.handler'
 import eventRepository from '../repositories/event.repository'
 import {
+  GetTransactionsQuery,
   TransactionServiceRequest,
   verifyTransactionOwnershipRequest
 } from '../interfaces/transaction.interface'
@@ -31,6 +32,10 @@ class TransactionService {
 
     if (event?.organizerId !== req.organizerId)
       throw new ResponseError(401, 'Unauthorized')
+  }
+
+  async getTransactions(organizerId: number, query: GetTransactionsQuery) {
+    return await transactionRepository.getTransactions(organizerId, query)
   }
 
   async updateTransaction(req: TransactionServiceRequest) {

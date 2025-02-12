@@ -18,3 +18,9 @@ export interface verifyTransactionOwnershipRequest {
   transactionId: number
   organizerId: number
 }
+
+export interface GetTransactionsQuery {
+  page: number
+  order: OrderType
+  status: TransactionStatus[]
+}

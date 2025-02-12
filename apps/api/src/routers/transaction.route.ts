@@ -6,6 +6,7 @@ import transactionController from '../controllers/transaction.controller'
 
 const router = express.Router()
 router.post('/transaction', transactionController.createTransaction)
+router.get('/', verifyToken, transactionController.getTransactions)
 router.patch(
   '/:transactionId',
   verifyToken,
