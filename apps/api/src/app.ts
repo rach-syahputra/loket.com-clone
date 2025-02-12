@@ -64,7 +64,7 @@ export class App {
           res.status(500).json({
             success: false,
             error: {
-              message: err.message
+              message: 'Something went wrong, please try again later'
             }
           })
         }
