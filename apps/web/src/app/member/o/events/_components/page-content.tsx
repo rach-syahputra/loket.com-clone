@@ -15,19 +15,10 @@ import {
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
 import Button from '@/components/button'
 import Pagination from '@/components/pagination'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/shadcn-ui/select'
-import Icon from '@/components/icon'
 import EventCardSkeleton from './event-card-skeleton'
 import EventTabLink from './event-tab-link'
 import EventCard from './event-card'
+import OrderSelect from './order-select'
 
 export default function PageContent() {
   const router = useRouter()
@@ -107,35 +98,7 @@ export default function PageContent() {
               </span>{' '}
               events
             </div>
-            <div className='flex items-center justify-center gap-2 md:flex-col md:items-end lg:flex-row lg:items-center'>
-              <span className='text-gray-secondary text-sm font-semibold'>
-                Urutkan:
-              </span>
-              <Select
-                defaultValue={order || 'desc'}
-                onValueChange={(value) => {
-                  const urlParams = new URLSearchParams()
-
-                  if (status) urlParams.append('status', status)
-                  if (page) urlParams.append('page', page.toString())
-                  urlParams.append('order', value)
-
-                  router.push(`/member/o/events?${urlParams.toString()}`)
-                }}
-              >
-                <SelectTrigger className='text-gray-secondary w-[220px]'>
-                  <SelectValue />
-                  <Icon icon={faChevronDown} className='w-3' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Urutan Event</SelectLabel>
-                    <SelectItem value='desc'>Waktu Mulai (Terdekat)</SelectItem>
-                    <SelectItem value='asc'>Waktu Mulai (Terjauh)</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+            <OrderSelect />
           </div>
 
           {isLoading ? (

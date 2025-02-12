@@ -4,7 +4,8 @@ import { handleSignOut } from '@/app/actions/actions'
 import { BASE_URL } from '../constants'
 import {
   TransactionsJson,
-  TransactionStatus
+  TransactionStatus,
+  UpdateTransactionJson
 } from '../interfaces/transaction.interface'
 import { OrderType } from '../interfaces/shared.interface'
 
@@ -28,6 +29,28 @@ export async function fetchGetTransactions(
     headers: {
       Authorization: `Bearer ${token}`
     }
+  })
+
+  const transactions = await response.json()
+
+  if (transactions.error?.message === 'jwt is expired') await handleSignOut()
+
+  return transactions
+}
+
+export async function fetchUpdateTransaction(
+  transactionId: number,
+  data: FormData
+): Promise<UpdateTransactionJson> {
+  const session = await getSession()
+  const token = session?.user.accessToken
+
+  const response = await fetch(`${BASE_URL}/transactions/${transactionId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: data
   })
 
   const transactions = await response.json()

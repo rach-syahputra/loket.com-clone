@@ -45,26 +45,32 @@ export const MINUTES = [
 export const TRANSACTION_STATUSES = [
   {
     id: 1,
-    name: 'WAITING_FOR_PAYMENT'
+    name: 'WAITING_FOR_PAYMENT',
+    label: 'Menunggu Pembayaran'
   },
   {
     id: 2,
-    name: 'WAITING_FOR_ADMIN_CONFIRMATION'
+    name: 'WAITING_FOR_ADMIN_CONFIRMATION',
+    label: 'Menunggu Konfirmasi Admin'
   },
   {
     id: 3,
-    name: 'DONE'
+    name: 'DONE',
+    label: 'Selesai'
   },
   {
     id: 4,
-    name: 'REJECTED'
+    name: 'REJECTED',
+    label: 'Tertolak'
   },
   {
     id: 5,
-    name: 'EXPIRED'
+    name: 'EXPIRED',
+    label: 'Kadaluarsa'
   },
   {
     id: 6,
-    name: 'CANCELED'
+    name: 'CANCELED',
+    label: 'Dibatalkan'
   }
 ]

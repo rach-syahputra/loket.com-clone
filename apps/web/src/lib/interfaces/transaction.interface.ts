@@ -40,3 +40,23 @@ export interface TransactionsJson {
     totalTransactions: number
   }
 }
+
+export interface UpdateTransactionJson {
+  success: boolean
+  message: string
+  error?: {
+    message: string
+  }
+  data: {
+    transaction: {
+      createdAt: string
+      updatedAt: string
+      paymentProofImage: string | null
+      id: number
+      userId: number
+      eventId: number
+      transactionStatus: TransactionStatus
+      totalPrice: number
+    }
+  }
+}
