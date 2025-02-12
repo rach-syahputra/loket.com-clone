@@ -6,10 +6,20 @@ import { RawQueryArgs } from '@prisma/client/runtime/library'
 class EventController {
   async createEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      const { eventData, locationData } = req.body
+      let { eventData, locationData } = req.body
+      if (typeof eventData === 'string') {
+        eventData = JSON.parse(eventData)
+      }
+      if (typeof locationData === 'string') {
+        locationData = JSON.parse(locationData)
+      }
+
+      const bannerFile = req.file
+
       const result = await eventService.createEventWithLocation(
         eventData,
-        locationData
+        locationData,
+        bannerFile
       )
 
       res.status(200).send({

@@ -90,7 +90,7 @@ export default function DetailPage() {
         `/transaction?id=${event.id}&title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(event.location.streetAddress + ", " + event.location.city)}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}`
       )
       const totalPrice = event.price * ticketQuantity;
-      const res = await fetch("http://localhost:8000/api/transaction", {
+      const res = await fetch("http://localhost:8000/api/transactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

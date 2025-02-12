@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
@@ -103,40 +103,47 @@ export default function CreateEvent() {
       provinceId: Yup.number().required("Province ID is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      const payload = {
-        eventData: {
-          slug: values.title.toLowerCase().trim().replace(/\s+/g, "-"),
-          title: values.title,
-          description: values.description,
-          bannerUrl: "https://example.com/banner.jpg",
-          registrationStartDate: values.registrationStartDate,
-          registrationEndDate: values.registrationEndDate,
-          eventStartDate: values.eventStartDate,
-          eventEndDate: values.eventEndDate,
-          eventStartTime: values.eventStartTime,
-          eventEndTime: values.eventEndTime,
-          price: Number(values.price),
-          availableSeats: Number(values.availableSeats),
-          categoryId: Number(values.categoryId),
-          ticketType: values.ticketType,
-          organizerId: Number(values.organizerId),
-        },
-        locationData: {
-          streetAddress: values.streetAddress,
-          city: values.city,
-          provinceId: Number(values.provinceId),
-        },
+      // Build the eventData and locationData objects
+      const eventData = {
+        slug: values.title.toLowerCase().trim().replace(/\s+/g, "-"),
+        title: values.title,
+        description: values.description,
+        // The bannerUrl will be replaced on the backend if a file is provided
+        bannerUrl: "https://example.com/banner.jpg",
+        registrationStartDate: values.registrationStartDate,
+        registrationEndDate: values.registrationEndDate,
+        eventStartDate: values.eventStartDate,
+        eventEndDate: values.eventEndDate,
+        eventStartTime: values.eventStartTime,
+        eventEndTime: values.eventEndTime,
+        price: Number(values.price),
+        availableSeats: Number(values.availableSeats),
+        categoryId: Number(values.categoryId),
+        ticketType: values.ticketType,
+        organizerId: Number(values.organizerId),
+      };
+      const locationData = {
+        streetAddress: values.streetAddress,
+        city: values.city,
+        provinceId: Number(values.provinceId),
       };
 
-      console.log("Sending payload:", JSON.stringify(payload, null, 2));
+      // ADDED CODE: Create FormData and append JSON data and file
+      const formData = new FormData();
+      formData.append("eventData", JSON.stringify(eventData));
+      formData.append("locationData", JSON.stringify(locationData));
+      if (bannerFile) {
+        formData.append("banner", bannerFile);
+      }
+      // -------------------------------
+
+      console.log("Sending FormData payload");
 
       try {
         const response = await fetch("http://localhost:8000/api/eventcreate", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          body: formData,
+          // Notice that we do NOT set "Content-Type" here; the browser sets it automatically.
         });
 
         if (response.ok) {
@@ -163,6 +170,30 @@ export default function CreateEvent() {
     return combined;
   };
 
+  // Create a ref for the file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState("https://assets.loket.com/images/banner-event.jpg");
+  // Function to trigger the file explorer
+  const handleBannerClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+   // Handle file selection
+   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      // Update state for file to be submitted later
+      setBannerFile(file);
+      // Generate a temporary URL to preview the image
+      const previewUrl = URL.createObjectURL(file);
+      setBannerPreview(previewUrl);
+    }
+  };
+
+
   // Fetch categories and provinces on mount.
   useEffect(() => {
     const fetchData = async () => {
@@ -186,22 +217,29 @@ export default function CreateEvent() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
+       <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        style={{ display: "none" }}
+      />
       <div className="h-full w-full bg-white py-[100px]">
         <div className="flex flex-col items-center justify-center gap-[50px]">
           {/* Banner Section */}
-          <div className="flex flex-col rounded-[20px] border sm:w-[900px]">
-            <div className="relative">
-              <Image
-                className="rounded-t-[20px] md:rounded-t-[70px] lg:rounded-t-[20px]"
-                src="https://assets.loket.com/images/banner-event.jpg"
-                width={900}
-                height={421}
-                alt=""
-              />
-              <div className="absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[415px]">
+          <div className="flex flex-col rounded-[20px] border sm:w-[900px]"           
+          >
+            <div className="relative z-50 w-[900px] h-[421px] cursor-pointer"  onClick={handleBannerClick}>
+            <Image
+    src={bannerPreview}
+    alt="Banner Preview"
+    fill
+    className="rounded-t-[20px] md:rounded-t-[70px] lg:rounded-t-[20px] object-cover"
+  />
+              <div className={`${bannerPreview=="https://assets.loket.com/images/banner-event.jpg"?"block":"hidden"} absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[415px]`}>
                 <Image src="/add.png" width={60} height={128} alt="" />
               </div>
-              <div className="absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[290px]">
+              <div className={`${bannerPreview=="https://assets.loket.com/images/banner-event.jpg"?"block":"hidden"} absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[290px]`}>
                 <span className="text-[13px] sm:text-[24px]">Unggah gambar/poster/banner</span>
               </div>
             </div>
@@ -795,7 +833,7 @@ export default function CreateEvent() {
           )}
 
           {/* Footer with submit button */}
-          <div className="fixed bottom-0 h-[70px] w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px]">
+          <div className="fixed bottom-0 h-[70px] w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] ">
             <div className="flex items-center justify-between">
               <p className="hidden text-[14px] text-black md:block">
                 <span className="text-[24px] font-semibold text-black">Yeay!</span> Tinggal Selangkah lagi dan event kamu berhasil dibuat.

@@ -21,11 +21,23 @@ import { CLOUDINARY_EVENT_BANNER_FOLDER } from '../config'
 class EventService {
   async createEventWithLocation(
     eventData: EventCreate,
-    locationData: Location
+    locationData: Location,
+    bannerFile?: Express.Multer.File
+
   ) {
     return await prisma.$transaction(async (prisma) => {
       const location = await eventRepository.createLocation(locationData)
 
+       
+    if (bannerFile) {
+        const eventBanner = await imageRepository.upload(
+          bannerFile.path,
+          CLOUDINARY_EVENT_BANNER_FOLDER
+        )
+        if (eventBanner && eventBanner.secure_url) {
+          eventData.bannerUrl = eventBanner.secure_url
+        }
+      }
       const event = await eventRepository.createEvent({
         ...eventData,
         locationId: location.id

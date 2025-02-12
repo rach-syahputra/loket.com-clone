@@ -5,7 +5,10 @@ import { uploadEventBanner } from '../helpers/multer'
 
 export const eventRouter = () => {
   const router = Router()
-  router.post('/eventcreate', eventController.createEvent)
+  router.post('/eventcreate',uploadEventBanner.single('banner'),
+  eventController.createEvent
+    
+  )
 
   router.get('/event', eventController.getEvent)
   router.get('/event/:slug', eventController.getEventBySlug)

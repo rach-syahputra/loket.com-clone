@@ -31,7 +31,7 @@ export default function Transaction() {
     const totalPrice = (price * quantity)
     const handleBuyTicket = async()=>{
         try {
-            const res = await fetch("http://localhost:8000/api/transaction",{
+            const res = await fetch("http://localhost:8000/api/transactions",{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

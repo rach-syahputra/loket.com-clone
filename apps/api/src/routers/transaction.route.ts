@@ -5,7 +5,7 @@ import { uploadPaymentProofImage } from '../helpers/multer'
 import transactionController from '../controllers/transaction.controller'
 
 const router = express.Router()
-router.post('/transaction', transactionController.createTransaction)
+router.post('/', transactionController.createTransaction)
 router.get('/', verifyToken, transactionController.getTransactions)
 router.patch(
   '/:transactionId',
