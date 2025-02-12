@@ -95,7 +95,7 @@ export function CardExplore({
         // Build query parameters
         const params = new URLSearchParams();
         if (selectedProvinceId) {
-          params.append("locationId", selectedProvinceId);
+          params.append("provinceId", selectedProvinceId);
         }
         if (selectedCategoryId) {
           params.append("categoryId", selectedCategoryId);

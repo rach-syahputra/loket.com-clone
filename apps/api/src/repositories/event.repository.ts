@@ -110,8 +110,9 @@ class EventRepository {
     const events = await prisma.event.findMany({
       where: {
         // If provinceId is defined, use it; otherwise ignore
-        locationId: filters.locationId ? filters.locationId : undefined,
-
+        location: filters.provinceId
+    ? { provinceId: filters.provinceId }
+    : undefined,
         // If categoryId is defined, use it; otherwise ignore
         categoryId: filters.categoryId ? filters.categoryId : undefined,
 

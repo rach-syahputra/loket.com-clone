@@ -35,14 +35,14 @@ class EventController {
   async filterAll(req: Request, res: Response, next: NextFunction) {
     try {
       // Extract from query
-      const { locationId, categoryId, ticketType } = req.query;
+      const { provinceId, categoryId, ticketType } = req.query;
   
       // Convert them to numbers if they exist
-      let parsedLocationId: number | undefined;
-      if (locationId) {
-        const tmp = parseInt(locationId as string, 10);
+      let parsedProvinceId: number | undefined;
+      if (provinceId) {
+        const tmp = parseInt(provinceId as string, 10);
         if (!isNaN(tmp)) {
-          parsedLocationId = tmp;
+            parsedProvinceId = tmp;
         }
       }
   
@@ -56,7 +56,7 @@ class EventController {
   
       // Now pass the correct numeric types to the service
       const result = await eventService.filterAll({
-        locationId: parsedLocationId,
+        provinceId: parsedProvinceId,
         categoryId: parsedCategoryId,
         ticketType: ticketType as 'FREE' | 'PAID' | undefined,
       });

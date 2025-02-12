@@ -69,4 +69,5 @@ export interface FilterOptions {
   locationId?: number;
   categoryId?: number;
   ticketType?: 'FREE' | 'PAID';
+  provinceId?: number;
 }
