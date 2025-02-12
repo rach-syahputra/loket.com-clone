@@ -7,23 +7,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 import { fetchGetEventsByOrganizer } from '@/lib/apis/organizer.api'
+import { OrderType } from '@/lib/interfaces/shared.interface'
 import {
   EventByOrganizer,
-  EventStatus,
-  OrderType
+  EventStatus
 } from '@/lib/interfaces/organizer.interface'
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
-import LoadingDots from '@/components/loading-dots'
 import Button from '@/components/button'
-import {
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious
-} from '@/components/pagination'
-import EventTabLink from './event-tab-link'
-import EventCard from './event-card'
+import Pagination from '@/components/pagination'
 import {
   Select,
   SelectContent,
@@ -35,12 +26,14 @@ import {
 } from '@/components/shadcn-ui/select'
 import Icon from '@/components/icon'
 import EventCardSkeleton from './event-card-skeleton'
+import EventTabLink from './event-tab-link'
+import EventCard from './event-card'
 
 export default function PageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const status = searchParams.get('status') || 'aktif'
-  const currentPage = Number(searchParams.get('page')) || 1
+  const page = searchParams.get('page') || 1
   const order = searchParams.get('order') || 'desc'
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -55,7 +48,7 @@ export default function PageContent() {
 
       const response = await fetchGetEventsByOrganizer(
         status as EventStatus,
-        currentPage,
+        Number(page),
         order as OrderType
       )
 
@@ -72,9 +65,19 @@ export default function PageContent() {
     }
   }
 
+  const handlePageChange = (page: number) => {
+    const urlParams = new URLSearchParams()
+
+    if (status) urlParams.append('status', status)
+    urlParams.append('page', page.toString())
+    if (order) urlParams.append('order', order)
+
+    router.push(`/member/o/events?${urlParams.toString()}`)
+  }
+
   useEffect(() => {
     getEventsByOrganizer()
-  }, [status, currentPage, order, searchParams])
+  }, [status, page, order, searchParams])
 
   return (
     <DashboardContent>
@@ -110,11 +113,15 @@ export default function PageContent() {
               </span>
               <Select
                 defaultValue={order || 'desc'}
-                onValueChange={(value) =>
-                  router.push(
-                    `/member/o/events?status=${status}&order=${value}`
-                  )
-                }
+                onValueChange={(value) => {
+                  const urlParams = new URLSearchParams()
+
+                  if (status) urlParams.append('status', status)
+                  if (page) urlParams.append('page', page.toString())
+                  urlParams.append('order', value)
+
+                  router.push(`/member/o/events?${urlParams.toString()}`)
+                }}
               >
                 <SelectTrigger className='text-gray-secondary w-[220px]'>
                   <SelectValue />
@@ -171,43 +178,15 @@ export default function PageContent() {
           )}
         </div>
       </div>
-      <Pagination className={`${totalPages === 1 && 'hidden'} place-self-end`}>
-        <PaginationPrevious
-          href={`/member/o/events?status=${status}&page=${currentPage - 1}&order=${order}`}
-          className={`${currentPage === 1 && 'hidden'}`}
+
+      {events.length > 0 && !isLoading && (
+        <Pagination
+          page={Number(page)}
+          onPageChange={handlePageChange}
+          totalPages={totalPages}
+          className='place-self-end'
         />
-        {Array.from({ length: totalPages >= 5 ? 5 : totalPages }).map(
-          (_, index) => {
-            let startPage = 1
-
-            if (
-              totalPages > 5 &&
-              currentPage > 2 &&
-              currentPage < totalPages - 2
-            ) {
-              startPage = currentPage - 2 // Keep active page in the middle
-            } else if (totalPages > 5 && currentPage >= totalPages - 2) {
-              startPage = totalPages - 4 // Adjust for last pages
-            }
-
-            const page = startPage + index
-
-            return (
-              <PaginationItem key={index} isActive={currentPage === page}>
-                <PaginationLink
-                  href={`/member/o/events?status=${status}&page=${page}&order=${order}`}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          }
-        )}
-        <PaginationNext
-          href={`/member/o/events?status=${status}&page=${currentPage + 1}&order=${order}`}
-          className={`${currentPage === totalPages && 'hidden'}`}
-        />
-      </Pagination>
+      )}
     </DashboardContent>
   )
 }

@@ -17,8 +17,12 @@ export default function Button({ variant = 'default', ...props }: ButtonProps) {
             variant === 'default',
           'border-dark-primary text-dark-primary border': variant === 'outline',
           'border border-white text-white': variant === 'secondary-outline',
-          'bg-background-inactive hover:bg-background-inactive cursor-not-allowed':
-            props.disabled
+          'cursor-not-allowed': props.disabled,
+          'bg-background-inactive hover:bg-background-inactive':
+            props.disabled && variant === 'default',
+          'border-gray-primary text-gray-primary border':
+            props.disabled &&
+            (variant === 'outline' || variant === 'secondary-outline')
         }
       )}
     >

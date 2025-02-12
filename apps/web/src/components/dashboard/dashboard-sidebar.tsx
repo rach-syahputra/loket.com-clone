@@ -152,7 +152,7 @@ function SidebarMenuLink({
       href={href}
       aria-label={label}
       className={cn(
-        'text-light-primary group flex h-[41px] items-center px-5 text-sm transition-all duration-300 ease-in-out hover:ml-1.5 hover:text-white',
+        'text-light-primary border-navy-primary group flex h-[41px] items-center border-l-[3px] px-5 text-sm transition-all duration-300 ease-in-out hover:ml-1.5 hover:text-white',
         {
           'bg-blue-primary border-blue-secondary border-l-[3px] text-white':
             isActive

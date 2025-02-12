@@ -41,3 +41,30 @@ export const MINUTES = [
   '50',
   '55'
 ]
+
+export const TRANSACTION_STATUSES = [
+  {
+    id: 1,
+    name: 'WAITING_FOR_PAYMENT'
+  },
+  {
+    id: 2,
+    name: 'WAITING_FOR_ADMIN_CONFIRMATION'
+  },
+  {
+    id: 3,
+    name: 'DONE'
+  },
+  {
+    id: 4,
+    name: 'REJECTED'
+  },
+  {
+    id: 5,
+    name: 'EXPIRED'
+  },
+  {
+    id: 6,
+    name: 'CANCELED'
+  }
+]

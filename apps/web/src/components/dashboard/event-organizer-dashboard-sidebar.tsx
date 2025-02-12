@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { faMoneyCheck } from '@fortawesome/free-solid-svg-icons'
 
 import { fetchSwitchRole } from '@/lib/apis/auth.api'
 import {
@@ -14,6 +15,7 @@ import {
   SidebarMenuLabel,
   SidebarMenuLink
 } from './dashboard-sidebar'
+import Icon from '../icon'
 
 export const EVENT_ORGANIZER_MENU = {
   dashboardMenu: [
@@ -27,6 +29,12 @@ export const EVENT_ORGANIZER_MENU = {
       href: '/member/o/events',
       label: 'Event Saya',
       icon: <i className='icon-loket icon-loket-my-events'></i>
+    },
+    {
+      href: '/member/o/transactions',
+      label: 'Transaksi',
+      group: 'Dashboard',
+      icon: <Icon icon={faMoneyCheck} className='w-3.5' />
     }
   ],
   accountMenu: [

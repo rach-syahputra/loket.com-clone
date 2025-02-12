@@ -1,3 +1,5 @@
+import { Pagination } from './shared.interface'
+
 export type Event = {
   id: number
   slug: string
@@ -26,12 +28,6 @@ export type Event = {
   organizerId: number
 }
 
-export type Pagination = {
-  currentPage: number
-  totalPages: number
-  limit: number
-}
-
 export type Attendee = {
   id: number
   name: string
@@ -40,7 +36,6 @@ export type Attendee = {
 }
 
 export type EventStatus = 'aktif' | 'lalu'
-export type OrderType = 'asc' | 'desc'
 
 export interface EventByOrganizer extends Event {
   totalPrice: number

@@ -9,13 +9,12 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  RowPagination,
   SortingState,
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import { Eye } from 'lucide-react'
+import { ChevronDown, Eye } from 'lucide-react'
 
 import {
   Table,
@@ -55,12 +54,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchableColumns: SearchColumn[]
+  pageSize?: number
+  hasPagination?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchableColumns
+  searchableColumns,
+  pageSize = 8,
+  hasPagination = false
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -88,7 +91,7 @@ export function DataTable<TData, TValue>({
     initialState: {
       pagination: {
         pageIndex: 0,
-        pageSize: 8
+        pageSize: pageSize
       }
     },
     state: {
@@ -123,6 +126,7 @@ export function DataTable<TData, TValue>({
           >
             <SelectTrigger className='order-1 w-[140px] sm:w-[200px] lg:order-2'>
               <SelectValue placeholder={searchColumn.label} />
+              <ChevronDown className='text-gray-secondary w-3' />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -168,8 +172,9 @@ export function DataTable<TData, TValue>({
       </div>
       <div className='min-h-[440px] w-full overflow-x-auto rounded-md md:min-w-[768px]'>
         <Table
-        // add style below to apply custom column sizing
-        // style={{ width: table.getCenterTotalSize() }}
+          // add style below to apply custom column sizing
+          // style={{ width: table.getCenterTotalSize() }}
+          className='mb-4'
         >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -223,7 +228,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {hasPagination && <DataTablePagination table={table} />}
     </div>
   )
 }
