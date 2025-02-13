@@ -18,6 +18,6 @@ export interface UpdateUserRepositoryRequest {
   image?: string
 }
 
-export interface GetVouchersRequest {
+export interface GetCouponsRequest {
   userId: number
 }

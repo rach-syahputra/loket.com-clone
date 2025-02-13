@@ -5,7 +5,7 @@ import { ResponseError } from '../helpers/error.handler'
 import { generateHashedPassword } from '../helpers/utils'
 import { validate } from '../helpers/validation.handler'
 import {
-  GetVouchersRequest,
+  GetCouponsRequest,
   UpdateUserServiceRequest,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
@@ -99,16 +99,16 @@ class UserService {
     }
   }
 
-  async getVouchers(req: GetVouchersRequest) {
+  async getCoupons(req: GetCouponsRequest) {
     const user = await userRepository.findById(req.userId)
 
     if (!user) throw new ResponseError(404, 'User not found')
 
-    const points = await userRepository.findPoints(req.userId)
+    const coupons = await userRepository.findPoints(req.userId)
 
     return {
       user: {
-        points
+        coupons
       }
     }
   }
