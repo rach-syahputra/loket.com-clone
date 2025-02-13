@@ -4,18 +4,18 @@ import { ResponseError } from '../helpers/error.handler'
 import dashboardService from '../services/dashboard.service'
 
 class DashboardController {
-  async getTotalActiveEvents(
+  async getDashboardSumamry(
     req: UserRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
       if (req.user?.roleId !== 2) throw new ResponseError(401, 'Unauthorized')
-      const data = await dashboardService.getTotalActiveEvents(req.user?.id)
+      const data = await dashboardService.getDashboardSummary(req.user?.id)
 
       res.status(200).json({
         success: true,
-        message: 'Total active events retrieved.',
+        message: 'Dashboard summary retrieved.',
         data
       })
     } catch (err) {

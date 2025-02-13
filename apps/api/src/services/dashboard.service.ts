@@ -1,12 +1,11 @@
 import dashboardRepository from '../repositories/dashboard.repository'
 
 class StatisticService {
-  async getTotalActiveEvents(organizerId: number) {
-    const totalActiveEvents =
-      await dashboardRepository.getTotalActiveEvents(organizerId)
+  async getDashboardSummary(organizerId: number) {
+    const summary = await dashboardRepository.getDashboardSummary(organizerId)
 
     return {
-      totalActiveEvents
+      summary
     }
   }
   async getSalesStatistic(organizerId: number) {

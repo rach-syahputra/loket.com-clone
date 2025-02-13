@@ -9,10 +9,6 @@ router.get(
   verifyToken,
   dashboardController.getSalesStatistic
 )
-router.get(
-  '/total-active-events',
-  verifyToken,
-  dashboardController.getTotalActiveEvents
-)
+router.get('/summary', verifyToken, dashboardController.getDashboardSumamry)
 
 export default router

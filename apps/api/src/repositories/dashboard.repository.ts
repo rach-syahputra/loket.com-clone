@@ -3,13 +3,74 @@ import { prisma } from '../helpers/prisma'
 import { Statistic } from '../interfaces/statistic.interface'
 
 class DashboardRepository {
-  async getTotalActiveEvents(organizerId: number) {
-    return await prisma.event.count({
-      where: {
-        organizerId: organizerId,
-        eventEndDate: { lt: new Date() }
+  async getDashboardSummary(organizerId: number) {
+    const summary = await prisma.$transaction(async (trx) => {
+      const totalActiveEvents = await prisma.event.count({
+        where: {
+          organizerId: organizerId,
+          OR: [
+            {
+              registrationStartDate: { lte: new Date() },
+              registrationEndDate: { gte: new Date() }
+            },
+            {
+              eventStartDate: { lte: new Date() },
+              eventEndDate: { gte: new Date() }
+            }
+          ]
+        }
+      })
+
+      const totalPastEvents = await trx.event.count({
+        where: {
+          organizerId: organizerId,
+          eventEndDate: { lt: new Date() }
+        }
+      })
+
+      const totalTransactions = await trx.transactions.count({
+        where: {
+          event: {
+            organizerId
+          }
+        }
+      })
+
+      const totalSoldTickets = await trx.transactions.count({
+        where: {
+          event: {
+            organizerId
+          },
+          transactionStatus: 'DONE'
+        }
+      })
+
+      const totalPrices = await trx.transactions.findMany({
+        select: {
+          totalPrice: true
+        },
+        where: {
+          event: {
+            organizerId
+          }
+        }
+      })
+
+      const totalSales = totalPrices.reduce(
+        (sum, transaction) => sum + transaction.totalPrice,
+        0
+      )
+
+      return {
+        totalPastEvents,
+        totalActiveEvents,
+        totalTransactions,
+        totalSoldTickets,
+        totalSales
       }
     })
+
+    return summary
   }
 
   async getSalesStatistic(organizerId: number) {
