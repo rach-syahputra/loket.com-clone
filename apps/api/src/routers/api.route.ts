@@ -8,6 +8,7 @@ import organizerRouter from './organizer.route'
 import { searchRouter } from './search.route'
 import { reviewRouter } from './review.route'
 import transactionRouter from './transaction.route'
+import statisticRouter from './statistic.route'
 
 const apiRouter = Router()
 
@@ -20,5 +21,6 @@ apiRouter.use('/auth', authRouter)
 apiRouter.use('/users', userRouter)
 apiRouter.use('/organizers', organizerRouter)
 apiRouter.use('/transactions', transactionRouter)
+apiRouter.use('/statistics', statisticRouter)
 
 export default apiRouter
