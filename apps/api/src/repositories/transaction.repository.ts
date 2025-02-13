@@ -76,7 +76,11 @@ class TransactionRepository {
     ])
 
     return {
-      transactions,
+      transactions: transactions.map((transaction) => ({
+        ...transaction,
+        createdAt: convertToUTC7(transaction.createdAt),
+        updatedAt: convertToUTC7(transaction.updatedAt)
+      })),
       pagination: {
         currentPage: query.page || 1,
         totalPages: Math.ceil(totalTransactions / limit),
