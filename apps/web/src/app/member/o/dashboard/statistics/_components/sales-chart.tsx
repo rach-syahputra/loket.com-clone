@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 
 import { cn } from '@/lib/utils'
-import { fetchGetSalesStatistic } from '@/lib/apis/statistic.api'
+
+import { fetchGetSalesStatistic } from '@/lib/apis/dashboard.api'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsDesktop } from '@/hooks/use-desktop'
 import { Card } from '@/components/card'

@@ -1,9 +1,9 @@
 import { NextFunction, Response } from 'express'
 import { UserRequest } from '../interfaces/auth.interface'
-import statisticService from '../services/statistic.service'
 import { ResponseError } from '../helpers/error.handler'
+import dashboardService from '../services/dashboard.service'
 
-class StatisticController {
+class DashboardController {
   async getTotalActiveEvents(
     req: UserRequest,
     res: Response,
@@ -11,7 +11,7 @@ class StatisticController {
   ) {
     try {
       if (req.user?.roleId !== 2) throw new ResponseError(401, 'Unauthorized')
-      const data = await statisticService.getTotalActiveEvents(req.user?.id)
+      const data = await dashboardService.getTotalActiveEvents(req.user?.id)
 
       res.status(200).json({
         success: true,
@@ -25,7 +25,7 @@ class StatisticController {
   async getSalesStatistic(req: UserRequest, res: Response, next: NextFunction) {
     try {
       if (req.user?.roleId !== 2) throw new ResponseError(401, 'Unauthorized')
-      const data = await statisticService.getSalesStatistic(req.user?.id)
+      const data = await dashboardService.getSalesStatistic(req.user?.id)
 
       res.status(200).json({
         success: true,
@@ -38,4 +38,4 @@ class StatisticController {
   }
 }
 
-export default new StatisticController()
+export default new DashboardController()

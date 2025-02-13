@@ -2,7 +2,7 @@ import { MONTHS } from '../helpers/contants'
 import { prisma } from '../helpers/prisma'
 import { Statistic } from '../interfaces/statistic.interface'
 
-class StatisticRepositry {
+class DashboardRepository {
   async getTotalActiveEvents(organizerId: number) {
     return await prisma.event.count({
       where: {
@@ -50,4 +50,4 @@ class StatisticRepositry {
   }
 }
 
-export default new StatisticRepositry()
+export default new DashboardRepository()

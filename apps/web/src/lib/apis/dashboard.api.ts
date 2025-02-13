@@ -8,7 +8,7 @@ export async function fetchGetSalesStatistic(): Promise<StatisticJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/statistics/sales`, {
+  const response = await fetch(`${BASE_URL}/dashboard/statistics/sales`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`

@@ -1,16 +1,16 @@
-import statisticRepository from '../repositories/statistic.repository'
+import dashboardRepository from '../repositories/dashboard.repository'
 
 class StatisticService {
   async getTotalActiveEvents(organizerId: number) {
     const totalActiveEvents =
-      await statisticRepository.getTotalActiveEvents(organizerId)
+      await dashboardRepository.getTotalActiveEvents(organizerId)
 
     return {
       totalActiveEvents
     }
   }
   async getSalesStatistic(organizerId: number) {
-    const sales = await statisticRepository.getSalesStatistic(organizerId)
+    const sales = await dashboardRepository.getSalesStatistic(organizerId)
 
     return {
       sales
