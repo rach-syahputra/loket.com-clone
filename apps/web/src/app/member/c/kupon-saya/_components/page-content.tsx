@@ -2,27 +2,27 @@
 
 import { useEffect, useState } from 'react'
 
-import { fetchGetUserVouchers } from '@/lib/apis/user.api'
-import { Voucher } from '@/lib/interfaces/user.interface'
+import { fetchGetUserCoupons } from '@/lib/apis/user.api'
+import { Coupons } from '@/lib/interfaces/user.interface'
 import { useNavigationContenxt } from '@/context/navigation-context'
 import {
   DashboardContent,
   DashboardContentHeader
 } from '@/components/dashboard/dashboard-content'
-import VoucherCard from './voucher-card'
-import VoucherCardSkeleton from './voucher-card-skeleton'
+import CouponCardSkeleton from './coupon-card-skeleton'
+import CouponCard from './coupon-card'
 
 export default function PageContent() {
   const { activeMenu } = useNavigationContenxt()
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [vouchers, setVouchers] = useState<Voucher[]>([])
+  const [coupons, setCoupons] = useState<Coupons[]>([])
 
-  const getVouchers = async () => {
+  const getCoupons = async () => {
     try {
-      const response = await fetchGetUserVouchers()
+      const response = await fetchGetUserCoupons()
 
       if (response.success) {
-        setVouchers(response.data.user.points)
+        setCoupons(response.data.user.coupons)
         setIsLoading(false)
       }
     } catch (error) {
@@ -31,7 +31,7 @@ export default function PageContent() {
   }
 
   useEffect(() => {
-    getVouchers()
+    getCoupons()
   }, [])
 
   return (
@@ -43,18 +43,18 @@ export default function PageContent() {
         <div className='grid gap-x-5 gap-y-4 lg:grid-cols-2 lg:gap-y-6 xl:grid-cols-3'>
           {isLoading ? (
             <>
-              <VoucherCardSkeleton />
-              <VoucherCardSkeleton />
-              <VoucherCardSkeleton />
-              <VoucherCardSkeleton />
+              <CouponCardSkeleton />
+              <CouponCardSkeleton />
+              <CouponCardSkeleton />
+              <CouponCardSkeleton />
             </>
-          ) : vouchers.length > 0 ? (
-            vouchers.map((voucher, index) => (
-              <VoucherCard
+          ) : coupons.length > 0 ? (
+            coupons.map((coupon, index) => (
+              <CouponCard
                 key={index}
-                points={voucher.points}
-                status={voucher.status}
-                expiryDate={voucher.pointsExpiryDate}
+                points={coupon.points}
+                status={coupon.status}
+                expiryDate={coupon.pointsExpiryDate}
               />
             ))
           ) : (

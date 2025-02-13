@@ -12,8 +12,8 @@ export default function AuthCustomerDropdownMenu() {
         label: 'Tiket Saya'
       },
       {
-        href: '/member/c/voucher-saya',
-        label: 'Voucher Saya'
+        href: '/member/c/kupon-saya',
+        label: 'Kupon Saya'
       }
     ],
     accountMenu: [

@@ -5,23 +5,24 @@ import { cn, formatDate, formatNumber } from '@/lib/utils'
 import { Status } from '@/lib/interfaces/user.interface'
 import Icon from '@/components/icon'
 
-type VoucherCardProps = {
+type CouponCardProps = {
   points: number
   status?: Status
   expiryDate: Date
   className?: string
 }
 
-type VoucherCardStatusProps = {
+type CouponCardStatusProps = {
   status?: Status
 }
 
-export default function VoucherCard({
+export default function CouponCard({
   points,
   status = 'ACTIVE',
   expiryDate,
   className
-}: VoucherCardProps) {
+}: CouponCardProps) {
+  console.log(expiryDate)
   return (
     <div
       className={cn(
@@ -47,12 +48,12 @@ export default function VoucherCard({
           <h3 className='text-[21px] font-semibold'>
             {formatNumber(points)} Points
           </h3>
-          <VoucherCardStatus status={status} />
+          <CouponCardStatus status={status} />
         </div>
         <div className='flex items-center gap-2'>
           <Icon icon={faClock} className='text-light-primary w-3.5' />
           <span className='text-gray-secondary text-sm'>
-            {formatDate(expiryDate, { includeTime: true })}
+            {formatDate(new Date(expiryDate), { includeTime: true })}
           </span>
         </div>
       </div>
@@ -60,7 +61,7 @@ export default function VoucherCard({
   )
 }
 
-function VoucherCardStatus({ status }: VoucherCardStatusProps) {
+function CouponCardStatus({ status }: CouponCardStatusProps) {
   const label =
     status === 'ACTIVE'
       ? 'Aktif'

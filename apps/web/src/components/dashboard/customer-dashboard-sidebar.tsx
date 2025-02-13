@@ -38,8 +38,8 @@ export const CUSTOMER_MENU = {
       icon: <i className='icon-loket icon-loket-ticket'></i>
     },
     {
-      href: '/member/c/voucher-saya',
-      label: 'Voucher Saya',
+      href: '/member/c/kupon-saya',
+      label: 'Kupon Saya',
       icon: <Icon icon={faTicketSimple} className='w-3.5' />
     }
   ],

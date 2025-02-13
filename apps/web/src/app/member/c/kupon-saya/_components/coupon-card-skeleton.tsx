@@ -1,4 +1,4 @@
-export default function VoucherCardSkeleton() {
+export default function CouponCardSkeleton() {
   return (
     <div className='flex h-full w-full items-center justify-between overflow-hidden rounded-lg'>
       <div className='h-full w-1/2 animate-pulse bg-gray-300'></div>

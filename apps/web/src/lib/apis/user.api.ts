@@ -3,8 +3,8 @@ import { getSession } from 'next-auth/react'
 import { handleSignOut } from '@/app/actions/actions'
 import { BASE_URL } from '../constants'
 import {
-  VerifyPasswordRequest,
-  VouchersJson
+  CouponsJson,
+  VerifyPasswordRequest
 } from '../interfaces/user.interface'
 
 export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
@@ -42,20 +42,20 @@ export async function fetchUpdateUser(data: FormData) {
   return user
 }
 
-export async function fetchGetUserVouchers(): Promise<VouchersJson> {
+export async function fetchGetUserCoupons(): Promise<CouponsJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/users/vouchers`, {
+  const response = await fetch(`${BASE_URL}/users/coupons`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
 
-  const vouchers = await response.json()
+  const coupons = await response.json()
 
-  if (vouchers.error?.message === 'jwt is expired') await handleSignOut()
+  if (coupons.error?.message === 'jwt is expired') await handleSignOut()
 
-  return vouchers
+  return coupons
 }

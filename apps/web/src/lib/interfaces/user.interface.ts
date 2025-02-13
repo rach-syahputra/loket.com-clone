@@ -18,7 +18,7 @@ export interface UpdateUserRequest {
 
 export type Status = 'ACTIVE' | 'USED' | 'EXPIRED'
 
-export interface Voucher {
+export interface Coupons {
   id: number
   userId: number
   points: number
@@ -27,7 +27,7 @@ export interface Voucher {
   createdAt: Date
 }
 
-export interface VouchersJson {
+export interface CouponsJson {
   success: boolean
   message: string
   error?: {
@@ -35,7 +35,7 @@ export interface VouchersJson {
   }
   data: {
     user: {
-      points: Voucher[]
+      coupons: Coupons[]
     }
   }
 }
