@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
 
 import { TRANSACTION_STATUSES } from '@/lib/constants'
-import { cn, formatNumber } from '@/lib/utils'
+import { cn, formatDate, formatNumber } from '@/lib/utils'
 import { TransactionStatus } from '@/lib/interfaces/transaction.interface'
 import { fetchUpdateTransaction } from '@/lib/apis/transaction.api'
 import { useTransactionContext } from '@/context/transaction-context'
@@ -22,11 +22,12 @@ import PaymentProofImageModal from '../payment-proof-image-modal'
 // You can use a Zod schema here if you want.
 export type TransactionTable = {
   id: number
+  namaEvent: string
   emailCustomer: string
   buktiPembayaran: string
   totalHarga: number
   statusTransaksi: TransactionStatus
-  namaEvent: string
+  tanggalDibuat: string
 }
 
 export const columns: ColumnDef<TransactionTable>[] = [
@@ -131,6 +132,20 @@ export const columns: ColumnDef<TransactionTable>[] = [
         </div>
       )
     }
+  },
+  {
+    accessorKey: 'tanggalDibuat',
+    header: ({ column }) => {
+      return <div className='w-[200px]'>Tanggal Dibuat</div>
+    },
+    cell: ({ row }) => (
+      <div className='w-[200px]'>
+        {formatDate(new Date(row.original.tanggalDibuat), {
+          includeTime: true,
+          includeSecond: true
+        })}
+      </div>
+    )
   },
   {
     id: 'aksi',

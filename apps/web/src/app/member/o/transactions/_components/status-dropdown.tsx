@@ -3,16 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
+import { TRANSACTION_STATUSES } from '@/lib/constants'
 import Icon from '@/components/icon'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/shadcn-ui/select'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -21,8 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/shadcn-ui/dropdown-menu'
-import Button from '@/components/button'
-import { TRANSACTION_STATUSES } from '@/lib/constants'
 
 export default function StatusDropdown() {
   const router = useRouter()
@@ -54,7 +44,6 @@ export default function StatusDropdown() {
     const urlParams = new URLSearchParams()
 
     if (updatedStatus) urlParams.append('status', updatedStatus.join(','))
-    if (page) urlParams.append('page', page.toString())
     if (order) urlParams.append('order', order)
     router.push(`/member/o/transactions?${urlParams.toString()}`)
   }
@@ -69,7 +58,6 @@ export default function StatusDropdown() {
 
       if (updatedStatus.length > 0)
         urlParams.append('status', updatedStatus.join(','))
-      if (page) urlParams.append('page', page.toString())
       if (order) urlParams.append('order', order)
       router.push(`/member/o/transactions?${urlParams.toString()}`)
     }

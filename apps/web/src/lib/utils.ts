@@ -11,7 +11,10 @@ export function truncateText(text: string, maxLength: number) {
   return text.slice(0, maxLength - 3) + '...'
 }
 
-export function formatDate(date: Date, options?: { includeTime?: boolean }) {
+export function formatDate(
+  date: Date,
+  options?: { includeTime?: boolean; includeSecond?: boolean }
+) {
   const format: Intl.DateTimeFormatOptions = {
     day: '2-digit',
     month: 'short',
@@ -22,6 +25,10 @@ export function formatDate(date: Date, options?: { includeTime?: boolean }) {
     format.hour = '2-digit'
     format.minute = '2-digit'
     format.hour12 = false
+  }
+
+  if (options?.includeSecond) {
+    format.second = '2-digit'
   }
 
   return new Intl.DateTimeFormat('en-GB', format).format(date)

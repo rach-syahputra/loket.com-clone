@@ -63,7 +63,8 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
             namaEvent: transaction.event.title,
             buktiPembayaran: transaction.paymentProofImage,
             totalHarga: transaction.totalPrice,
-            statusTransaksi: transaction.transactionStatus
+            statusTransaksi: transaction.transactionStatus,
+            tanggalDibuat: transaction.createdAt
           }))
         )
         setTotalPages(response.data.pagination.totalPages)
