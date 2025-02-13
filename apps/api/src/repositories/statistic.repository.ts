@@ -16,7 +16,7 @@ class StatisticRepositry {
     const sales = transactions.reduce((acc, trx) => {
       const date = new Date(trx.createdAt)
       const year = date.getFullYear().toString()
-      const month = date.toLocaleString('en-US', { month: 'long' })
+      const month = date.toLocaleString('id-ID', { month: 'long' })
 
       // Find or create year group
       let yearGroup = acc.find((group) => group.year === year)
