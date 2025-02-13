@@ -3,6 +3,15 @@ import { prisma } from '../helpers/prisma'
 import { Statistic } from '../interfaces/statistic.interface'
 
 class StatisticRepositry {
+  async getTotalActiveEvents(organizerId: number) {
+    return await prisma.event.count({
+      where: {
+        organizerId: organizerId,
+        eventEndDate: { lt: new Date() }
+      }
+    })
+  }
+
   async getSalesStatistic(organizerId: number) {
     const transactions = await prisma.transactions.findMany({
       select: { totalPrice: true, createdAt: true },
