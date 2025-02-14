@@ -76,6 +76,7 @@ export default function PageContent() {
             <SummaryCard
               iconSrc='/icon-dashboard-total-transaksi.svg'
               title='Total Transaksi'
+              href='/member/o/transactions'
               amount={summary.totalTransactions}
               label='Transaksi'
             />
