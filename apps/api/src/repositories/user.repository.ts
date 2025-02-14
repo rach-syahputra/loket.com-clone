@@ -1,5 +1,7 @@
 import { prisma } from '../helpers/prisma'
 import { convertToUTC7 } from '../helpers/utils'
+import { OrderType } from '../interfaces/shared.interface'
+import { GetTicketsQuery } from '../interfaces/user.interface'
 import { UpdateUserRepositoryRequest } from '../interfaces/user.interface'
 
 class UserRepository {
@@ -47,6 +49,128 @@ class UserRepository {
     }))
 
     return points
+  }
+
+  async getTickets(userId: number, query: GetTicketsQuery) {
+    const limit = 4
+    const ORDER_TYPES: OrderType[] = ['asc', 'desc']
+    let tickets
+    let totalTickets
+
+    if (query.status === 'past') {
+      totalTickets = await prisma.transactions.count({
+        where: {
+          userId,
+          event: {
+            eventEndDate: { lt: new Date() }
+          }
+        }
+      })
+
+      tickets = await prisma.transactions.findMany({
+        select: {
+          id: true,
+          userId: true,
+          event: {
+            select: {
+              id: true,
+              title: true,
+              bannerUrl: true,
+              eventStartDate: true,
+              eventStartTime: true,
+              eventEndDate: true,
+              eventEndTime: true
+            }
+          },
+          createdAt: true,
+          transactionStatus: true
+        },
+        where: {
+          userId,
+          event: {
+            eventEndDate: { lt: new Date() }
+          }
+        },
+        orderBy: {
+          createdAt: ORDER_TYPES.includes(query.order) ? query.order : 'desc'
+        },
+        take: limit,
+        skip: ((query.page ? query.page : 1) - 1) * limit
+      })
+    } else {
+      totalTickets = await prisma.transactions.count({
+        where: {
+          userId,
+          event: {
+            OR: [
+              {
+                registrationStartDate: { lte: new Date() },
+                registrationEndDate: { gte: new Date() }
+              },
+              {
+                eventStartDate: { lte: new Date() },
+                eventEndDate: { gte: new Date() }
+              }
+            ]
+          }
+        }
+      })
+
+      tickets = await prisma.transactions.findMany({
+        select: {
+          id: true,
+          userId: true,
+          event: {
+            select: {
+              id: true,
+              title: true,
+              bannerUrl: true,
+              eventStartDate: true,
+              eventStartTime: true,
+              eventEndDate: true,
+              eventEndTime: true
+            }
+          },
+          createdAt: true,
+          transactionStatus: true
+        },
+        where: {
+          userId,
+          event: {
+            OR: [
+              {
+                registrationStartDate: { lte: new Date() },
+                registrationEndDate: { gte: new Date() }
+              },
+              {
+                eventStartDate: { lte: new Date() },
+                eventEndDate: { gte: new Date() }
+              }
+            ]
+          }
+        },
+        orderBy: {
+          createdAt: ORDER_TYPES.includes(query.order) ? query.order : 'desc'
+        },
+        take: limit,
+        skip: ((query.page ? query.page : 1) - 1) * limit
+      })
+    }
+
+    const totalPages = Math.ceil(totalTickets / limit)
+
+    return {
+      tickets: tickets.map((ticket) => ({
+        ...ticket,
+        createdAt: convertToUTC7(ticket.createdAt)
+      })),
+      pagination: {
+        currentPage: query.page ? query.page : 1,
+        totalPages,
+        limit: totalPages >= limit ? limit : totalTickets
+      },
+      totalTickets
+    }
   }
 }
 

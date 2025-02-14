@@ -6,6 +6,7 @@ import { generateHashedPassword } from '../helpers/utils'
 import { validate } from '../helpers/validation.handler'
 import {
   GetCouponsRequest,
+  GetTicketsRequest,
   UpdateUserServiceRequest,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
@@ -110,6 +111,18 @@ class UserService {
       user: {
         coupons
       }
+    }
+  }
+
+  async getTickets(req: GetTicketsRequest) {
+    const tickets = await userRepository.getTickets(req.userId, {
+      order: req.query.order,
+      page: req.query.page,
+      status: req.query.status
+    })
+
+    return {
+      user: tickets
     }
   }
 }

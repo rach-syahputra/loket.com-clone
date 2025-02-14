@@ -2,6 +2,9 @@ import { NextFunction, Response } from 'express'
 
 import userService from '../services/user.service'
 import { UserRequest } from '../interfaces/auth.interface'
+import { ResponseError } from '../helpers/error.handler'
+import { OrderType } from '../interfaces/shared.interface'
+import { TicketStatus } from '../interfaces/user.interface'
 
 class UserController {
   async verifyPassword(req: UserRequest, res: Response, next: NextFunction) {
@@ -49,6 +52,33 @@ class UserController {
         res.status(200).json({
           success: true,
           message: 'Coupons retrieved successfully.',
+          data
+        })
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getTickets(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        if (req.user.roleId !== 1) throw new ResponseError(401, 'Unauthorized')
+
+        const { status, page, order } = req.query
+
+        const data = await userService.getTickets({
+          userId: req.user.id,
+          query: {
+            order: order as OrderType,
+            status: status as TicketStatus,
+            page: Number(page)
+          }
+        })
+
+        res.status(200).json({
+          success: true,
+          message: 'Tickets retrieved successfully.',
           data
         })
       }

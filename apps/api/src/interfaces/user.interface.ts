@@ -1,3 +1,5 @@
+import { OrderType } from './shared.interface'
+
 export interface VerifyPasswordRequest {
   id: number
   password: string
@@ -20,4 +22,21 @@ export interface UpdateUserRepositoryRequest {
 
 export interface GetCouponsRequest {
   userId: number
+}
+
+export type TicketStatus = 'active' | 'past'
+
+export interface GetTicketsQuery {
+  page: number
+  order: OrderType
+  status: TicketStatus
+}
+
+export interface GetTicketsRequest {
+  userId: number
+  query: {
+    status: TicketStatus
+    order: OrderType
+    page: number
+  }
 }
