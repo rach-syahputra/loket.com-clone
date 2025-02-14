@@ -34,7 +34,7 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
 
   const searchParams = useSearchParams()
-  const status = searchParams.get('status')
+  const status = searchParams.get('status') || '2'
   const page = searchParams.get('page') || 1
   const order = searchParams.get('order') || 'desc'
 
@@ -79,7 +79,7 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const getStatusNames = (statusQuery: string) => {
-    if (!statusQuery) return []
+    if (!statusQuery) return ['WAITING_FOR_ADMIN_CONFIRMATION']
 
     const statusIds = decodeURIComponent(statusQuery).split(',').map(Number)
 
@@ -88,7 +88,7 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
       TRANSACTION_STATUSES.some((status) => status.id === id)
     )
 
-    if (!isValid) return []
+    if (!isValid) return ['WAITING_FOR_ADMIN_CONFIRMATION']
 
     return statusIds
       .map(

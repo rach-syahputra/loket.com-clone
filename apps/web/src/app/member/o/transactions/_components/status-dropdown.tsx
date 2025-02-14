@@ -18,7 +18,7 @@ export default function StatusDropdown() {
   const router = useRouter()
 
   const searchParams = useSearchParams()
-  const status = searchParams.get('status')
+  const status = searchParams.get('status') || '2'
   const page = searchParams.get('page') || 1
   const order = searchParams.get('order') || 'desc'
 
