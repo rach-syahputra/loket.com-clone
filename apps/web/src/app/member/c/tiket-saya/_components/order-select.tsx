@@ -35,7 +35,7 @@ export default function OrderSelect() {
           if (page) urlParams.append('page', page.toString())
           urlParams.append('order', value)
 
-          router.push(`/member/o/events?${urlParams.toString()}`)
+          router.push(`/member/c/tiket-saya?${urlParams.toString()}`)
         }}
       >
         <SelectTrigger className='text-gray-secondary w-[220px]'>
@@ -44,9 +44,9 @@ export default function OrderSelect() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Urutan Event</SelectLabel>
-            <SelectItem value='desc'>Waktu Mulai (Terdekat)</SelectItem>
-            <SelectItem value='asc'>Waktu Mulai (Terjauh)</SelectItem>
+            <SelectLabel>Urutkan Tiket</SelectLabel>
+            <SelectItem value='desc'>Waktu Event (Terdekat)</SelectItem>
+            <SelectItem value='asc'>Waktu Event (Terjauh)</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

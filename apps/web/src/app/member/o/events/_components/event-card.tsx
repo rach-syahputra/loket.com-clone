@@ -2,11 +2,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  faCalendar,
   faClock,
   faLocationDot,
   faTicket
 } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDays } from '@fortawesome/free-regular-svg-icons'
 
 import { formatEventDate, formatEventTime, formatNumber } from '@/lib/utils'
 import { EventByOrganizer } from '@/lib/interfaces/organizer.interface'
@@ -38,7 +38,7 @@ export default function EventCard({ event }: EventCardProps) {
 
         <div className='flex flex-wrap gap-x-6 gap-y-2'>
           <div className='flex items-center gap-3'>
-            <Icon icon={faCalendar} className='text-light-primary w-3' />
+            <Icon icon={faCalendarDays} className='text-light-primary w-3' />
             <span className='text-gray-secondary text-sm'>
               {formatEventDate(event.eventStartDate, event.eventEndDate)}
             </span>
@@ -85,7 +85,7 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
       </div>
       <Image
-        src='https://assets.loket.com/neo/production/images/banner/20250110144523_6780d0137d5ff.jpg'
+        src={event.bannerUrl}
         alt='Event banner'
         width={1325}
         height={622}

@@ -4,8 +4,11 @@ import { handleSignOut } from '@/app/actions/actions'
 import { BASE_URL } from '../constants'
 import {
   CouponsJson,
+  TicketJson,
+  TicketStatus,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
+import { OrderType } from '../interfaces/shared.interface'
 
 export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
   const session = await getSession()
@@ -58,4 +61,32 @@ export async function fetchGetUserCoupons(): Promise<CouponsJson> {
   if (coupons.error?.message === 'jwt is expired') await handleSignOut()
 
   return coupons
+}
+
+export async function fetchGetTickets(
+  status?: TicketStatus,
+  page?: number,
+  order: OrderType = 'desc'
+): Promise<TicketJson> {
+  const session = await getSession()
+  const token = session?.user.accessToken
+
+  const url = new URL(`${BASE_URL}/users/tickets`)
+
+  if (status) url.searchParams.append('status', status)
+  if (page) url.searchParams.append('page', page.toString())
+  if (order) url.searchParams.append('order', order)
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const tickets = await response.json()
+
+  if (tickets.error?.message === 'jwt is expired') await handleSignOut()
+
+  return tickets
 }

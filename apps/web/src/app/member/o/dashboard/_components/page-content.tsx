@@ -39,12 +39,12 @@ export default function PageContent() {
         <div className='grid h-[54px] grid-cols-2 border-b-[1.5px] border-gray-400 md:grid-cols-3 lg:grid-cols-4'>
           <HeaderTabLink
             href='/member/o/dashboard'
-            label='RINGKASAN'
+            label='Ringkasan'
             isActive
           />
           <HeaderTabLink
             href='/member/o/dashboard/statistics'
-            label='STATISTIK'
+            label='Statistik'
           />
         </div>
       </div>

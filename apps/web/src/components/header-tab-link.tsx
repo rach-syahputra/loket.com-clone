@@ -19,7 +19,7 @@ export default function HeaderTabLink({
         href={href}
         aria-label={label}
         className={cn(
-          'text-gray-primary border-blue-primary flex h-full justify-center pt-3',
+          'text-gray-primary border-blue-primary flex h-full justify-center pt-3 font-medium',
           {
             'text-dark-primary': isActive
           }

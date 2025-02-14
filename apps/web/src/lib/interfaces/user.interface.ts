@@ -1,3 +1,6 @@
+import { Pagination } from './shared.interface'
+import { TransactionStatus } from './transaction.interface'
+
 export type UpdateUserFormSchemaType = {
   name?: string
   oldPassword?: string
@@ -36,6 +39,41 @@ export interface CouponsJson {
   data: {
     user: {
       coupons: Coupons[]
+    }
+  }
+}
+
+export interface TicketEvent {
+  id: number
+  title: string
+  bannerUrl: string
+  eventStartDate: string
+  eventStartTime: string
+  eventEndDate: string
+  eventEndTime: string
+}
+
+export interface Ticket {
+  id: number
+  userId: number
+  event: TicketEvent
+  createdAt: string
+  transactionStatus: TransactionStatus
+}
+
+export type TicketStatus = 'active' | 'past'
+
+export interface TicketJson {
+  success: boolean
+  message: string
+  error?: {
+    message: string
+  }
+  data: {
+    user: {
+      tickets: Ticket[]
+      pagination: Pagination
+      totalTickets: number
     }
   }
 }
