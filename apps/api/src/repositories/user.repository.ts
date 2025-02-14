@@ -171,7 +171,7 @@ class UserRepository {
         limit: totalPages >= limit ? limit : totalTickets
       },
       totalTickets
-    }
+    }}
   async updatePoints(pointId:number){
     return await prisma.point.update({
       where:{
@@ -185,6 +185,7 @@ class UserRepository {
       }
     )
   }
+  
 }
 
 export default new UserRepository()

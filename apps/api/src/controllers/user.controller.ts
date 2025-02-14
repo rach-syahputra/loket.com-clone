@@ -84,6 +84,7 @@ class UserController {
       }
     } catch (err) {
       next(err)
+    }}
   async updateCoupons(req:Request,res:Response,next:NextFunction){
     try {
       const {pointId} = req.body
