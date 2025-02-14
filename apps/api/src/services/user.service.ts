@@ -114,6 +114,10 @@ class UserService {
     }
   }
 
+  async updateCoupons(pointId:number){
+    return await userRepository.updatePoints(pointId)
+  }
+
   async getTickets(req: GetTicketsRequest) {
     const tickets = await userRepository.getTickets(req.userId, {
       order: req.query.order,

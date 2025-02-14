@@ -38,7 +38,8 @@ class UserRepository {
   async findPoints(userId: number) {
     const res = await prisma.point.findMany({
       where: {
-        userId
+        userId,
+        status:'ACTIVE'
       }
     })
 
@@ -171,6 +172,18 @@ class UserRepository {
       },
       totalTickets
     }
+  async updatePoints(pointId:number){
+    return await prisma.point.update({
+      where:{
+        
+        id:  pointId,
+      },
+       data:{
+            status:'USED'
+          }
+        
+      }
+    )
   }
 }
 

@@ -20,4 +20,5 @@ router.patch(
 router.get('/coupons', verifyToken, userController.getCoupons)
 router.get('/tickets', verifyToken, userController.getTickets)
 
+router.patch('/coupons', verifyToken,userController.updateCoupons)
 export default router
