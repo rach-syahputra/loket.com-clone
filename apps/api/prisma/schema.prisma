@@ -149,14 +149,14 @@ model Event {
   location     Location       @relation(fields: [locationId], references: [id], onUpdate: Cascade)
   category     Category       @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
   organizer    User           @relation(fields: [organizerId], references: [id], onUpdate: Cascade)
-  Promotion    Promotion[]
+  Voucher    Voucher[]
   Review       Review[]
   Transactions Transactions[]
 
   @@map("events")
 }
 
-model Promotion {
+model Voucher {
   id             Int          @id @default(autoincrement())
   title          String
   eventId        Int          @map("event_id")
@@ -169,7 +169,7 @@ model Promotion {
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("promotions")
+  @@map("vouchers")
 }
 
 model Review {
