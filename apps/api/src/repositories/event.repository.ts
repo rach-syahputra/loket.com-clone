@@ -21,7 +21,7 @@ class EventRepository {
 
   async getAllEvents() {
     return await prisma.event.findMany({
-      include: { location: true }
+      include: { location: true ,organizer:true}
     })
   }
 
@@ -120,9 +120,7 @@ class EventRepository {
         ticketType: filters.ticketType ? filters.ticketType : undefined,
       },
       include: {
-        // If you want to also fetch the related province or category data in one go:
-        // province: true,
-        // category: true,
+        organizer:true
       },
     });
 

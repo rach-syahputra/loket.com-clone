@@ -53,10 +53,8 @@ export default function Explore() {
     <div className="w-full h-full bg-white p-[20px] sm:p-0">
       <div className="sm:flex block gap-4">
 
-        {/* ====================== */}
-        {/*    FILTER SIDEBAR     */}
-        {/* ====================== */}
-        <div className="sm:block hidden bg-white border w-[300px] min-h-[100%] sticky top-0 p-[50px] md:p-[20px] relative z-20">
+     
+        <div className="sm:block hidden bg-white border lg:w-[300px] sm:w-[250px] min-h-[100%] sticky top-0 p-[50px] md:p-[20px] relative z-20">
           <span className="text-[20px] text-black font-bold">Filter</span>
           <hr />
           <div className="w-full">
@@ -154,12 +152,9 @@ export default function Explore() {
           </div>
         </div>
 
-        {/* ====================== */}
-        {/*    MAIN CONTENT        */}
-        {/* ====================== */}
+      
         <div className="flex flex-col gap-4 w-full">
-          {/* Some top bar with sort button, etc. (optional) */}
-          <div className="w-full sm:p-[20px]">
+          <div className="w-full lg:p-[20px] sm:p-[10px]">
             <div className="flex sm:justify-end justify-between gap-2">
               {/* Mobile filter button */}
               <button
@@ -169,31 +164,7 @@ export default function Explore() {
                 Filter
               </button>
 
-              {/* Sorting button (placeholder) */}
-              <button
-                id="dropdownHoverButton"
-                data-dropdown-toggle="dropdownHover"
-                data-dropdown-trigger="hover"
-                className="p-2 border rounded-lg w-[200px] h-[36px] text-black text-center bg-white"
-                type="button"
-              >
-                Urutkan
-                <svg
-                  className="w-2.5 h-2.5 ms-3 inline"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
-              </button>
+          
 
               {/* Example dropdown (hidden by default) */}
               <div
@@ -229,10 +200,7 @@ export default function Explore() {
             </div>
           </div>
 
-          {/* 
-             Pass our chosen filters to <CardExplore>, 
-             which will fetch and display the filtered events.
-          */}
+        
           <CardExplore
             selectedProvinceId={selectedProvinceId}
             selectedCategoryId={selectedCategoryId}

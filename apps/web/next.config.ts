@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'loket-production-sg.s3.ap-southeast-1.amazonaws.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com'
       }
     ]
   }

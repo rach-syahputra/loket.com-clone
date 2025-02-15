@@ -49,7 +49,7 @@ export default function DesktopNavigationMenu() {
           href='/eventcreate'
           className='flex h-10 items-center justify-center px-4'
         >
-          <div className='hidden items-center gap-3 text-white md:flex lg:flex'>
+          <div className='hidden items-center gap-3 text-white sm:flex md:flex lg:flex'>
             <Image
               src='/ic-schedule.svg'
               height={19}
@@ -64,7 +64,7 @@ export default function DesktopNavigationMenu() {
           href='/explore'
           className='flex h-10 items-center justify-center px-4'
         >
-          <div className='hidden items-center gap-3 text-white md:flex lg:flex'>
+          <div className='hidden items-center gap-3 text-white sm:flex md:flex lg:flex'>
             <Image
               src='https://assets.loket.com/web/assets/img/ic_explore_compass.svg'
               height={20}
