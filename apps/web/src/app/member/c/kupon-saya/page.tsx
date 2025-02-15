@@ -4,7 +4,7 @@ import PageContent from './_components/page-content'
 export default function VoucherSayaPage() {
   return (
     <>
-      <DashboardHeader title='Voucher Saya' />
+      <DashboardHeader title='Kupon Saya' />
       <PageContent />
     </>
   )

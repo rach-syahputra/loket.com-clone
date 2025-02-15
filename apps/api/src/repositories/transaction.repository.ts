@@ -95,6 +95,34 @@ class TransactionRepository {
       where: {
         id: req.transactionId
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true
+          }
+        },
+        event: {
+          include: {
+            location: {
+              include: {
+                province: true
+              },
+              omit: {
+                provinceId: true
+              }
+            }
+          },
+          omit: {
+            locationId: true
+          }
+        }
+      },
+      omit: {
+        userId: true,
+        eventId: true
+      },
       data: {
         paymentProofImage: req.paymentProofImage,
         transactionStatus: req.transactionStatus

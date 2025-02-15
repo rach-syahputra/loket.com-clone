@@ -13,21 +13,28 @@ import imageRepository from '../repositories/image.repository'
 import { CLOUDINARY_PAYMENT_PROOF_IMAGE_FOLDER } from '../config'
 import { getPublicId } from '../helpers/cloudinary'
 import { CLOUDINARY_EVENT_BANNER_FOLDER } from '../config'
+import { sendPaymentEmail } from '../helpers/email/email'
+import {
+  formatDateWithTime,
+  formatEventDate,
+  formatEventLocation,
+  formatPrice
+} from '../helpers/utils'
 
 class TransactionService {
-  async createTransaction(transactionData: Prisma.TransactionsCreateInput,    paymentProofImage?: Express.Multer.File
+  async createTransaction(
+    transactionData: Prisma.TransactionsCreateInput,
+    paymentProofImage?: Express.Multer.File
   ) {
-
-
     if (paymentProofImage) {
-        const transactionPayment = await imageRepository.upload(
-            paymentProofImage.path,
-          CLOUDINARY_EVENT_BANNER_FOLDER
-        )
-        if (transactionPayment && transactionPayment.secure_url) {
-            transactionData.paymentProofImage = transactionPayment.secure_url
-        }
+      const transactionPayment = await imageRepository.upload(
+        paymentProofImage.path,
+        CLOUDINARY_EVENT_BANNER_FOLDER
+      )
+      if (transactionPayment && transactionPayment.secure_url) {
+        transactionData.paymentProofImage = transactionPayment.secure_url
       }
+    }
     const transaction =
       await transactionRepository.createTransaction(transactionData)
 
@@ -93,6 +100,30 @@ class TransactionService {
       transactionStatus: req.transactionStatus,
       paymentProofImage: paymentProofImage?.secure_url
     })
+
+    const { id, transactionStatus, user, event, createdAt, totalPrice } =
+      updatedTransaction
+
+    if (transactionStatus === 'DONE' || transactionStatus === 'REJECTED') {
+      await sendPaymentEmail(user.email, transactionStatus, {
+        transactionId: id.toString(),
+        transactionDateTime: formatDateWithTime(new Date(createdAt)),
+        eventTitle: event.title,
+        customerName: user.name,
+        eventSchedule: formatEventDate(
+          event.eventStartDate,
+          event.eventEndDate,
+          event.eventStartTime,
+          event.eventEndTime
+        ),
+        eventLocation: formatEventLocation(
+          event.location.streetAddress,
+          event.location.city,
+          event.location.province.name
+        ),
+        totalPrice: formatPrice(totalPrice)
+      })
+    }
 
     return {
       transaction: updatedTransaction
