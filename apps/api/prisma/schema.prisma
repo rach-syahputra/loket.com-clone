@@ -24,10 +24,6 @@ enum TicketType {
   FREE
 }
 
-enum DiscountType {
-  PERCENTAGE
-  FIXED
-}
 
 enum TransactionStatus {
   WAITING_FOR_PAYMENT
@@ -160,11 +156,9 @@ model Voucher {
   id             Int          @id @default(autoincrement())
   title          String
   eventId        Int          @map("event_id")
-  voucherCode    String       @unique @map("voucher_code")
   startDate      DateTime     @map("start_date")
   endDate        DateTime     @map("end_date")
   discountAmount Int          @map("discount_amount")
-  discountType   DiscountType @map("discount_type")
   createdAt      DateTime     @default(now()) @map("created_at")
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
