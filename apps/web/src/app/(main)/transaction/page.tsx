@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation'
 import { title } from 'process'
 import { useEffect, useRef, useState } from 'react'
 import { Coupons } from '@/lib/interfaces/user.interface'
-
 export default function Transaction() {
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
@@ -16,15 +15,34 @@ export default function Transaction() {
   const [preview, setPreview] = useState<string>('')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [coupons, setCoupons] = useState<Coupons[]>([])
+  const [vouchers,setVouchers] = useState<voucher[]>([])
   useEffect(() => {
     if (session?.user) {
       setName(session.user.name || '')
       setEmail(session.user.email || '')
       setId(session.user.id)
       getCoupons()
+      getVoucher()
     }
   }, [session])
 
+  const getVoucher = async () => {
+    const voucherResponse = await fetch(
+      `http://localhost:8000/api/voucher/${eventId}`
+    )
+    const voucherData = await voucherResponse.json()
+    if (voucherData.result) {
+      setVouchers(voucherData.result)
+    }
+  }
+  interface voucher {
+    id:number
+    title: string
+    eventId: number
+    startDate: Date
+    endDate: Date
+    discountAmount: number
+  }
   const searchParams = useSearchParams()
   const eventId = searchParams.get('id')
   const title = searchParams.get('title') || 'Event'
@@ -36,43 +54,50 @@ export default function Transaction() {
   const [useCoupons, setUseCoupons] = useState(false) // Track if the checkbox is checked
   const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null)
   const [selectedCoupon, setSelectedCoupon] = useState<string>('Pilih')
-  const [selectedCouponpoints,setSelectedCouponPoints] = useState<number>(0)
+  const [selectedCouponpoints, setSelectedCouponPoints] = useState<number>(0)
+  const [useVouchers, setUseVouchers] = useState(false)
+  const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(
+    null
+  )
+  const [selectedVoucher,setSelectedVoucher] = useState<string>('Pilih')
+  const [selectedDiscountAmount,setSelectedDiscountAmount] = useState<number>(0)
   const totalPrice = price * quantity
   // Sum all points from your vouchers
   const totalPoints = coupons.reduce((acc, voucher) => acc + voucher.points, 0)
   // Deduct total points from total price (ensure it doesn't go negative)
-  const finalPrice = Math.max(totalPrice - (selectedCouponId ? selectedCouponpoints : 0), 0)
+  const finalPrice = Math.max(
+    totalPrice - (selectedCouponId ? selectedCouponpoints : 0),
+    0
+  )
 
   const handleBuyTicket = async () => {
     try {
+      if (selectedCouponId) {
+        const res = await fetch('http://localhost:8000/api/users/coupons', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.user.accessToken}`
+          },
+          body: JSON.stringify({
+            pointId: selectedCouponId
+          })
+        })
+        const resultData = await res.json()
+        if (!res.ok) {
+          alert('Failed to apply coupon.')
+          return
+        }
 
-        if(selectedCouponId){
-            const res = await fetch('http://localhost:8000/api/users/coupons',{
-                method:'PATCH',
-                headers:{
-                    'Content-Type':'application/json',
-                    Authorization:`Bearer ${session?.user.accessToken}`
-                },
-                body:JSON.stringify({
-                    pointId:selectedCouponId
-                })
-            })
-            const resultData = await res.json();
-            if (!res.ok) {
-              alert("Failed to apply coupon.");
-              return;
-            }
-      
-            console.log(" Coupon status updated successfully",resultData);
-          }
+        console.log(' Coupon status updated successfully', resultData)
+      }
 
-        
       const formData = new FormData()
       formData.append('userId', id.toString())
       formData.append('eventId', eventId || '')
       formData.append('transactionStatus', 'WAITING_FOR_ADMIN_CONFIRMATION')
       formData.append('totalPrice', finalPrice.toString())
-      
+
       if (paymentProof) {
         formData.append('paymentProofImage', paymentProof)
       }
@@ -274,7 +299,7 @@ export default function Transaction() {
             <div className='h-6 border-l border-black'></div>
             <span>Segera selesaikan pesananmu</span>
           </div>
-          <div className='z-50 flex h-[300px] w-[383px] flex-col justify-between rounded-lg border p-[30px] text-black'>
+          <div className='z-50 flex h-[400px] w-[383px] flex-col justify-between gap-4 rounded-lg border p-[30px] text-black'>
             <span>Detail Harga</span>
             <div className='flex justify-between'>
               <span>Total Harga Tiket</span>
@@ -300,50 +325,97 @@ export default function Transaction() {
                   <span>Gunakan Kupon</span>
                   <span>Sisa Kupon ({coupons.length})</span>
                 </div>
-                <div>
-                  <details className='dropdown z-50 rounded-md border'>
-                    <summary className='btn btn-ghost m-0 flex w-[155px] justify-center rounded-md border bg-white p-2 font-light text-black hover:bg-white'>
-                      {selectedCoupon}
-                    </summary>
-                    <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white shadow'>
-                      <li>
+                <details className='dropdown z-50 rounded-md border'>
+                  <summary className='btn btn-ghost m-0 flex w-[155px] justify-center rounded-md border bg-white p-2 font-light text-black hover:bg-white'>
+                    {selectedCoupon}
+                  </summary>
+                  <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white shadow'>
+                    <li>
+                      <button
+                        type='button'
+                        className='text-black no-underline'
+                        onClick={() => {
+                          setSelectedCoupon('Pilih')
+                          setSelectedCouponId(null)
+                          setSelectedCouponPoints(0)
+                        }}
+                      >
+                        Pilih
+                      </button>
+                    </li>
+
+                    {coupons.map((coupon) => (
+                      <li key={coupon.id}>
                         <button
                           type='button'
-                          className=' text-black no-underline'
+                          className='text-black no-underline'
                           onClick={() => {
-                            setSelectedCoupon('Pilih')
-                            setSelectedCouponId(null)
-                            setSelectedCouponPoints(0)
+                            setSelectedCouponId(coupon.id)
+                            setSelectedCoupon(
+                              `${coupon.points.toLocaleString()} \nExp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
+                            )
+                            //   formik.setFieldValue("categoryId", cat.id);
+                            setSelectedCouponPoints(coupon.points)
                           }}
                         >
-                          Pilih
+                          <div className='flex flex-col gap-1'>
+                            <span>{`${coupon.points.toLocaleString()}  `}</span>
+                            <span>{`Exp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}</span>
+                          </div>
                         </button>
                       </li>
-
-                      {coupons.map((coupon) => (
-                        <li key={coupon.id}>
-                          <button
-                            type='button'
-                            className='text-black no-underline'
-                            onClick={() => {
-                              setSelectedCouponId(coupon.id)
-                              setSelectedCoupon(
-                                `${coupon.points.toLocaleString()} \nExp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
-                              )
-                              //   formik.setFieldValue("categoryId", cat.id);
-                              setSelectedCouponPoints(coupon.points)
-                            }}
-                          >
-                            <div className='flex flex-col gap-1'>
-                              <span>{`${coupon.points.toLocaleString()}  `}</span>
-                              <span>{`Exp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}</span>
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
+                    ))}
+                  </ul>
+                </details>
+              </div>
+            </div>
+            <div className='flex justify-between'>
+              <div className='flex w-full justify-between'>
+                <div className='flex flex-col'>
+                  <span>Gunakan Voucher</span>
+                  <span>Sisa Voucher ({vouchers.length})</span>
                 </div>
+                <details className='dropdown z-50 rounded-md border'>
+                  <summary className='btn btn-ghost m-0 flex w-[155px] justify-center rounded-md border bg-white p-2 font-light text-black hover:bg-white'>
+                    {selectedCoupon}
+                  </summary>
+                  <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white shadow'>
+                    <li>
+                      <button
+                        type='button'
+                        className='text-black no-underline'
+                        onClick={() => {
+                          setSelectedVoucher('Pilih')
+                          setSelectedVoucherId(null)
+                          setSelectedCouponPoints(0)
+                        }}
+                      >
+                        Pilih
+                      </button>
+                    </li>
+
+                    {vouchers.map((voucher) => (
+                      <li key={voucher.id}>
+                        <button
+                          type='button'
+                          className='text-black no-underline'
+                          onClick={() => {
+                            setSelectedVoucher(voucher.title)
+                            setSelectedVoucherId(voucher.id)
+                            setSelectedDiscountAmount(voucher.discountAmount)
+
+                          }}
+                        >
+                          <div className='flex flex-col gap-1'>
+                            <span>{voucher.title}</span>
+                            <span>{voucher.discountAmount.toLocaleString()}</span>
+                            <span>{`Exp:${new Date(voucher.endDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}</span>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
               </div>
             </div>
             <div className='flex justify-between'>

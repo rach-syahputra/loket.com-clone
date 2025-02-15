@@ -7,6 +7,14 @@ class VoucherRepository{
             data:voucherData
         })  
     }
+
+    async getVoucherByEvent(eventId:number){
+        return await prisma.voucher.findMany({
+            where:{
+                eventId
+            }
+        })
+    }
 }
 
 export default new VoucherRepository()

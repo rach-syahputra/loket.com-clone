@@ -8,6 +8,10 @@ class VoucherService{
 
         return voucher
     }
+
+    async getVoucherByEvent(eventId:number){
+        return await voucherRepository.getVoucherByEvent(eventId)
+    }
 }
 
 export default new VoucherService()

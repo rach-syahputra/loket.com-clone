@@ -25,6 +25,22 @@ class VoucherController {
         }
 
     }
+
+    async getVoucherByEvent(req:Request,res:Response,next:NextFunction){
+       try {
+        const {eventId} = req.params
+
+        const result = await voucherService.getVoucherByEvent(Number(eventId))
+
+        res.status(200).send({
+            message:"Voucher by event fetched successfully",
+            result
+        })
+       } catch (error) {
+         next(error)
+       }
+
+    }
 }
 
 export default new VoucherController()

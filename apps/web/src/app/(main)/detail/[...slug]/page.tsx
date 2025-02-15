@@ -173,7 +173,7 @@ export default function DetailPage() {
                       <span>Rp5.000.000</span>
                     </div>
                     <div>
-                      <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg"
+                      <button className="bg-[#0049CC] w-[312px] h-[48px] p-[10px] text-white font-bold rounded-lg z-60"
                       onClick={handleBuyTicket}
                       >
                         Beli Tiket
