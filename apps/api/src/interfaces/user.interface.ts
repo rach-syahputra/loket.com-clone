@@ -22,8 +22,6 @@ export interface UpdateUserRepositoryRequest {
 
 export interface GetCouponsRequest {
   userId: number
-  pointId?:number
-  status?:string
 }
 
 export type TicketStatus = 'active' | 'past'
