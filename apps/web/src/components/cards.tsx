@@ -132,7 +132,7 @@ export function CardExplore({
   }, [selectedProvinceId, selectedCategoryId, selectedTicketType])
 
   return (
-    <div className='z-50 flex flex-col gap-4 overflow-x-auto px-[20px] sm:grid lg:grid sm:grid-cols-2 lg:grid-cols-4 lg:px-[20px]'>
+    <div className='z-50 flex flex-col gap-4 overflow-x-auto px-[20px] sm:grid lg:grid sm:grid-cols-2 xl:grid-cols-4 sm:px-[0px] lg:px-[20px]'>
       {events.length > 0 ? (
         events.map((event) => (
           <Link key={event.id} href={`/detail/${event.slug}`}>

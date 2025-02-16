@@ -100,7 +100,8 @@ class EventRepository {
       where: {
         slug
       },
-      include: { location: true }
+      include: { location: true ,        organizer:true
+      }
     })
   }
 

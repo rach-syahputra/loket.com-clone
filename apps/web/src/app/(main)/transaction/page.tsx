@@ -51,6 +51,7 @@ export default function Transaction() {
   const location = searchParams.get('location') || 'Unknown Location'
   const startDate = searchParams.get('startDate') || ''
   const endDate = searchParams.get('endDate') || ''
+  const bannerUrl = searchParams.get('bannerUrl')
   const [useCoupons, setUseCoupons] = useState(false) // Track if the checkbox is checked
   const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null)
   const [selectedCoupon, setSelectedCoupon] = useState<string>('Pilih')
@@ -154,7 +155,7 @@ export default function Transaction() {
             <div className='flex gap-4'>
               <Image
                 className='hidden rounded-lg lg:block'
-                src='https://assets.loket.com/neo/production/images/banner/VGSBz_1733741307486312.jpeg'
+                src={bannerUrl || ''}
                 width={260}
                 height={122}
                 alt=''
@@ -274,12 +275,128 @@ export default function Transaction() {
               <span>Total Harga Tiket</span>
               <span>{totalPrice.toLocaleString()}</span>
             </div>
-            <span>Detail Harga</span>
             <div className='flex justify-between'>
               <span>Points</span>
-              <span>0</span>
-            </div>
+              <span>
+                {' '}
+                {coupons.length > 0 && useCoupons ? (
+                  coupons.map((coupons, index) => (
+                    <span key={index}>{coupons.points.toLocaleString()}</span>
+                  ))
+                ) : (
+                  <span>{`${selectedCouponpoints.toLocaleString() || 0}`}</span>
+                )}
+              </span>            
+              </div>
+              <div className='flex justify-between'>
+              <span>Vouchers</span>
+              <span>
+                {' '}
+                {coupons.length > 0 && useCoupons ? (
+                  coupons.map((coupons, index) => (
+                    <span key={index}>{coupons.points.toLocaleString()}</span>
+                  ))
+                ) : (
+                  <span>{`${selectedCouponpoints.toLocaleString() || 0}`}</span>
+                )}
+              </span>            
+              </div>
             <hr />
+            <div className='flex w-full justify-between'>
+                <div className='flex flex-col'>
+                  <span>Gunakan Voucher</span>
+                  <span>Sisa Voucher ({vouchers.length})</span>
+                </div>
+                <details className='dropdown z-50 rounded-md border'>
+                  <summary className='btn btn-ghost m-0 flex w-[155px] justify-center rounded-md border bg-white p-2 font-light text-black hover:bg-white'>
+                    {selectedCoupon}
+                  </summary>
+                  <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white shadow'>
+                    <li>
+                      <button
+                        type='button'
+                        className='text-black no-underline'
+                        onClick={() => {
+                          setSelectedVoucher('Pilih')
+                          setSelectedVoucherId(null)
+                          setSelectedCouponPoints(0)
+                        }}
+                      >
+                        Pilih
+                      </button>
+                    </li>
+
+                    {vouchers.map((voucher) => (
+                      <li key={voucher.id}>
+                        <button
+                          type='button'
+                          className='text-black no-underline'
+                          onClick={() => {
+                            setSelectedVoucher(voucher.title)
+                            setSelectedVoucherId(voucher.id)
+                            setSelectedDiscountAmount(voucher.discountAmount)
+
+                          }}
+                        >
+                          <div className='flex flex-col gap-1'>
+                            <span>{voucher.title}</span>
+                            <span>{voucher.discountAmount.toLocaleString()}</span>
+                            <span>{`Exp:${new Date(voucher.endDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}</span>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </div>
+              <div className='flex w-full justify-between'>
+                <div className='flex flex-col'>
+                  <span>Gunakan Kupon</span>
+                  <span>Sisa Kupon ({coupons.length})</span>
+                </div>
+                <details className='dropdown z-50 rounded-md border'>
+                  <summary className='btn btn-ghost m-0 flex w-[155px] justify-center rounded-md border bg-white p-2 font-light text-black hover:bg-white'>
+                    {selectedCoupon}
+                  </summary>
+                  <ul className='menu dropdown-content rounded-box z-[1] w-full bg-white shadow'>
+                    <li>
+                      <button
+                        type='button'
+                        className='text-black no-underline'
+                        onClick={() => {
+                          setSelectedCoupon('Pilih')
+                          setSelectedCouponId(null)
+                          setSelectedCouponPoints(0)
+                        }}
+                      >
+                        Pilih
+                      </button>
+                    </li>
+
+                    {coupons.map((coupon) => (
+                      <li key={coupon.id}>
+                        <button
+                          type='button'
+                          className='text-black no-underline'
+                          onClick={() => {
+                            setSelectedCouponId(coupon.id)
+                            setSelectedCoupon(
+                              `${coupon.points.toLocaleString()} \nExp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`
+                            )
+                            //   formik.setFieldValue("categoryId", cat.id);
+                            setSelectedCouponPoints(coupon.points)
+                          }}
+                        >
+                          <div className='flex flex-col gap-1'>
+                            <span>{`${coupon.points.toLocaleString()}  `}</span>
+                            <span>{`Exp:${new Date(coupon.pointsExpiryDate).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}`}</span>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </div>
             <div className='flex justify-between'>
               <span>Total Bayar</span>
               <span>{totalPrice.toLocaleString()}</span>

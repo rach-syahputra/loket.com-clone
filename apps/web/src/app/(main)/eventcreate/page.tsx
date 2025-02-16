@@ -7,6 +7,7 @@ import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'react-time-picker/dist/TimePicker.css'
+import { useSession } from 'next-auth/react'
 
 export default function CreateEvent() {
   // Define interfaces for data
@@ -18,6 +19,9 @@ export default function CreateEvent() {
     id: number
     name: string
   }
+  const { data: session, status } = useSession()
+  const [name, setName] = useState('')
+  const [image, setImage] = useState('')
 
   // Local state variables for modals
   const [modalDate, setModalDate] = useState(false)
@@ -84,32 +88,32 @@ export default function CreateEvent() {
       provinceId: 0
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-      description: Yup.string().required('Description is required'),
+      title: Yup.string().required('Judul Wajib Diisi'),
+      description: Yup.string().required('Deskripsi Wajib Diisi'),
       registrationStartDate: Yup.string().required(
-        'Registration Start Date is required'
+        'Tanggal Mulai Registrasi Wajib Diisi'
       ),
       registrationEndDate: Yup.string().required(
-        'Registration End Date is required'
+        'Tanggal Akhir Registrasi Wajib Diisi'
       ),
-      eventStartDate: Yup.string().required('Event Start Date is required'),
-      eventEndDate: Yup.string().required('Event End Date is required'),
-      eventStartTime: Yup.string().required('Waktu mulai wajib diisi'),
-      eventEndTime: Yup.string().required('Waktu berakhir wajib diisi'),
+      eventStartDate: Yup.string().required('Tanggal Mulai Acara Wajib Diisi'),
+      eventEndDate: Yup.string().required('Tanggal Akhir Acara Wajib Diisi'),
+      eventStartTime: Yup.string().required('Waktu Mulai Acara Wajib Diisi'),
+      eventEndTime: Yup.string().required('Waktu Berakhir Wajib Diisi'),
       price: Yup.number()
         .min(0, 'Price must be at least 0')
-        .required('Price is required'),
+        .required('Harga Wajib Diisi'),
       availableSeats: Yup.number()
         .min(0, 'Available Seats must be at least 0')
-        .required('Available Seats is required'),
-      categoryId: Yup.number().required('Category ID is required'),
+        .required('Jumlah Kursi Wajib Diisi'),
+      categoryId: Yup.number().required('Kategori Wajib Diisi'),
       ticketType: Yup.string()
         .oneOf(['PAID', 'FREE'])
-        .required('Ticket Type is required'),
-      organizerId: Yup.number().required('Organizer ID is required'),
-      streetAddress: Yup.string().required('Street Address is required'),
-      city: Yup.string().required('City is required'),
-      provinceId: Yup.number().required('Province ID is required')
+        .required('Tipe Tiket Wajib Diisi'),
+      organizerId: Yup.number().required('Organizer Wajib Diisi'),
+      streetAddress: Yup.string().required('Alamat Wajib Diisi'),
+      city: Yup.string().required('Kota Wajib Diisi'),
+      provinceId: Yup.number().required('Provinsi Wajib Diisi')
     }),
     onSubmit: async (values, { resetForm }) => {
       // Build the eventData and locationData objects
@@ -226,6 +230,11 @@ export default function CreateEvent() {
         console.log('Error fetching data:', error)
       }
     }
+    if (session?.user) {
+      setName(session.user.name || '')
+      setImage(session.user.image || '')
+    }
+
     fetchData()
   }, [])
 
@@ -241,9 +250,9 @@ export default function CreateEvent() {
       <div className='h-full w-full bg-white py-[100px]'>
         <div className='flex flex-col items-center justify-center gap-[50px]'>
           {/* Banner Section */}
-          <div className='flex flex-col rounded-[20px] border sm:w-[900px]'>
+          <div className='flex flex-col rounded-[20px] border xl:w-[900px] w-full px-[5px] sm:px-0'>
             <div
-              className='relative z-50 h-[421px] w-[900px] cursor-pointer'
+              className='relative z-50 sm:h-[421px] h-[200px] xl:sm:w-[900px] w-full  cursor-pointer'
               onClick={handleBannerClick}
             >
               <Image
@@ -253,12 +262,12 @@ export default function CreateEvent() {
                 className='rounded-t-[20px] object-cover md:rounded-t-[70px] lg:rounded-t-[20px]'
               />
               <div
-                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[415px]`}
+                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[355px] xl:left-[415px]`}
               >
                 <Image src='/add.png' width={60} height={128} alt='' />
               </div>
               <div
-                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[290px]`}
+                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[230px] xl:left-[290px]`}
               >
                 <span className='text-[13px] sm:text-[24px]'>
                   Unggah gambar/poster/banner
@@ -313,14 +322,14 @@ export default function CreateEvent() {
                   <div className='flex items-center gap-4'>
                     <div className='h-[58px] w-[58px] overflow-hidden rounded-full border'>
                       <Image
-                        src='https://assets.loket.com/neo/production/images/organization/20241209131322_67568a8253c48.png'
+                        src={image || ''}
                         width={58}
                         height={58}
                         alt=''
                       />
                     </div>
                     <span className='font-light text-black'>
-                      Andi Farrel Athalla Pasha
+                      {name}
                     </span>
                   </div>
                 </div>
@@ -329,8 +338,9 @@ export default function CreateEvent() {
                   <span className='hidden text-[14px] font-medium text-black sm:flex'>
                     Tanggal & Waktu
                   </span>
-                  <div
-                    className='flex items-center gap-4'
+               <div className='z-50'>
+               <div
+                    className='flex items-center gap-4 '
                     onClick={() => setModalDate(true)}
                   >
                     <Image src='/calendar.png' width={20} height={20} alt='' />
@@ -352,9 +362,11 @@ export default function CreateEvent() {
                         </span>
                       </div>
                     ) : (
-                      <span className='text-[#ADBAD1]'>Pilih Tanggal</span>
+                      <span className='text-black  '>Pilih Tanggal</span>
                     )}
                   </div>
+               </div>
+                  <div className='z-50'>
                   <div
                     className='flex items-center gap-4'
                     onClick={() => setModalTime(true)}
@@ -363,7 +375,7 @@ export default function CreateEvent() {
                     {formik.values.eventStartTime &&
                     formik.values.eventEndTime ? (
                       <div className='flex gap-2'>
-                        <span className='font-light text-[#ADBAD1]'>
+                        <span className='font-light text-black'>
                           {`${formik.values.eventStartTime} - ${formik.values.eventEndTime}`}
                         </span>
                       </div>
@@ -373,9 +385,11 @@ export default function CreateEvent() {
                       </span>
                     )}
                   </div>
+                  </div>
                 </div>
                 {/* Location */}
-                <div className='flex flex-col gap-4 sm:ml-[20px]'>
+               <div className='z-50'>
+               <div className='flex flex-col gap-4 sm:ml-[20px]'>
                   <span className='hidden text-[14px] font-medium text-black sm:flex'>
                     Lokasi
                   </span>
@@ -384,13 +398,14 @@ export default function CreateEvent() {
                     onClick={() => setModalLocation(true)}
                   >
                     <Image src='/calendar.png' width={20} height={20} alt='' />
-                    <span className='font-light text-[#ADBAD1]'>
+                    <span className='font-light text-black'>
                       {displayLocation === 'Pilih Lokasi'
                         ? displayLocation
                         : `${displayLocation}, ${displayCity}`}
                     </span>
                   </div>
                 </div>
+               </div>
                 {/* Organizer (Mobile) */}
                 <div className='mt-[5px] flex flex-col gap-4 sm:hidden'>
                   <span className='hidden text-[14px] font-medium text-black sm:flex'>
@@ -399,14 +414,15 @@ export default function CreateEvent() {
                   <div className='flex items-center gap-4'>
                     <div className='h-[58px] w-[58px] overflow-hidden rounded-full border'>
                       <Image
-                        src='https://assets.loket.com/neo/production/images/organization/20241209131322_67568a8253c48.png'
+                        src={image || ''}
                         width={58}
                         height={58}
                         alt=''
                       />
                     </div>
+                    
                     <span className='font-light text-black'>
-                      Andi Farrel Athalla Pasha
+                      {name}
                     </span>
                   </div>
                 </div>
@@ -417,7 +433,7 @@ export default function CreateEvent() {
           <span className='flex justify-start text-[20px] text-black'>
             Kategori Tiket
           </span>
-          <div>
+          <div className='z-40'>
             <div className='flex flex-col justify-center gap-4 px-[20px] sm:flex-row sm:px-0'>
               <Link
                 href='#'
@@ -428,7 +444,7 @@ export default function CreateEvent() {
                   formik.setFieldValue('ticketType', 'PAID')
                 }}
               >
-                <div className='flex h-[90px] w-[400px] items-center justify-between rounded-lg border bg-white p-[20px]'>
+              <div className='flex h-[90px] xl:w-[400px] w-[300px] items-center justify-between rounded-lg border bg-white p-[20px] z-40'>
                   <div className='flex flex-col gap-1 text-black'>
                     <span>Buat Tiket</span>
                     <span className='font-semibold'>Berbayar</span>
@@ -442,6 +458,7 @@ export default function CreateEvent() {
                   />
                 </div>
               </Link>
+              <div className='z-40'>
               <Link
                 href='#'
                 onClick={(e) => {
@@ -451,7 +468,7 @@ export default function CreateEvent() {
                   formik.setFieldValue('ticketType', 'FREE')
                 }}
               >
-                <div className='flex h-[90px] w-[400px] items-center justify-between rounded-lg border bg-white p-[20px]'>
+                <div className='flex h-[90px] xl:w-[400px] w-[300px] items-center justify-between rounded-lg border bg-white p-[20px]'>
                   <div className='flex flex-col gap-1 text-black'>
                     <span>Buat Tiket</span>
                     <span className='font-semibold'>Gratis</span>
@@ -465,13 +482,14 @@ export default function CreateEvent() {
                   />
                 </div>
               </Link>
+              </div>
             </div>
           </div>
           {/* Description */}
           <span className='text-[20px] text-black'>Deskripsi</span>
           <div className='px-[20px]'>
             <textarea
-              className='h-[200px] w-screen text-black sm:h-[400px] lg:w-[900px]'
+              className='h-[200px] w-screen text-black sm:h-[400px] xl:w-[900px]'
               name='description'
               id='description'
               onBlur={formik.handleBlur}
@@ -957,16 +975,16 @@ export default function CreateEvent() {
           )}
 
           {/* Footer with submit button */}
-          <div className='fixed bottom-0 h-[70px] w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px]'>
-            <div className='flex items-center justify-between'>
+          <div className='fixed bottom-0 h-[70px] xl:w-full border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] z-50'>
+            <div className='flex sm:items-center sm:justify-between justify-center'>
               <p className='hidden text-[14px] text-black md:block'>
                 <span className='text-[24px] font-semibold text-black'>
                   Yeay!
                 </span>{' '}
                 Tinggal Selangkah lagi dan event kamu berhasil dibuat.
               </p>
-              <button
-                className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] lg:w-[190px]'
+             <button
+                className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] sm:w-full lg:w-[190px] px-4 sm:px-0'
                 type='submit'
               >
                 Buat Event Sekarang
