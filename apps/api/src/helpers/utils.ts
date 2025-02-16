@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { format } from 'date-fns'
 
-export function calculatePointsExpiryDate(): Date {
+export function calculateCouponsExpiryDate(): Date {
   const currentDate = new Date()
   currentDate.setMonth(currentDate.getMonth() + 3) // Add 3 months to the current month
   return currentDate

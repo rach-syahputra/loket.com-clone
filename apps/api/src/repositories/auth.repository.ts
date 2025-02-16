@@ -1,5 +1,5 @@
 import { prisma } from '../helpers/prisma'
-import { calculatePointsExpiryDate } from '../helpers/utils'
+import { calculateCouponsExpiryDate, convertToUTC7 } from '../helpers/utils'
 import {
   RegisterRequest,
   SwitchUserRoleRepositoryRequest,
@@ -80,7 +80,7 @@ class AuthRepository {
         ]
       })
 
-      let referral = null
+      let coupon = null
 
       if (req.referralCode) {
         const referredUser = await trx.user.findUnique({
@@ -91,33 +91,33 @@ class AuthRepository {
         })
 
         if (referredUser) {
-          // insert points for the referrer
-          const points = await trx.point.create({
+          // insert coupons for the referrer
+          const coupons = await trx.coupon.create({
             data: {
-              points: 10000,
-              pointsExpiryDate: calculatePointsExpiryDate(),
+              discountAmount: 10000,
+              expiryDate: calculateCouponsExpiryDate(),
               userId: user.id,
               status: 'ACTIVE'
             }
           })
 
-          // insert points for the referred
-          await trx.point.create({
+          // insert coupons for the referred
+          await trx.coupon.create({
             data: {
-              points: 10000,
-              pointsExpiryDate: calculatePointsExpiryDate(),
+              discountAmount: 10000,
+              expiryDate: calculateCouponsExpiryDate(),
               userId: referredUser.id,
               status: 'ACTIVE'
             }
           })
 
           // add referral data for the referrer
-          referral = {
-            id: points.id,
-            userId: points.userId,
-            pointsAwarded: points.points,
-            pointsExpiryDate: points.pointsExpiryDate,
-            createdAt: points.createdAt
+          coupon = {
+            id: coupons.id,
+            discountAmount: coupons.discountAmount,
+            status: coupons.status,
+            expiryDate: coupons.expiryDate,
+            createdAt: convertToUTC7(coupons.createdAt)
           }
         }
       }
@@ -129,10 +129,10 @@ class AuthRepository {
           email: user.email,
           pictureUrl: user.pictureUrl,
           referralCode: user.referralCode,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
-        },
-        referral
+          coupon,
+          createdAt: convertToUTC7(user.createdAt),
+          updatedAt: convertToUTC7(user.updatedAt)
+        }
       }
     })
 

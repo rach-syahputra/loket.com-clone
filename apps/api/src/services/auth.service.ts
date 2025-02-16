@@ -21,8 +21,8 @@ class AuthService {
     //    - insert new user to user table.
     //    - insert new user's roles to user_roles table.
     //    - if a referral code is provided:
-    //      • insert points for the referrer/new user.
-    //      • insert points for the referred user.
+    //      • insert coupons for the referrer/new user.
+    //      • insert coupons for the referred user.
     // 4. commit the sql transaction.
 
     validate(RegisterSchema, req)

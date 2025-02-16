@@ -105,7 +105,7 @@ class UserService {
 
     if (!user) throw new ResponseError(404, 'User not found')
 
-    const coupons = await userRepository.findPoints(req.userId)
+    const coupons = await userRepository.getCoupons(req.userId)
 
     return {
       user: {
@@ -114,8 +114,8 @@ class UserService {
     }
   }
 
-  async updateCoupons(pointId:number){
-    return await userRepository.updatePoints(pointId)
+  async updateCoupon(pointId: number) {
+    return await userRepository.updateCoupon(pointId)
   }
 
   async getTickets(req: GetTicketsRequest) {

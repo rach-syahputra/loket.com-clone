@@ -1,4 +1,4 @@
-import { NextFunction, Response,Request } from 'express'
+import { NextFunction, Response, Request } from 'express'
 
 import userService from '../services/user.service'
 import { UserRequest } from '../interfaces/auth.interface'
@@ -84,22 +84,19 @@ class UserController {
       }
     } catch (err) {
       next(err)
-    }}
-  async updateCoupons(req:Request,res:Response,next:NextFunction){
+    }
+  }
+  async updateCoupons(req: Request, res: Response, next: NextFunction) {
     try {
-      const {pointId} = req.body
-   
+      const { pointId } = req.body
 
-      
-      const result = await userService.updateCoupons(pointId)
+      const result = await userService.updateCoupon(pointId)
 
       res.status(200).send({
-        message:"Coupons updated successfully",
+        message: 'Coupons updated successfully',
         result
       })
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 }
 

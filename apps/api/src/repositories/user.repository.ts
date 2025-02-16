@@ -35,21 +35,21 @@ class UserRepository {
     }
   }
 
-  async findPoints(userId: number) {
-    const res = await prisma.point.findMany({
+  async getCoupons(userId: number) {
+    const res = await prisma.coupon.findMany({
       where: {
         userId,
-        status:'ACTIVE'
+        status: 'ACTIVE'
       }
     })
 
-    const points = res.map((data) => ({
+    const coupons = res.map((data) => ({
       ...data,
-      pointsExpiryDate: convertToUTC7(data.pointsExpiryDate),
+      expiryDate: convertToUTC7(data.expiryDate),
       createdAt: convertToUTC7(data.createdAt)
     }))
 
-    return points
+    return coupons
   }
 
   async getTickets(userId: number, query: GetTicketsQuery) {
@@ -171,21 +171,18 @@ class UserRepository {
         limit: totalPages >= limit ? limit : totalTickets
       },
       totalTickets
-    }}
-  async updatePoints(pointId:number){
-    return await prisma.point.update({
-      where:{
-        
-        id:  pointId,
-      },
-       data:{
-            status:'USED'
-          }
-        
-      }
-    )
+    }
   }
-  
+  async updateCoupon(pointId: number) {
+    return await prisma.coupon.update({
+      where: {
+        id: pointId
+      },
+      data: {
+        status: 'USED'
+      }
+    })
+  }
 }
 
 export default new UserRepository()
