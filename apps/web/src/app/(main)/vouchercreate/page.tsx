@@ -58,12 +58,12 @@ export default function VoucherCreate() {
       discountAmount: ''
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-      eventId: Yup.string().required('Event selection is required'),
-      startDate: Yup.string().required('Start Date is required'),
-      endDate: Yup.string().required('End Date is required'),
-      startTime: Yup.string().required('Waktu mulai wajib diisi'),
-      endTime: Yup.string().required('Waktu berakhir wajib diisi'),
+      title: Yup.string().required('Judul Wajib Diisi'),
+      eventId: Yup.string().required('Acara Wajib Diisi'),
+      startDate: Yup.string().required('Tanggal Mulai Wajib Diisi'),
+      endDate: Yup.string().required('Tanggal Akhir Wajib Diisi'),
+      startTime: Yup.string().required('Waktu Mulai Wajib Diisi'),
+      endTime: Yup.string().required('Waktu Berakhir Wajib Diisi'),
       discountAmount: Yup.number().required('Jumlah Diskon Wajib Diisi')
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -118,10 +118,10 @@ export default function VoucherCreate() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className='h-full w-full bg-white py-[100px]'>
+      <div className='min-h-screen w-full bg-white py-[100px]'>
         <div className='flex flex-col items-center justify-center gap-[50px]'>
           {/* Banner Section */}
-          <div className='flex flex-col rounded-[20px] border sm:w-[900px]'>
+          <div className='flex flex-col rounded-[20px] border xl:w-[900px] w-full'>
             {/* Voucher Details */}
             <div className='flex flex-col gap-4 p-[20px] sm:p-[50px]'>
               {formik.touched.title && formik.errors.title && (
@@ -195,7 +195,7 @@ export default function VoucherCreate() {
                         }
                       }}
                       className='w-full rounded border p-2'
-                      placeholderText='Select a date'
+                      placeholderText='Select date'
                     />
                     <label>Waktu Mulai</label>
                     <div className='relative'>
@@ -236,7 +236,7 @@ export default function VoucherCreate() {
 
                   {/* End Date & Time */}
                   <div className='z-30 flex w-[30%] flex-col gap-4'>
-                    <label>Tanggal Berakhir</label>
+                    <label>Tanggal Akhir</label>
                     <DatePicker
                       selected={endDate}
                       onChange={(date: Date | null) => {
@@ -247,9 +247,9 @@ export default function VoucherCreate() {
                         }
                       }}
                       className='w-full rounded border p-2'
-                      placeholderText='Select a date'
+                      placeholderText='Select date'
                     />
-                    <label>Waktu Berakhir</label>
+                    <label>Waktu Akhir</label>
                     <div className='relative'>
                       <div className='pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3.5'>
                         <svg
@@ -288,36 +288,17 @@ export default function VoucherCreate() {
                 </div>
               </div>
 
-              {/* Organizer Info (Mobile) */}
-              <div className='flex flex-col gap-2 sm:grid sm:grid-cols-3'>
-                <div className='mt-[5px] flex flex-col gap-4 sm:hidden'>
-                  <span className='hidden text-[14px] font-medium text-black sm:flex'>
-                    Diselenggarakan Oleh
-                  </span>
-                  <div className='flex items-center gap-4'>
-                    <div className='h-[58px] w-[58px] overflow-hidden rounded-full border'>
-                      <Image
-                        src='https://assets.loket.com/neo/production/images/organization/20241209131322_67568a8253c48.png'
-                        width={58}
-                        height={58}
-                        alt=''
-                      />
-                    </div>
-                    <span className='font-light text-black'>
-                      Andi Farrel Athalla Pasha
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex justify-end'>
+             
+            <div className='z-30'>
+            <div className='flex justify-end'>
                 <button
-                  className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] lg:w-[190px] z-30'
+                  className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] w-[180px] lg:w-[190px] z-30'
                   type='submit'
                 >
                   Buat Event Sekarang
                 </button>
               </div>
+            </div>
             </div>
           </div>
 
