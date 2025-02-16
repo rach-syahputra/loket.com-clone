@@ -12,7 +12,6 @@ import { validate } from '../helpers/validation.handler'
 import imageRepository from '../repositories/image.repository'
 import { CLOUDINARY_PAYMENT_PROOF_IMAGE_FOLDER } from '../config'
 import { getPublicId } from '../helpers/cloudinary'
-import { CLOUDINARY_EVENT_BANNER_FOLDER } from '../config'
 import { sendPaymentEmail } from '../helpers/email/email'
 import {
   formatDateWithTime,
@@ -29,7 +28,7 @@ class TransactionService {
     if (paymentProofImage) {
       const transactionPayment = await imageRepository.upload(
         paymentProofImage.path,
-        CLOUDINARY_EVENT_BANNER_FOLDER
+        CLOUDINARY_PAYMENT_PROOF_IMAGE_FOLDER
       )
       if (transactionPayment && transactionPayment.secure_url) {
         transactionData.paymentProofImage = transactionPayment.secure_url
