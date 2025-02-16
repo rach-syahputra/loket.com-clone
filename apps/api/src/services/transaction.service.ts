@@ -104,6 +104,7 @@ class TransactionService {
     const { id, transactionStatus, user, event, createdAt, totalPrice } =
       updatedTransaction
 
+    // Send email to customer for accepted or rejected payment
     if (transactionStatus === 'DONE' || transactionStatus === 'REJECTED') {
       await sendPaymentEmail(user.email, transactionStatus, {
         transactionId: id.toString(),

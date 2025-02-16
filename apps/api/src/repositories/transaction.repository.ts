@@ -91,42 +91,85 @@ class TransactionRepository {
   }
 
   async updateTransaction(req: TransactionRepositoryRequest) {
-    const transaction = await prisma.transactions.update({
-      where: {
-        id: req.transactionId
-      },
-      include: {
-        user: {
+    const transaction = await prisma.$transaction(async (trx) => {
+      if (
+        req.transactionStatus === 'REJECTED' ||
+        req.transactionStatus === 'CANCELED'
+      ) {
+        const transaction = await trx.transactions.findUnique({
+          where: {
+            id: req.transactionId
+          },
           select: {
-            id: true,
-            email: true,
-            name: true
+            eventId: true,
+            couponId: true
           }
-        },
-        event: {
-          include: {
-            location: {
-              include: {
-                province: true
+        })
+
+        if (transaction) {
+          // If coupon is used on the transaction, set the coupon status back to 'ACTIVE'
+          if (transaction.couponId) {
+            await trx.coupon.update({
+              where: {
+                id: transaction.couponId
               },
-              omit: {
-                provinceId: true
+              data: {
+                status: 'ACTIVE'
+              }
+            })
+          }
+
+          // Restore the event available seats
+          await trx.event.update({
+            where: {
+              id: transaction.eventId
+            },
+            data: {
+              availableSeats: {
+                increment: 1
               }
             }
-          },
-          omit: {
-            locationId: true
-          }
+          })
         }
-      },
-      omit: {
-        userId: true,
-        eventId: true
-      },
-      data: {
-        paymentProofImage: req.paymentProofImage,
-        transactionStatus: req.transactionStatus
       }
+
+      return await trx.transactions.update({
+        where: {
+          id: req.transactionId
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true
+            }
+          },
+          event: {
+            include: {
+              location: {
+                include: {
+                  province: true
+                },
+                omit: {
+                  provinceId: true
+                }
+              }
+            },
+            omit: {
+              locationId: true
+            }
+          }
+        },
+        omit: {
+          userId: true,
+          eventId: true
+        },
+        data: {
+          paymentProofImage: req.paymentProofImage,
+          transactionStatus: req.transactionStatus
+        }
+      })
     })
 
     return {
