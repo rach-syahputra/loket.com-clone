@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum PointStatus {
+enum CouponStatus {
   ACTIVE
   USED
   EXPIRED
@@ -23,7 +23,6 @@ enum TicketType {
   PAID
   FREE
 }
-
 
 enum TransactionStatus {
   WAITING_FOR_PAYMENT
@@ -48,7 +47,7 @@ model User {
   Event        Event[]
   Review       Review[]
   Transactions Transactions[]
-  Point        Point[]
+  Coupon       Coupon[]
 
   @@map("users")
 }
@@ -77,17 +76,17 @@ model UserRole {
   @@map("user_roles")
 }
 
-model Point {
-  id               Int         @id @default(autoincrement())
-  userId           Int         @map("user_id")
-  points           Int
-  pointsExpiryDate DateTime    @map("points_expiry_date")
-  status           PointStatus
-  createdAt        DateTime    @default(now()) @map("created_at")
+model Coupon {
+  id             Int          @id @default(autoincrement())
+  userId         Int          @map("user_id")
+  discountAmount Int          @map("discount_amount")
+  expiryDate     DateTime     @map("expiry_date")
+  status         CouponStatus
+  createdAt      DateTime     @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("points")
+  @@map("coupons")
 }
 
 model Province {
@@ -145,7 +144,7 @@ model Event {
   location     Location       @relation(fields: [locationId], references: [id], onUpdate: Cascade)
   category     Category       @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
   organizer    User           @relation(fields: [organizerId], references: [id], onUpdate: Cascade)
-  Voucher    Voucher[]
+  Voucher      Voucher[]
   Review       Review[]
   Transactions Transactions[]
 
@@ -153,13 +152,13 @@ model Event {
 }
 
 model Voucher {
-  id             Int          @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   title          String
-  eventId        Int          @map("event_id")
-  startDate      DateTime     @map("start_date")
-  endDate        DateTime     @map("end_date")
-  discountAmount Int          @map("discount_amount")
-  createdAt      DateTime     @default(now()) @map("created_at")
+  eventId        Int      @map("event_id")
+  startDate      DateTime @map("start_date")
+  endDate        DateTime @map("end_date")
+  discountAmount Int      @map("discount_amount")
+  createdAt      DateTime @default(now()) @map("created_at")
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -169,7 +168,7 @@ model Voucher {
 model Review {
   id        Int      @id @default(autoincrement())
   userId    Int      @map("user_id")
-  eventId   Int      @map("event_id") 
+  eventId   Int      @map("event_id")
   content   String   @db.Text
   rating    Decimal
   createdAt DateTime @default(now()) @map("created_at")
