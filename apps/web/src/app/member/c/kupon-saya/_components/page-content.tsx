@@ -52,9 +52,9 @@ export default function PageContent() {
             coupons.map((coupon, index) => (
               <CouponCard
                 key={index}
-                points={coupon.points}
+                discountAmount={coupon.discountAmount}
                 status={coupon.status}
-                expiryDate={coupon.pointsExpiryDate}
+                expiryDate={coupon.expiryDate}
               />
             ))
           ) : (

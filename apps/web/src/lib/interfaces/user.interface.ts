@@ -19,15 +19,15 @@ export interface UpdateUserRequest {
   image?: File | null
 }
 
-export type Status = 'ACTIVE' | 'USED' | 'EXPIRED'
+export type CouponStatus = 'ACTIVE' | 'USED' | 'EXPIRED'
 
 export interface Coupons {
   id: number
   userId: number
-  points: number
-  pointsExpiryDate: Date
-  status: Status
-  createdAt: Date
+  discountAmount: number
+  expiryDate: Date
+  status: CouponStatus
+  createdAt: string
 }
 
 export interface CouponsJson {

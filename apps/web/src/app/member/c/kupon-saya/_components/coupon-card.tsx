@@ -2,22 +2,22 @@ import Image from 'next/image'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 import { cn, formatDate, formatNumber } from '@/lib/utils'
-import { Status } from '@/lib/interfaces/user.interface'
+import { CouponStatus } from '@/lib/interfaces/user.interface'
 import Icon from '@/components/icon'
 
 type CouponCardProps = {
-  points: number
-  status?: Status
+  discountAmount: number
+  status?: CouponStatus
   expiryDate: Date
   className?: string
 }
 
 type CouponCardStatusProps = {
-  status?: Status
+  status?: CouponStatus
 }
 
 export default function CouponCard({
-  points,
+  discountAmount,
   status = 'ACTIVE',
   expiryDate,
   className
@@ -46,7 +46,7 @@ export default function CouponCard({
       <div className='flex w-full flex-col gap-3 p-4'>
         <div className='flex flex-col gap-2'>
           <h3 className='text-[21px] font-semibold'>
-            {formatNumber(points)} Points
+            Rp. {formatNumber(discountAmount)}
           </h3>
           <CouponCardStatus status={status} />
         </div>
