@@ -256,7 +256,7 @@ export default function DetailPage() {
                             alt="Clock"
                           />
                         </span>
-                        <p>{`Berakhir ${formatDate(event.registrationEndDate)}`}</p>
+                        <p>{`Mulai ${formatDate(event.registrationStartDate)}, Berakhir ${formatDate(event.registrationEndDate)}`}</p>
                       </div>
                       <hr className="bg-[#0049CC]" />
                       <div className="flex justify-between font-bold">

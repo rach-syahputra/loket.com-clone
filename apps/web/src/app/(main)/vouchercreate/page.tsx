@@ -2,35 +2,27 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import Image from 'next/image'
-import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'react-time-picker/dist/TimePicker.css'
+import { useRouter } from 'next/navigation'
 
 export default function VoucherCreate() {
   interface EventList {
     id: number
     title: string
   }
+  const router = useRouter();
 
-  // Local state variables for modals and dates
-  const [modalTicketPaid, setModalTicketPaid] = useState(false)
-  const [modalTicketFree, setModalTicketFree] = useState(false)
+  // Local state variables for dates
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
-  const [endTicketDate, setEndTicketDate] = useState<Date | null>(null)
   const [startTime, setStartTime] = useState<string>('09:00')
   const [endTime, setEndTime] = useState<string>('18:00')
-  const [startEventDate, setStartEventDate] = useState<Date | null>(null)
-  const [endEventDate, setEndEventDate] = useState<Date | null>(null)
 
-  // For dropdowns
+  // For dropdown events
   const [event, setEvent] = useState<EventList[]>([])
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null)
-
-  // For ticket type (PAID / FREE)
-  const [ticketType, setTicketType] = useState('')
 
   // Helper: add 7 hours to the Date and return a valid ISO-8601 string.
   const toAdjustedISOString = (date: Date): string => {
@@ -38,7 +30,7 @@ export default function VoucherCreate() {
     return adjustedDate.toISOString()
   }
 
-  // Helper to combine a date and a time string (HH:mm) into a Date object.
+  // Helper: combine a date and a time string (HH:mm) into a Date object.
   const combineDateAndTime = (date: Date, time: string): Date => {
     const [hours, minutes] = time.split(':').map(Number)
     const combined = new Date(date)
@@ -46,13 +38,13 @@ export default function VoucherCreate() {
     return combined
   }
 
-  // Set up Formik with an added eventId field and consistent field names.
+  // Set up Formik.
   const formik = useFormik({
     initialValues: {
       title: '',
-      eventId: '', // Added eventId for the selected event
-      startDate: toAdjustedISOString(new Date()),
-      endDate: toAdjustedISOString(new Date(Date.now() + 86400000)),
+      eventId: '',
+      startDate: '', // startDate & endDate start as empty strings
+      endDate: '',
       startTime: '09:00',
       endTime: '18:00',
       discountAmount: ''
@@ -67,7 +59,12 @@ export default function VoucherCreate() {
       discountAmount: Yup.number().required('Jumlah Diskon Wajib Diisi')
     }),
     onSubmit: async (values, { resetForm }) => {
-      // Build the voucherData object, including eventId.
+      // Check if both date fields have been selected.
+      if (!startDate || !endDate) {
+        alert('Silakan pilih Tanggal Mulai dan Tanggal Akhir.')
+        return
+      }
+
       const voucherData = {
         title: values.title,
         eventId: Number(values.eventId),
@@ -88,6 +85,10 @@ export default function VoucherCreate() {
           console.log('Voucher Created Successfully:', data)
           alert('Voucher Created Successfully')
           resetForm()
+          router.push('/');
+          setStartDate(null)
+          setEndDate(null)
+          setSelectedEvent(null)
         } else {
           const errorData = await response.json()
           console.error('Error Creating Voucher:', errorData)
@@ -100,7 +101,7 @@ export default function VoucherCreate() {
     }
   })
 
-  // Fetch events from your API
+  // Fetch events from your API.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -120,9 +121,8 @@ export default function VoucherCreate() {
     <form onSubmit={formik.handleSubmit}>
       <div className='min-h-screen w-full bg-white py-[100px]'>
         <div className='flex flex-col items-center justify-center gap-[50px]'>
-          {/* Banner Section */}
+          {/* Voucher Container */}
           <div className='flex flex-col rounded-[20px] border xl:w-[900px] w-full'>
-            {/* Voucher Details */}
             <div className='flex flex-col gap-4 p-[20px] sm:p-[50px]'>
               {formik.touched.title && formik.errors.title && (
                 <div className='text-red-500'>{formik.errors.title}</div>
@@ -139,6 +139,9 @@ export default function VoucherCreate() {
               />
 
               {/* Event Dropdown */}
+              {formik.submitCount > 0 && formik.errors.eventId && (
+                <div className='text-red-500 mt-1'>{formik.errors.eventId}</div>
+              )}
               <details className='dropdown z-50'>
                 <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-2 font-light text-[#ADBAD1] hover:bg-white'>
                   {selectedEvent
@@ -153,7 +156,7 @@ export default function VoucherCreate() {
                         className='text-black no-underline'
                         onClick={() => {
                           setSelectedEvent(ev.id)
-                          formik.setFieldValue('eventId', ev.id) // set eventId here!
+                          formik.setFieldValue('eventId', ev.id)
                         }}
                       >
                         {ev.title}
@@ -162,9 +165,12 @@ export default function VoucherCreate() {
                   ))}
                 </ul>
               </details>
+              
 
               <hr />
-
+              {formik.touched.discountAmount && formik.errors.discountAmount && (
+                <div className='text-red-500'>{formik.errors.discountAmount}</div>
+              )}
               <input
                 type='text'
                 className='z-40 border-none p-0 text-[20px] focus:outline-none focus:ring-0'
@@ -184,14 +190,18 @@ export default function VoucherCreate() {
                   {/* Start Date & Time */}
                   <div className='z-30 flex w-[30%] flex-col gap-4'>
                     <label>Tanggal Mulai</label>
+                    {formik.submitCount > 0 && formik.errors.startDate && (
+                      <div className='text-red-500'>{formik.errors.startDate}</div>
+                    )}
                     <DatePicker
                       selected={startDate}
                       onChange={(date: Date | null) => {
                         setStartDate(date)
                         if (date && startTime) {
                           const combined = combineDateAndTime(date, startTime)
-                          // Use 'startDate' consistently (all lowercase)
                           formik.setFieldValue('startDate', toAdjustedISOString(combined))
+                        } else {
+                          formik.setFieldValue('startDate', '')
                         }
                       }}
                       className='w-full rounded border p-2'
@@ -219,8 +229,7 @@ export default function VoucherCreate() {
                         id='startTime'
                         name='startTime'
                         className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
-                        min='09:00'
-                        max='18:00'
+                      
                         value={startTime}
                         onChange={(e) => {
                           setStartTime(e.target.value)
@@ -237,6 +246,9 @@ export default function VoucherCreate() {
                   {/* End Date & Time */}
                   <div className='z-30 flex w-[30%] flex-col gap-4'>
                     <label>Tanggal Akhir</label>
+                    {formik.submitCount > 0 && formik.errors.endDate && (
+                      <div className='text-red-500'>{formik.errors.endDate}</div>
+                    )}
                     <DatePicker
                       selected={endDate}
                       onChange={(date: Date | null) => {
@@ -244,6 +256,8 @@ export default function VoucherCreate() {
                         if (date && endTime) {
                           const combined = combineDateAndTime(date, endTime)
                           formik.setFieldValue('endDate', toAdjustedISOString(combined))
+                        } else {
+                          formik.setFieldValue('endDate', '')
                         }
                       }}
                       className='w-full rounded border p-2'
@@ -271,8 +285,7 @@ export default function VoucherCreate() {
                         id='endTime'
                         name='endTime'
                         className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
-                        min='09:00'
-                        max='18:00'
+                     
                         value={endTime}
                         onChange={(e) => {
                           setEndTime(e.target.value)
@@ -288,22 +301,18 @@ export default function VoucherCreate() {
                 </div>
               </div>
 
-             
-            <div className='z-30'>
-            <div className='flex justify-end'>
-                <button
-                  className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] w-[180px] lg:w-[190px] z-30'
-                  type='submit'
-                >
-                  Buat Event Sekarang
-                </button>
+              <div className='z-30'>
+                <div className='flex justify-center'>
+                  <button
+                    className='h-[39px] rounded-lg bg-[#0049CC] font-bold text-white md:w-[190px] w-[180px] lg:w-[190px] z-30'
+                    type='submit'
+                  >
+                    Buat Voucher
+                  </button>
+                </div>
               </div>
             </div>
-            </div>
           </div>
-
-         
-         
         </div>
       </div>
     </form>

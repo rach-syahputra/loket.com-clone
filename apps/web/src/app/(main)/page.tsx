@@ -1,7 +1,5 @@
 import { Card } from '@/components/cards'
 import Carousel from '@/components/carousel'
-import Image from 'next/image'
-import Link from 'next/link'
 import MobileTabletNavbar from '@/components/mobile-tablet-navbar'
 export default function Home() {
   return (
@@ -12,8 +10,7 @@ export default function Home() {
       </span>
 
       <Card />
-      <MobileTabletNavbar/>
-     
+      <MobileTabletNavbar />
     </div>
   )
 }
