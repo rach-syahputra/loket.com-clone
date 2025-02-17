@@ -141,7 +141,7 @@ class OrganizerRepository {
     }))
 
     return {
-      events: formatedEventData,
+      events: formatedEventData.map(({ Transactions, ...event }) => event), // Omit Transactions key
       pagination: {
         currentPage: query.page,
         totalPages: Math.ceil(totalEvents / limit),

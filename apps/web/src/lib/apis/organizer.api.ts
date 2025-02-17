@@ -5,10 +5,10 @@ import { handleSignOut } from '@/app/actions/actions'
 import {
   EventBySlugJson,
   EventsByOrganizerJson,
-  EventStatus,
-  OrderType
+  EventStatus
 } from '../interfaces/organizer.interface'
 import { BASE_URL } from '../constants'
+import { OrderType } from '../interfaces/shared.interface'
 
 export async function fetchGetEventsByOrganizer(
   status: EventStatus = 'aktif',
