@@ -17,6 +17,10 @@ class OrganizerService {
     return await organizerRepository.getActiveEvents(organizerId, query)
   }
 
+  async getEventAttendees(slug: string, query: GetEventsQuery) {
+    return await organizerRepository.getEventAttendees(slug, query)
+  }
+
   async verifyEventOwnership(req: VerifyEventOwnershipRequest) {
     const event = await organizerRepository.getEventBySlug(req.slug)
 

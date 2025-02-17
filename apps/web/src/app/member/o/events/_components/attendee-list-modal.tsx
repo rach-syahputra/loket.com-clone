@@ -1,15 +1,18 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { faX } from '@fortawesome/free-solid-svg-icons'
 
-import { cn } from '@/lib/utils'
+import { fetchGetEventAttendees } from '@/lib/apis/organizer.api'
 import { DataTable } from '@/components/table/data-table'
 import Icon from '@/components/icon'
-import { AttendeeTable, columns } from './table/column'
 import ModalContainer from '@/components/modal-container'
+import Pagination from '@/components/pagination'
+import { AttendeeTable, columns } from './table/column'
 
 type AttendeeListModalProps = {
   eventTitle: string
+  eventSlug: string
   attendees: AttendeeTable[]
   openModal: boolean
   handleClose: () => void
@@ -18,11 +21,40 @@ type AttendeeListModalProps = {
 
 export default function AttendeeListModal({
   eventTitle,
-  attendees,
+  eventSlug,
   openModal,
   className,
   handleClose
 }: AttendeeListModalProps) {
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(0)
+  const [attendees, setAttendees] = useState<AttendeeTable[]>([])
+
+  const getEventAttendees = async () => {
+    try {
+      const response = await fetchGetEventAttendees(eventSlug, page)
+
+      if (response.success) {
+        setAttendees(
+          response.data.attendees.map((attendee) => ({
+            id: attendee.id,
+            nama: attendee.name,
+            jumlahTiket: attendee.ticketQuantity,
+            totalHarga: attendee.totalPrice
+          }))
+        )
+        setPage(response.data.pagination.currentPage)
+        setTotalPages(response.data.pagination.totalPages)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getEventAttendees()
+  }, [eventSlug, page])
+
   const searchableColumns = [
     {
       id: 'nama',
@@ -54,7 +86,16 @@ export default function AttendeeListModal({
           columns={columns}
           data={attendees}
           searchableColumns={searchableColumns}
+          pageSize={8}
         />
+
+        <Pagination
+          page={Number(page)}
+          onPageChange={setPage}
+          totalPages={totalPages}
+          className='place-self-end'
+        />
+        <p></p>
       </div>
     </ModalContainer>
   )

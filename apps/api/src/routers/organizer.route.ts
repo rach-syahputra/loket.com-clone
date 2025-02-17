@@ -9,5 +9,10 @@ const router = express.Router()
 
 router.get('/events', verifyToken, organizerController.getEvents)
 router.get('/events/:slug', verifyToken, organizerController.getEventBySlug)
+router.get(
+  '/events/:slug/attendees',
+  verifyToken,
+  organizerController.getEventAttendees
+)
 
 export default router

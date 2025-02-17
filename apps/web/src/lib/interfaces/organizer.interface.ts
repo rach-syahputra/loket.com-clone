@@ -90,3 +90,16 @@ export interface EventBySlugJson {
     event: Event
   }
 }
+
+export interface EventAttendeesJson {
+  success: boolean
+  message: string
+  error?: {
+    message: string
+  }
+  data: {
+    attendees: Attendee[]
+    pagination: Pagination
+    totalAttendees: number
+  }
+}

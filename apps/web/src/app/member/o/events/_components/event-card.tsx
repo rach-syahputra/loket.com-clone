@@ -94,6 +94,7 @@ export default function EventCard({ event }: EventCardProps) {
 
       <AttendeeListModal
         eventTitle={event.title}
+        eventSlug={event.slug}
         attendees={event.attendees.map((attendee) => ({
           id: attendee.id,
           nama: attendee.name,

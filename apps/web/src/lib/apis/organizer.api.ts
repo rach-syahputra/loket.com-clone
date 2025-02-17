@@ -3,6 +3,7 @@ import { getSession } from 'next-auth/react'
 import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
 import {
+  EventAttendeesJson,
   EventBySlugJson,
   EventsByOrganizerJson,
   EventStatus
@@ -53,4 +54,31 @@ export async function fetchGetEventBySlug(
   if (event.error?.message === 'jwt is expired') await handleSignOut()
 
   return event
+}
+
+export async function fetchGetEventAttendees(
+  slug: string,
+  page?: number,
+  order: OrderType = 'desc'
+): Promise<EventAttendeesJson> {
+  const session = await getSession()
+  const token = session?.user.accessToken
+
+  const url = new URL(`${BASE_URL}/organizers/events/${slug}/attendees`)
+
+  if (page) url.searchParams.append('page', page.toString())
+  if (order) url.searchParams.append('order', order)
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const attendees = await response.json()
+
+  if (attendees.error?.message === 'jwt is expired') await handleSignOut()
+
+  return attendees
 }

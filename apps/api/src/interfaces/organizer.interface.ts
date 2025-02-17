@@ -5,6 +5,11 @@ export interface GetEventsQuery {
   order: OrderType
 }
 
+export interface GetEventAttendeesQuery {
+  page: number
+  order: OrderType
+}
+
 export interface VerifyEventOwnershipRequest {
   organizerId: number
   slug: string
