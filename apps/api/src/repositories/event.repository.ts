@@ -21,7 +21,7 @@ class EventRepository {
 
   async getAllEvents() {
     return await prisma.event.findMany({
-      include: { location: true ,organizer:true}
+      include: { location: true, organizer: true }
     })
   }
 
@@ -38,13 +38,13 @@ class EventRepository {
       where: {
         Review: {
           none: {
-            userId: { equals: userId },
-          },
-        },
-      }, 
-    });
+            userId: { equals: userId }
+          }
+        }
+      }
+    })
   }
-  
+
   async updateEvent(req: UpdateEventRepositoryRequest) {
     return await prisma.$transaction(async (trx) => {
       if (req.location?.id) {
@@ -74,7 +74,8 @@ class EventRepository {
           eventStartTime: req.eventStartTime,
           eventEndTime: req.eventEndTime,
           price: req.price,
-          ticketType: req.ticketType
+          ticketType: req.ticketType,
+          categoryId: req.categoryId
         },
         where: {
           id: req.eventId
@@ -100,32 +101,31 @@ class EventRepository {
       where: {
         slug
       },
-      include: { location: true ,        organizer:true
-      }
+      include: { location: true, organizer: true }
     })
   }
 
   async filterAll(filters: FilterOptions) {
     // Build a "where" object for Prisma based on which filters the user provided
-    
+
     const events = await prisma.event.findMany({
       where: {
         // If provinceId is defined, use it; otherwise ignore
         location: filters.provinceId
-    ? { provinceId: filters.provinceId }
-    : undefined,
+          ? { provinceId: filters.provinceId }
+          : undefined,
         // If categoryId is defined, use it; otherwise ignore
         categoryId: filters.categoryId ? filters.categoryId : undefined,
 
         // If ticketType is defined, use it; otherwise ignore
-        ticketType: filters.ticketType ? filters.ticketType : undefined,
+        ticketType: filters.ticketType ? filters.ticketType : undefined
       },
       include: {
-        organizer:true
-      },
-    });
+        organizer: true
+      }
+    })
 
-    return events;
+    return events
   }
 }
 
