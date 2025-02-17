@@ -6,6 +6,8 @@ import { ZodError } from 'zod'
 import { corsOptions, PORT } from './config'
 import { ResponseError } from './helpers/error.handler'
 import apiRouter from './routers/api.route'
+import { couponExpirationScheduler } from './helpers/scheduler'
+
 export class App {
   private app: Application
 
@@ -14,6 +16,11 @@ export class App {
     this.configure()
     this.routes()
     this.handleError()
+    this.scheduler()
+  }
+
+  private scheduler() {
+    couponExpirationScheduler()
   }
 
   private configure() {
