@@ -45,7 +45,7 @@ export default function CouponCard({
       </div>
       <div className='flex w-full flex-col gap-3 p-4'>
         <div className='flex flex-col gap-2'>
-          <h3 className='text-[21px] font-semibold'>
+          <h3 className='text-xl font-semibold md:text-[21px]'>
             Rp. {formatNumber(discountAmount)}
           </h3>
           <CouponCardStatus status={status} />

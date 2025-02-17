@@ -1,11 +1,13 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import {
   faCalendarDays,
-  faChevronRight
+  faChevronRight,
+  faTicket
 } from '@fortawesome/free-solid-svg-icons'
 
 import { useNavigationContenxt } from '@/context/navigation-context'
@@ -52,9 +54,29 @@ export default function HeaderRight() {
             'cursor-not-allowed text-white': !isEventOrganizer
           }
         )}
+        asChild
       >
-        <Icon icon={faCalendarDays} className='w-4' />
-        Buat Event
+        <Link href='/eventcreate' aria-label='Buat event'>
+          <Icon icon={faCalendarDays} className='w-4' />
+          Buat Event
+        </Link>
+      </Button>
+
+      <Button
+        variant={isEventOrganizer ? 'outline' : 'default'}
+        disabled={!isEventOrganizer}
+        className={cn(
+          'hidden h-10 items-center justify-center gap-2 font-medium lg:flex',
+          {
+            'cursor-not-allowed text-white': !isEventOrganizer
+          }
+        )}
+        asChild
+      >
+        <Link href='/vouchercreate' aria-label='Buat voucher'>
+          <Icon icon={faTicket} className='w-4 -rotate-45' />
+          Buat Voucher
+        </Link>
       </Button>
 
       <div
