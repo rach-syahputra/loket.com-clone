@@ -20,8 +20,9 @@ export interface UpdateUserRepositoryRequest {
   image?: string
 }
 
-export interface GetCouponsRequest {
-  userId: number
+export interface GetCouponsQuery {
+  page: number
+  order: OrderType
 }
 
 export type TicketStatus = 'active' | 'past'

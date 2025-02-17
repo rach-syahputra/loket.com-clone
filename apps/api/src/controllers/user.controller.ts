@@ -45,8 +45,11 @@ class UserController {
   async getCoupons(req: UserRequest, res: Response, next: NextFunction) {
     try {
       if (req.user?.id) {
-        const data = await userService.getCoupons({
-          userId: req.user?.id
+        const { page, order } = req.query
+
+        const data = await userService.getCoupons(req.user.id, {
+          page: Number(page),
+          order: order as OrderType
         })
 
         res.status(200).json({

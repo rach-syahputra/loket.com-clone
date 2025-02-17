@@ -5,7 +5,7 @@ import { ResponseError } from '../helpers/error.handler'
 import { generateHashedPassword } from '../helpers/utils'
 import { validate } from '../helpers/validation.handler'
 import {
-  GetCouponsRequest,
+  GetCouponsQuery,
   GetTicketsRequest,
   UpdateUserServiceRequest,
   VerifyPasswordRequest
@@ -100,17 +100,15 @@ class UserService {
     }
   }
 
-  async getCoupons(req: GetCouponsRequest) {
-    const user = await userRepository.findById(req.userId)
+  async getCoupons(userId: number, query: GetCouponsQuery) {
+    const user = await userRepository.findById(userId)
 
     if (!user) throw new ResponseError(404, 'User not found')
 
-    const coupons = await userRepository.getCoupons(req.userId)
+    const coupons = await userRepository.getCoupons(userId, query)
 
     return {
-      user: {
-        coupons
-      }
+      user: coupons
     }
   }
 

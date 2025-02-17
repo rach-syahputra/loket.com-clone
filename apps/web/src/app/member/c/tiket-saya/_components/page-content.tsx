@@ -83,7 +83,7 @@ export default function PageContent() {
             isActive={status === 'lalu'}
           />
         </div>
-        <div className='flex flex-col gap-5 py-5'>
+        <div className='flex flex-col gap-5 pb-5 pt-2'>
           <div className='flex w-full items-start justify-between gap-4 lg:items-center'>
             <div className='text-gray-secondary text-sm max-md:hidden'>
               Menampilkan{' '}
@@ -94,7 +94,7 @@ export default function PageContent() {
               <span className='text-dark-primary font-semibold'>
                 {totalTickets}
               </span>{' '}
-              events
+              event
             </div>
             <OrderSelect />
           </div>

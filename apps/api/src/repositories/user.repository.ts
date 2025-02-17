@@ -1,7 +1,7 @@
 import { prisma } from '../helpers/prisma'
 import { convertToUTC7 } from '../helpers/utils'
 import { OrderType } from '../interfaces/shared.interface'
-import { GetTicketsQuery } from '../interfaces/user.interface'
+import { GetCouponsQuery, GetTicketsQuery } from '../interfaces/user.interface'
 import { UpdateUserRepositoryRequest } from '../interfaces/user.interface'
 
 class UserRepository {
@@ -35,21 +35,45 @@ class UserRepository {
     }
   }
 
-  async getCoupons(userId: number) {
-    const res = await prisma.coupon.findMany({
-      where: {
-        userId,
-        status: 'ACTIVE'
-      }
-    })
+  async getCoupons(userId: number, query: GetCouponsQuery) {
+    const limit = 6
+    const ORDER_TYPES: OrderType[] = ['asc', 'desc']
 
-    const coupons = res.map((data) => ({
-      ...data,
-      expiryDate: convertToUTC7(data.expiryDate),
-      createdAt: convertToUTC7(data.createdAt)
-    }))
+    const [totalCoupons, coupons] = await prisma.$transaction([
+      prisma.coupon.count({
+        where: {
+          userId,
+          status: 'ACTIVE'
+        }
+      }),
+      prisma.coupon.findMany({
+        where: {
+          userId,
+          status: 'ACTIVE'
+        },
+        orderBy: {
+          expiryDate: ORDER_TYPES.includes(query.order) ? query.order : 'desc'
+        },
+        take: limit,
+        skip: ((query.page ? query.page : 1) - 1) * limit
+      })
+    ])
 
-    return coupons
+    const totalPages = Math.ceil(totalCoupons / limit)
+
+    return {
+      coupons: coupons.map((data) => ({
+        ...data,
+        expiryDate: convertToUTC7(data.expiryDate),
+        createdAt: convertToUTC7(data.createdAt)
+      })),
+      pagination: {
+        currentPage: query.page ? query.page : 1,
+        totalPages,
+        limit: totalCoupons >= limit ? limit : totalCoupons
+      },
+      totalCoupons
+    }
   }
 
   async getTickets(userId: number, query: GetTicketsQuery) {

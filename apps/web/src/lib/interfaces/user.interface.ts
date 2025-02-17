@@ -39,6 +39,8 @@ export interface CouponsJson {
   data: {
     user: {
       coupons: Coupons[]
+      pagination: Pagination
+      totalCoupons: number
     }
   }
 }

@@ -45,11 +45,19 @@ export async function fetchUpdateUser(data: FormData) {
   return user
 }
 
-export async function fetchGetUserCoupons(): Promise<CouponsJson> {
+export async function fetchGetUserCoupons(
+  page?: number,
+  order: OrderType = 'desc'
+): Promise<CouponsJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/users/coupons`, {
+  const url = new URL(`${BASE_URL}/users/coupons`)
+
+  if (page) url.searchParams.append('page', page.toString())
+  if (order) url.searchParams.append('order', order)
+
+  const response = await fetch(url.toString(), {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
