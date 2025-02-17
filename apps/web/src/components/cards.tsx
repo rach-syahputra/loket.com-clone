@@ -52,7 +52,7 @@ export function Card() {
         ))
       ) : (
         <div className='flex h-screen w-screen items-center justify-center'>
-          {LoadingDots()}
+          <LoadingDots />
         </div>
       )}
     </div>
@@ -132,12 +132,12 @@ export function CardExplore({
   }, [selectedProvinceId, selectedCategoryId, selectedTicketType])
 
   return (
-    <div className='z-50 flex flex-col gap-4 overflow-x-auto px-[20px] sm:grid lg:grid sm:grid-cols-2 xl:grid-cols-4 sm:px-[0px] lg:px-[20px]'>
+    <div className='z-50 flex flex-col gap-4 overflow-x-auto px-[20px] sm:grid sm:grid-cols-2 sm:px-[0px] lg:grid lg:px-[20px] xl:grid-cols-4'>
       {events.length > 0 ? (
         events.map((event) => (
           <Link key={event.id} href={`/detail/${event.slug}`}>
             <div className='flex min-h-[353.4px] min-w-[300px] flex-col rounded-[10px] border sm:w-[290px]'>
-            <div className='flex flex-grow flex-col'>
+              <div className='flex flex-grow flex-col'>
                 <div className='relative h-[137px] w-full'>
                   <Image
                     className='rounded-t-[10px] object-cover'
@@ -174,7 +174,7 @@ export function CardExplore({
         ))
       ) : (
         <div className='flex h-screen w-screen items-center justify-center'>
-          {LoadingDots()}
+          <LoadingDots />
         </div>
       )}
     </div>

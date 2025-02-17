@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
 import localFont from 'next/font/local'
 
-import './globals.css'
 import { NavigationProvider } from '@/context/navigation-context'
 import { Toaster } from '@/components/shadcn-ui/toaster'
 import { SearchProvider } from '@/context/search-context'
+import LoadingOverlay from '@/components/loading-overlay'
+import './globals.css'
+import { LoadingProvider } from '@/context/loading-context'
 
 const basierCircle = localFont({
   src: [
@@ -45,13 +47,14 @@ export default function RootLayout({
       <body className='text-dark-primary font-[family-name:var(--font-basier-circle)] antialiased'>
         <SessionProvider refetchOnWindowFocus={false}>
           <NavigationProvider>
-          <SearchProvider>
+            <SearchProvider>
+              <LoadingProvider>
+                {children}
 
-            {children}
-
-            <Toaster />
+                <Toaster />
+                <LoadingOverlay />
+              </LoadingProvider>
             </SearchProvider>
-
           </NavigationProvider>
         </SessionProvider>
       </body>

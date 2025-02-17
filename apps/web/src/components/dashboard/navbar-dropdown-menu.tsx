@@ -5,6 +5,7 @@ import { signOut, useSession } from 'next-auth/react'
 
 import { cn } from '@/lib/utils'
 import { fetchSwitchRole } from '@/lib/apis/auth.api'
+import { useLoadingContext } from '@/context/loading-context'
 import CustomerDropdownMenu from './customer-dropdown-menu'
 import EventOrganizerDropdownMenu from './event-organizer-dropdown-menu'
 
@@ -17,21 +18,30 @@ export default function NavbarDropdownMenu({
 }: NavbarDropdownMenuProps) {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const { setIsLoading } = useLoadingContext()
 
   const isCustomer = session?.user.roleId === 1
   const isEventOrganizer = session?.user.roleId === 2
 
   const handleSwitchRole = async () => {
-    const response = await fetchSwitchRole()
+    try {
+      setIsLoading(true)
 
-    if (response.success) {
-      await update({
-        user: {
-          accessToken: response.data.accessToken
-        }
-      })
+      const response = await fetchSwitchRole()
 
-      router.refresh()
+      if (response.success) {
+        await update({
+          user: {
+            accessToken: response.data.accessToken
+          }
+        })
+
+        router.refresh()
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 

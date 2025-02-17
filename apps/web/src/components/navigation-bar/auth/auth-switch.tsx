@@ -2,30 +2,40 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { useSession } from 'next-auth/react'
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
+import { useLoadingContext } from '@/context/loading-context'
 import { fetchSwitchRole } from '@/lib/apis/auth.api'
 import Icon from '../../icon'
 
 export default function AuthSwitch() {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const { setIsLoading } = useLoadingContext()
 
   const switchedRole =
     session?.user.roleId === 1 ? 'Event Organizer' : 'Customer'
 
   const handleSwitchRole = async () => {
-    const response = await fetchSwitchRole()
+    try {
+      setIsLoading(true)
 
-    if (response.success) {
-      await update({
-        user: {
-          accessToken: response.data.accessToken
-        }
-      })
+      const response = await fetchSwitchRole()
 
-      router.refresh()
+      if (response.success) {
+        await update({
+          user: {
+            accessToken: response.data.accessToken
+          }
+        })
+
+        router.refresh()
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
