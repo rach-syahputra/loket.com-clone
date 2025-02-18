@@ -3,19 +3,19 @@ import DashboardHeader from '@/components/dashboard/dashboard-header'
 import PageContent from './_components/page-content'
 
 type TicketDetailPageProps = {
-  params: Promise<{ transactionId: string }>
+  params: Promise<{ ticketId: string }>
 }
 
 export default async function TicketDetailPage({
   params
 }: TicketDetailPageProps) {
-  const transactionId = (await params).transactionId
-  const transaction = await fetchGetTransactionById(Number(transactionId))
+  const ticketId = (await params).ticketId
+  const ticket = await fetchGetTransactionById(Number(ticketId))
 
   return (
     <>
       <DashboardHeader title='Tiket Saya' />
-      <PageContent transaction={transaction.data.transaction} />
+      <PageContent ticket={ticket.data.transaction} />
     </>
   )
 }

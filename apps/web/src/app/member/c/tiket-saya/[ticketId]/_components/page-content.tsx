@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import {
+  faArrowLeft,
   faCalendarDays,
   faClock,
   faLocationDot
@@ -12,25 +13,33 @@ import {
   formatDate,
   formatEventDate,
   formatEventTime,
-  formatNumber,
-  getTransactionStatusName
+  formatNumber
 } from '@/lib/utils'
 import { Transaction } from '@/lib/interfaces/transaction.interface'
 import Icon from '@/components/icon'
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
+import Link from 'next/link'
 
 type PageContentProps = {
-  transaction: Transaction
+  ticket: Transaction
 }
 
-export default function PageContent({ transaction }: PageContentProps) {
+export default function PageContent({ ticket }: PageContentProps) {
   return (
     <DashboardContent>
+      <Link
+        href='/member/c/tiket-saya'
+        aria-label='Tiket saya'
+        className='text-blue-primary mb-4 flex h-8 items-center gap-4 text-sm'
+      >
+        <Icon icon={faArrowLeft} className='w-4' />
+        Kembali
+      </Link>
       <div className='shadow-default flex flex-col gap-x-12 gap-y-6 rounded-lg p-4 lg:flex-row'>
         <div className='flex w-full flex-col gap-4 md:min-w-[350px]'>
           <div className='flex items-center justify-between gap-3'>
             <span className='text-gray-primary text-sm'>Kode Pesanan:</span>{' '}
-            <span className='text-dark-primary text-sm'>{transaction.id}</span>
+            <span className='text-dark-primary text-sm'>{ticket.id}</span>
           </div>
 
           <div className='flex items-center justify-between gap-3'>
@@ -38,7 +47,7 @@ export default function PageContent({ transaction }: PageContentProps) {
               Tanggal Pemesanan:
             </span>{' '}
             <span className='text-gray-primary text-sm'>
-              {formatDate(new Date(transaction.createdAt), {
+              {formatDate(new Date(ticket.createdAt), {
                 includeTime: true
               })}
             </span>
@@ -48,7 +57,7 @@ export default function PageContent({ transaction }: PageContentProps) {
 
           <div className='flex flex-col justify-center gap-4'>
             <Image
-              src={transaction.event.bannerUrl}
+              src={ticket.event.bannerUrl}
               alt='Event banner'
               width={725}
               height={341}
@@ -56,7 +65,7 @@ export default function PageContent({ transaction }: PageContentProps) {
             />
             <div className='flex flex-col gap-4'>
               <h2 className='text-dark-primary text-lg font-semibold'>
-                {transaction.event.title}
+                {ticket.event.title}
               </h2>
               <div className='flex flex-col gap-2'>
                 <div className='flex items-center gap-2'>
@@ -68,8 +77,8 @@ export default function PageContent({ transaction }: PageContentProps) {
                   </div>
                   <span className='text-gray-secondary text-sm'>
                     {formatEventDate(
-                      transaction.event.eventStartDate,
-                      transaction.event.eventEndDate
+                      ticket.event.eventStartDate,
+                      ticket.event.eventEndDate
                     )}
                   </span>
                 </div>
@@ -79,8 +88,8 @@ export default function PageContent({ transaction }: PageContentProps) {
                   </div>
                   <span className='text-gray-secondary text-sm'>
                     {formatEventTime(
-                      transaction.event.eventStartTime,
-                      transaction.event.eventEndTime
+                      ticket.event.eventStartTime,
+                      ticket.event.eventEndTime
                     )}
                   </span>
                 </div>
@@ -92,9 +101,9 @@ export default function PageContent({ transaction }: PageContentProps) {
                     />
                   </div>
                   <span className='text-gray-secondary text-sm'>
-                    {transaction.event.location.streetAddress},{' '}
-                    {transaction.event.location.city},{' '}
-                    {transaction.event.location.province.name}
+                    {ticket.event.location.streetAddress},{' '}
+                    {ticket.event.location.city},{' '}
+                    {ticket.event.location.province.name}
                   </span>
                 </div>
               </div>
@@ -112,10 +121,10 @@ export default function PageContent({ transaction }: PageContentProps) {
             </div>
             <div className='flex flex-col gap-1 rounded-md bg-[#f5f7fa] p-4'>
               <span className='text-dark-primary text-sm font-semibold'>
-                {transaction.user.name}
+                {ticket.user.name}
               </span>
               <span className='text-gray-primary text-sm'>
-                {transaction.user.email}
+                {ticket.user.email}
               </span>
             </div>
           </div>
@@ -132,14 +141,14 @@ export default function PageContent({ transaction }: PageContentProps) {
             <div className='flex flex-col gap-4'>
               <div className='flex items-start justify-between'>
                 <span className='text-gray-primary'>Kode Pesanan</span>
-                <span className='text-gray-secondary'>{transaction.id}</span>
+                <span className='text-gray-secondary'>{ticket.id}</span>
               </div>
               <div className='flex items-start justify-between'>
                 <span className='text-gray-primary'>Total Harga Tiket</span>
                 <span className='text-gray-secondary'>
-                  {transaction.event.ticketType === 'FREE'
+                  {ticket.event.ticketType === 'FREE'
                     ? 'Gratis'
-                    : `Rp. ${formatNumber(transaction.totalPrice)}`}
+                    : `Rp. ${formatNumber(ticket.totalPrice)}`}
                 </span>
               </div>
               <div className='flex items-start justify-between'>
@@ -147,9 +156,9 @@ export default function PageContent({ transaction }: PageContentProps) {
                   Total Bayar
                 </span>
                 <span className='text-dark-primary font-medium'>
-                  {transaction.event.ticketType === 'FREE'
+                  {ticket.event.ticketType === 'FREE'
                     ? 'Gratis'
-                    : `Rp. ${formatNumber(transaction.totalPrice)}`}
+                    : `Rp. ${formatNumber(ticket.totalPrice)}`}
                 </span>
               </div>
             </div>

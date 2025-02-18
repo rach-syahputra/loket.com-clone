@@ -59,7 +59,7 @@ export default function TicketCard({ ticket }: TicketCardProps) {
           </Button>
           <Button variant='outline' asChild>
             <Link
-              href='#'
+              href={`/member/c/tiket-saya/${ticket.id}`}
               aria-label='detail invoice'
               className='flex h-9 items-center justify-center'
             >
