@@ -9,6 +9,7 @@ import { cn, formatDate, formatNumber } from '@/lib/utils'
 import { TransactionStatus } from '@/lib/interfaces/transaction.interface'
 import { fetchUpdateTransaction } from '@/lib/apis/transaction.api'
 import { useTransactionContext } from '@/context/transaction-context'
+import { useLoadingContext } from '@/context/loading-context'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -152,20 +153,32 @@ export const columns: ColumnDef<TransactionTable>[] = [
     },
     cell: ({ row }) => {
       const { getTransactions } = useTransactionContext()
+      const { setIsLoading } = useLoadingContext()
 
       const handleUpdateTransaction = async (
         transactionId: number,
         status: TransactionStatus
       ) => {
-        const formData = new FormData()
+        try {
+          setIsLoading(true)
 
-        if (status) {
-          formData.append('transactionStatus', status)
-          const response = await fetchUpdateTransaction(transactionId, formData)
+          const formData = new FormData()
 
-          if (response.success) {
-            getTransactions()
+          if (status) {
+            formData.append('transactionStatus', status)
+            const response = await fetchUpdateTransaction(
+              transactionId,
+              formData
+            )
+
+            if (response.success) {
+              getTransactions()
+            }
           }
+        } catch (error) {
+          console.error(error)
+        } finally {
+          setIsLoading(false)
         }
       }
 
