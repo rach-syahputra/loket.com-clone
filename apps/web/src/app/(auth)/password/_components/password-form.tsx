@@ -1,32 +1,38 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { handleCredentialsSignin } from '@/app/actions/actions'
-import { LoginFormSchema } from '@/lib/validations/auth.validation'
-import { LoginFormSchemaType } from '@/lib/interfaces/auth.interface'
+import { fetchConfirmEmailForPasswordReset } from '@/lib/apis/auth.api'
+import { PasswordFormSchemaType } from '@/lib/interfaces/auth.interface'
+import { PasswordFormSchema } from '@/lib/validations/auth.validation'
+import { useToast } from '@/hooks/use-toast'
 import Button from '@/components/button'
 import FormInput from '@/components/form/form-input'
 import { Form } from '@/components/shadcn-ui/form'
-import LoginFormHeader from './login-form-header'
-import Link from 'next/link'
+import PasswordRecoveryFormHeader from './password-form-header'
 
-export default function LoginForm() {
-  const form = useForm<LoginFormSchemaType>({
-    resolver: zodResolver(LoginFormSchema),
+export default function PasswordForm() {
+  const { toast } = useToast()
+  const form = useForm<PasswordFormSchemaType>({
+    resolver: zodResolver(PasswordFormSchema),
     defaultValues: {
-      email: '',
-      password: ''
+      email: ''
     }
   })
 
-  const onSubmit = async (values: LoginFormSchemaType) => {
+  const onSubmit = async (values: PasswordFormSchemaType) => {
     try {
-      const response = await handleCredentialsSignin(values)
+      const response = await fetchConfirmEmailForPasswordReset(values.email)
 
       if (response?.error) {
         form.setError('root', { message: response.error.message })
+      } else {
+        toast({
+          title: 'Success',
+          description: `Kami telah mengirimkan email ke ${values.email} untuk mengatur ulang kata sandi.`
+        })
       }
     } catch (error) {
       console.error(error)
@@ -39,7 +45,7 @@ export default function LoginForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex h-fit w-full max-w-[400px] flex-col items-center gap-4 rounded-lg p-6 shadow-md'
       >
-        <LoginFormHeader />
+        <PasswordRecoveryFormHeader />
 
         <div className='flex w-full flex-col gap-6'>
           <FormInput
@@ -49,18 +55,10 @@ export default function LoginForm() {
             type='text'
             isDirty={form.formState.dirtyFields.email}
           />
-
-          <FormInput
-            form={form}
-            name='password'
-            label='Password'
-            type='password'
-            isDirty={form.formState.dirtyFields.password}
-          />
         </div>
 
         {form.formState.errors.root && (
-          <p className='text-sm text-red-500'>
+          <p className='place-self-start text-sm text-red-500'>
             {form.formState.errors.root.message}
           </p>
         )}
@@ -70,16 +68,8 @@ export default function LoginForm() {
           disabled={form.formState.isSubmitting}
           className='bg-background-inactive mt-2 w-full'
         >
-          Masuk
+          Cari
         </Button>
-
-        <Link
-          href='/password'
-          aria-label='Lupa kata sandi'
-          className='text-blue-primary text-sm hover:underline'
-        >
-          Lupa kata sandi?
-        </Link>
       </form>
     </Form>
   )

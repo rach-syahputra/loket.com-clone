@@ -52,6 +52,8 @@ export default function FormInput<T extends FieldValues>({
               <ClearFormInputButton
                 onClick={() => {
                   form.resetField(name)
+                  form.setError(name, { message: '' })
+                  form.setError('root', { message: '' })
                 }}
               />
             )}

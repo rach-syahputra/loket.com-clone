@@ -25,3 +25,17 @@ export const ThirdRegisterFormSchema = z.object({
     .min(3, 'Nama minimal berisi 3 karakter'),
   referralCode: z.string().optional()
 })
+
+export const PasswordFormSchema = z.object({
+  email: z.string().min(1, 'Email harus diisi').email('Email tidak valid')
+})
+
+export const PasswordRecoveryFormSchema = z
+  .object({
+    password: z.string().min(6, 'Password minimal berisi 6 karakter'),
+    confirmPassword: z.string().min(6, 'Password minimal berisi 6 karakter')
+  })
+  .refine((field) => field.password === field.confirmPassword, {
+    message: 'Password tidak cocok',
+    path: ['confirmPassword']
+  })

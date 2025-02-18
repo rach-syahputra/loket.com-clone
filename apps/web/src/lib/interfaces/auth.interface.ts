@@ -3,6 +3,8 @@ import { z } from 'zod'
 import {
   FirstRegisterFormSchema,
   LoginFormSchema,
+  PasswordFormSchema,
+  PasswordRecoveryFormSchema,
   SecondRegisterFormSchema,
   ThirdRegisterFormSchema
 } from '../validations/auth.validation'
@@ -37,4 +39,14 @@ export interface RegisterRequest {
   password: string
   name: string
   referralCode?: string | null
+}
+
+export type PasswordFormSchemaType = z.infer<typeof PasswordFormSchema>
+export type PasswordRecoveryFormSchemaType = z.infer<
+  typeof PasswordRecoveryFormSchema
+>
+
+export interface ResetPasswordRequest {
+  email: string
+  password: string
 }

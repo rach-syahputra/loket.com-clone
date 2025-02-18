@@ -1,7 +1,11 @@
 import { getSession } from 'next-auth/react'
 
 import { BASE_URL } from '../constants'
-import { LoginRequest, RegisterRequest } from '../interfaces/auth.interface'
+import {
+  LoginRequest,
+  RegisterRequest,
+  ResetPasswordRequest
+} from '../interfaces/auth.interface'
 
 export async function fetchLogin(data: LoginRequest) {
   const user = await fetch(`${BASE_URL}/auth`, {
@@ -38,6 +42,31 @@ export async function fetchSwitchRole() {
       Authorization: `Bearer ${token}`
     }
   })
+
+  return await response.json()
+}
+
+export async function fetchConfirmEmailForPasswordReset(email: string) {
+  const user = await fetch(`${BASE_URL}/auth/${email}/password-recovery`, {
+    method: 'GET'
+  })
+
+  return await user.json()
+}
+
+export async function fetchResetPassword(data: ResetPasswordRequest) {
+  const response = await fetch(
+    `${BASE_URL}/auth/${data.email}/password-recovery`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        password: data.password
+      })
+    }
+  )
 
   return await response.json()
 }
