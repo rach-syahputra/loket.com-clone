@@ -28,11 +28,15 @@ export default function PageContent({ transaction }: PageContentProps) {
     <DashboardContent>
       <div className='shadow-default flex flex-col gap-x-12 gap-y-6 rounded-lg p-4 lg:flex-row'>
         <div className='flex w-full flex-col gap-4 md:min-w-[350px]'>
-          <div className='flex items-center justify-between'>
-            <div className='text-sm'>
-              <span className='text-gray-primary'>Kode Pesanan:</span>{' '}
-              <span className='text-dark-primary'>{transaction.id}</span>
-            </div>
+          <div className='flex items-center justify-between gap-3'>
+            <span className='text-gray-primary text-sm'>Kode Pesanan:</span>{' '}
+            <span className='text-dark-primary text-sm'>{transaction.id}</span>
+          </div>
+
+          <div className='flex items-center justify-between gap-3'>
+            <span className='text-gray-primary text-sm'>
+              Tanggal Pemesanan:
+            </span>{' '}
             <span className='text-gray-primary text-sm'>
               {formatDate(new Date(transaction.createdAt), {
                 includeTime: true
@@ -40,7 +44,7 @@ export default function PageContent({ transaction }: PageContentProps) {
             </span>
           </div>
 
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center justify-between gap-3'>
             <span className='text-gray-primary text-sm'>Status Transaksi:</span>
             <span
               className={cn(
