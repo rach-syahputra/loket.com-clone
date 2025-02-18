@@ -3,16 +3,10 @@ import Image from 'next/image'
 import { faCalendarDays } from '@fortawesome/free-regular-svg-icons'
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 
-import {
-  formatDate,
-  formatEventDate,
-  formatEventTime,
-  formatNumber
-} from '@/lib/utils'
-import { EventByOrganizer } from '@/lib/interfaces/organizer.interface'
+import { Ticket } from '@/lib/interfaces/user.interface'
+import { formatDate, formatEventDate } from '@/lib/utils'
 import Icon from '@/components/icon'
 import Button from '@/components/button'
-import { Ticket } from '@/lib/interfaces/user.interface'
 
 type TicketCardProps = {
   ticket: Ticket
@@ -55,8 +49,9 @@ export default function TicketCard({ ticket }: TicketCardProps) {
         <div className='mt-3 flex w-fit items-center justify-center gap-4'>
           <Button asChild>
             <Link
-              href='#'
+              href={`/e-voucher/${ticket.id}`}
               aria-label='detail e-voucher'
+              target='_blank'
               className='flex h-9 items-center justify-center'
             >
               E-Voucher

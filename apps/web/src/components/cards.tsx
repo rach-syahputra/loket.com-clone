@@ -28,7 +28,9 @@ export function Card() {
                     <span className='text-black'>{event.title}</span>
                     <span className='text-[#989AA4]'></span>
                     <span className='font-bold text-black'>
-                      {event.price == 0?"FREE":`Rp${event.price.toLocaleString()}`}
+                      {event.price == 0
+                        ? 'FREE'
+                        : `Rp${event.price.toLocaleString()}`}
                     </span>
                   </div>
                   <div className='mt-auto flex flex-col gap-2'>
@@ -142,35 +144,39 @@ export function CardExplore({
           <Link key={event.id} href={`/detail/${event.slug}`}>
             <div className='flex min-h-[353.4px] min-w-[300px] flex-col rounded-[10px] border sm:w-[290px]'>
               <div className='flex flex-grow flex-col'>
-              <div className='flex flex-grow flex-col'>
-                <div className='relative h-[137px] w-full'>
-                  <Image
-                    className='rounded-t-[10px] object-cover'
-                    src={event.bannerUrl}
-                    alt=''
-                    fill
-                  />
-                </div>
-                <div className='flex flex-col gap-2 p-[10px] text-[20px]'>
-                  <span className='text-black'>{event.title}</span>
-                  <span className='text-[#989AA4]'></span>
-                  <span className='font-bold text-black'>
-                    Rp{event.price.toLocaleString()}
-                  </span>
-                </div>
-                <div className='mt-auto flex flex-col gap-2'>
-                  <hr />
+                <div className='flex flex-grow flex-col'>
+                  <div className='relative h-[137px] w-full'>
+                    <Image
+                      className='rounded-t-[10px] object-cover'
+                      src={event.bannerUrl}
+                      alt=''
+                      fill
+                    />
+                  </div>
+                  <div className='flex flex-col gap-2 p-[10px] text-[20px]'>
+                    <span className='text-black'>{event.title}</span>
+                    <span className='text-[#989AA4]'></span>
+                    <span className='font-bold text-black'>
+                      Rp{event.price.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className='mt-auto flex flex-col gap-2'>
+                    <hr />
 
-                  <div className='flex gap-2 p-[10px]'>
-                    <div className='relative h-[30px] w-[30px] overflow-hidden rounded-full'>
-                      <Image
-                        src={event.organizer?.pictureUrl || ''}
-                        alt={event.organizer?.name || ''}
-                        fill
-                        className='rounded-full object-cover'
-                      />
+                    <div className='flex gap-2 p-[10px]'>
+                      <div className='relative h-[30px] w-[30px] overflow-hidden rounded-full'>
+                        <Image
+                          src={event.organizer?.pictureUrl || ''}
+                          alt={event.organizer?.name || ''}
+                          fill
+                          className='rounded-full object-cover'
+                        />
+                      </div>
+                      <span className='text-black'>
+                        {' '}
+                        {event.organizer?.name}
+                      </span>
                     </div>
-                    <span className='text-black'> {event.organizer?.name}</span>
                   </div>
                 </div>
               </div>

@@ -192,7 +192,7 @@ export const columns: ColumnDef<TransactionTable>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link
                 href={`/member/o/transactions/${row.original.id}`}
                 target='_blank'

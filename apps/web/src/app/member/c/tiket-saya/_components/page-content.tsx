@@ -39,8 +39,6 @@ export default function PageContent() {
         order as OrderType
       )
 
-      console.log(response)
-
       if (response.success) {
         setTickets(response.data.user.tickets)
         setTotalPages(response.data.user.pagination.totalPages)

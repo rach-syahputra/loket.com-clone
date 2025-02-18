@@ -1,21 +1,17 @@
 import { fetchGetTransactionById } from '@/lib/apis/transaction.api'
-import DashboardHeader from '@/components/dashboard/dashboard-header'
 import PageContent from './_components/page-content'
 
-type TransactionDetailPageProps = {
+type EVoucherPageProps = {
   params: Promise<{ transactionId: string }>
 }
 
-export default async function TransactionDetailPage({
-  params
-}: TransactionDetailPageProps) {
+export default async function EVoucherPage({ params }: EVoucherPageProps) {
   const transactionId = (await params).transactionId
   const transaction = await fetchGetTransactionById(Number(transactionId))
 
   return (
-    <>
-      <DashboardHeader title='Transaksi' />
+    <div className='min-w-screen min-h-screen bg-gray-100 md:py-4'>
       <PageContent transaction={transaction.data.transaction} />
-    </>
+    </div>
   )
 }
