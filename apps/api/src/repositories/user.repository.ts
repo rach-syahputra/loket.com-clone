@@ -14,6 +14,7 @@ class UserRepository {
 
     return res
   }
+
   async update(req: UpdateUserRepositoryRequest) {
     const res = await prisma.user.update({
       data: {

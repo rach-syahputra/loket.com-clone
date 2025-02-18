@@ -8,5 +8,10 @@ const router = express.Router()
 router.post('/new', authController.register)
 router.post('/', authController.login)
 router.post('/role-switch', verifyToken, authController.switchUserRole)
+router.get(
+  '/:email/password-recovery',
+  authController.confirmEmailForPasswordReset
+)
+router.patch('/:email/password-recovery', authController.resetPassword)
 
 export default router

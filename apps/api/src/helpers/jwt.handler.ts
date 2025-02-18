@@ -14,3 +14,9 @@ export async function putRefreshToken(data: Token) {
     expiresIn: '1d'
   })
 }
+
+export async function putAccessTokenForPasswordReset(email: string) {
+  return jwt.sign({ email: email }, JWT_ACCESS_SECRET, {
+    expiresIn: '5m'
+  })
+}

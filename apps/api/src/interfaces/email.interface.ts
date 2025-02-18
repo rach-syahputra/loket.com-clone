@@ -7,3 +7,8 @@ export interface EmailPaymentBodyData {
   transactionDateTime: string
   totalPrice: string
 }
+
+export interface EmailPasswordResetBodyData {
+  name: string
+  token: string
+}

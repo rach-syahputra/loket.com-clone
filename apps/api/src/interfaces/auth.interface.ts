@@ -40,3 +40,8 @@ export interface Token {
   roleId: number
   image: string | null
 }
+
+export interface UpdatePasswordRequest {
+  email: string
+  password: string
+}

@@ -4,13 +4,22 @@ import authRepository from '../repositories/auth.repository'
 import {
   LoginRequest,
   RegisterRequest,
-  SwitchUserRoleServiceRequest
+  SwitchUserRoleServiceRequest,
+  UpdatePasswordRequest
 } from '../interfaces/auth.interface'
 import { validate } from '../helpers/validation.handler'
-import { LoginSchema, RegisterSchema } from '../validations/auth.validation'
+import {
+  LoginSchema,
+  RegisterSchema,
+  ResetPasswordSchema
+} from '../validations/auth.validation'
 import { generateHashedPassword } from '../helpers/utils'
 import { ResponseError } from '../helpers/error.handler'
-import { putAccessToken } from '../helpers/jwt.handler'
+import {
+  putAccessToken,
+  putAccessTokenForPasswordReset
+} from '../helpers/jwt.handler'
+import { sendPasswordResetEmail } from '../helpers/email/email'
 
 class AuthService {
   async register(req: RegisterRequest) {
@@ -97,6 +106,27 @@ class AuthService {
         }
       }
     }
+  }
+
+  async confirEmailForPasswordReset(email: string) {
+    const user = await authRepository.findUserByEmail(email)
+
+    if (!user) throw new ResponseError(404, 'User not found')
+
+    const accessToken = await putAccessTokenForPasswordReset(user.email)
+
+    await sendPasswordResetEmail(user.email, {
+      name: user.name,
+      token: accessToken
+    })
+  }
+
+  async resetPassword(req: UpdatePasswordRequest) {
+    validate(ResetPasswordSchema, { password: req.password })
+
+    req.password = await generateHashedPassword(req.password)
+
+    return await authRepository.updatePassword(req)
   }
 
   async switchUserRole(req: SwitchUserRoleServiceRequest) {

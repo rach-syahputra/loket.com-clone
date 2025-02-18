@@ -3,7 +3,8 @@ import { calculateCouponsExpiryDate, convertToUTC7 } from '../helpers/utils'
 import {
   RegisterRequest,
   SwitchUserRoleRepositoryRequest,
-  UpdateUserRoleRequest
+  UpdateUserRoleRequest,
+  UpdatePasswordRequest
 } from '../interfaces/auth.interface'
 
 class AuthRepository {
@@ -52,6 +53,25 @@ class AuthRepository {
         }
       }
     })
+  }
+
+  async updatePassword(req: UpdatePasswordRequest) {
+    const res = await prisma.user.update({
+      data: {
+        password: req.password
+      },
+      where: {
+        email: req.email
+      }
+    })
+
+    return {
+      id: res.id,
+      name: res.name,
+      email: res.email,
+      pictureUrl: res.pictureUrl,
+      updatedAt: res.updatedAt
+    }
   }
 
   async register(req: RegisterRequest) {

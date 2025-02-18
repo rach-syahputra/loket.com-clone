@@ -23,3 +23,10 @@ export const LoginSchema = z.object({
     .email('Email format is invalid'),
   password: z.string().min(1, 'Password is required')
 })
+
+export const ResetPasswordSchema = z.object({
+  password: z
+    .string({ required_error: 'Password is required' })
+    .min(6, 'Password must contain at least 6 characters')
+    .max(20, 'Password should not exceed 20 characters')
+})

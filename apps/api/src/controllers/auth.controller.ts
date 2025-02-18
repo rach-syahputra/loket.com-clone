@@ -32,6 +32,39 @@ class AuthController {
     }
   }
 
+  async confirmEmailForPasswordReset(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      await authService.confirEmailForPasswordReset(req.params.email)
+
+      res.status(200).json({
+        success: true,
+        message: 'User confirmed successfully.'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      await authService.resetPassword({
+        email: req.params.email,
+        password: req.body.password
+      })
+
+      res.status(200).json({
+        success: true,
+        message: 'Password updated successfully.'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async switchUserRole(req: UserRequest, res: Response, next: NextFunction) {
     try {
       if (req.user) {
