@@ -4,19 +4,23 @@ import { TransactionStatus } from '@prisma/client'
 import transactionService from '../services/transaction.service'
 import { UserRequest } from '../interfaces/auth.interface'
 import { OrderType } from '../interfaces/shared.interface'
+import { ResponseError } from '../helpers/error.handler'
 
 class TransactionController {
   async createTransaction(req: Request, res: Response, next: NextFunction) {
     try {
-        const { userId, eventId, totalPrice, ...rest } = req.body;
-        const transactionData = {
-          ...rest,
-          userId: Number(userId),
-          eventId: Number(eventId),
-          totalPrice: Number(totalPrice),
-        };      const paymentProofFile = req.file;
+      const { userId, eventId, totalPrice, ...rest } = req.body
+      const transactionData = {
+        ...rest,
+        userId: Number(userId),
+        eventId: Number(eventId),
+        totalPrice: Number(totalPrice)
+      }
+      const paymentProofFile = req.file
 
-      const result = await transactionService.createTransaction(transactionData,paymentProofFile
+      const result = await transactionService.createTransaction(
+        transactionData,
+        paymentProofFile
       )
 
       res.status(200).send({
@@ -45,6 +49,32 @@ class TransactionController {
       res.status(200).send({
         success: true,
         message: 'Transactions retrieved successfully',
+        data
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getTransactionById(
+    req: UserRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { transactionId } = req.params
+
+      if (!transactionId)
+        throw new ResponseError(400, 'Transaction ID is required')
+
+      const data = await transactionService.getTransactionById(
+        Number(transactionId),
+        Number(req.user?.id)
+      )
+
+      res.status(200).send({
+        success: true,
+        message: 'Transaction retrieved successfully',
         data
       })
     } catch (error) {

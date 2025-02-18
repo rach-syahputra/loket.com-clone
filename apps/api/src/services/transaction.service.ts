@@ -41,13 +41,13 @@ class TransactionService {
   }
 
   async verifyTransactionOwnership(req: verifyTransactionOwnershipRequest) {
-    const transaction = await transactionRepository.getTransctionById(
+    const transaction = await transactionRepository.getTransactionById(
       req.transactionId
     )
 
     if (!transaction) throw new ResponseError(404, 'Transaction not found')
 
-    const event = await eventRepository.getEventById(transaction.eventId)
+    const event = await eventRepository.getEventById(transaction.event.id)
 
     if (event?.organizerId !== req.organizerId)
       throw new ResponseError(401, 'Unauthorized')
@@ -55,6 +55,17 @@ class TransactionService {
 
   async getTransactions(organizerId: number, query: GetTransactionsQuery) {
     return await transactionRepository.getTransactions(organizerId, query)
+  }
+
+  async getTransactionById(transactionId: number, organizerId: number) {
+    await this.verifyTransactionOwnership({ transactionId, organizerId })
+
+    const transaction =
+      await transactionRepository.getTransactionById(transactionId)
+
+    return {
+      transaction
+    }
   }
 
   async updateTransaction(req: TransactionServiceRequest) {
@@ -74,7 +85,7 @@ class TransactionService {
       )
 
       if (paymentProofImage) {
-        const transaction = await transactionRepository.getTransctionById(
+        const transaction = await transactionRepository.getTransactionById(
           req.transactionId
         )
 

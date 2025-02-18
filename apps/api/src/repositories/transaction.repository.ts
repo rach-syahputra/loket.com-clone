@@ -14,14 +14,6 @@ class TransactionRepository {
     })
   }
 
-  async getTransctionById(transactionId: number) {
-    return await prisma.transactions.findUnique({
-      where: {
-        id: transactionId
-      }
-    })
-  }
-
   async getTransactions(organizerId: number, query: GetTransactionsQuery) {
     const limit = 8
     const ORDER_TYPES: OrderType[] = ['asc', 'desc']
@@ -88,6 +80,40 @@ class TransactionRepository {
       },
       totalTransactions
     }
+  }
+
+  async getTransactionById(transactionId: number) {
+    return await prisma.transactions.findUnique({
+      where: {
+        id: transactionId
+      },
+      omit: {
+        eventId: true,
+        userId: true
+      },
+      include: {
+        event: {
+          omit: {
+            locationId: true
+          },
+          include: {
+            location: {
+              omit: {
+                provinceId: true
+              },
+              include: {
+                province: true
+              }
+            }
+          }
+        },
+        user: {
+          omit: {
+            password: true
+          }
+        }
+      }
+    })
   }
 
   async updateTransaction(req: TransactionRepositoryRequest) {
