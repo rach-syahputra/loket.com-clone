@@ -3,7 +3,7 @@ import PageContent from './_components/page-content'
 
 import { TransactionProvider } from '@/context/transaction-context'
 
-export default function EventSayaPage() {
+export default function TransactionsPage() {
   return (
     <>
       <DashboardHeader title='Transaksi' />

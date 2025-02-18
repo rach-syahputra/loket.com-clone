@@ -1,8 +1,10 @@
 import { getSession } from 'next-auth/react'
 
+import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
 import { BASE_URL } from '../constants'
 import {
+  TransactionDetailJson,
   TransactionsJson,
   TransactionStatus,
   UpdateTransactionJson
@@ -36,6 +38,26 @@ export async function fetchGetTransactions(
   if (transactions.error?.message === 'jwt is expired') await handleSignOut()
 
   return transactions
+}
+
+export async function fetchGetTransactionById(
+  transactionId: number
+): Promise<TransactionDetailJson> {
+  const session = await auth()
+  const token = session?.user.accessToken
+
+  const response = await fetch(`${BASE_URL}/transactions/${transactionId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const transaction = await response.json()
+
+  if (transaction.error?.message === 'jwt is expired') await handleSignOut()
+
+  return transaction
 }
 
 export async function fetchUpdateTransaction(

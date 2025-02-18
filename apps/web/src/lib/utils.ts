@@ -1,5 +1,7 @@
 import clsx, { type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { TransactionStatus } from './interfaces/transaction.interface'
+import { TRANSACTION_STATUSES } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -63,4 +65,14 @@ export function formatEventDate(startDate: string, endDate: string): string {
 
 export function formatEventTime(start: string, end: string): string {
   return start === end ? `${start} WIB` : `${start} - ${end} WIB`
+}
+
+export function getTransactionStatusName(
+  transactionStatus: TransactionStatus
+): string {
+  const label = TRANSACTION_STATUSES.find(
+    (status) => status.name === transactionStatus
+  )?.label
+
+  return label ? label : transactionStatus
 }

@@ -17,13 +17,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/shadcn-ui/dropdown-menu'
 import PaymentProofImageModal from '../payment-proof-image-modal'
+import Link from 'next/link'
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type TransactionTable = {
   id: number
   namaEvent: string
-  emailCustomer: string
   buktiPembayaran: string
   totalHarga: number
   statusTransaksi: TransactionStatus
@@ -34,36 +34,32 @@ export const columns: ColumnDef<TransactionTable>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => {
-      return <div className='w-[100px]'>ID Transaksi</div>
-    },
-    cell: ({ row }) => <div className='w-[100px]'>{row.original.id}</div>
-  },
-  {
-    accessorKey: 'emailCustomer',
-    header: ({ column }) => {
-      return <div className='w-[240px]'>Email Customer</div>
+      return <div className='w-[100px] text-[13px]'>ID Transaksi</div>
     },
     cell: ({ row }) => (
-      <div className='w-[240px]'>{row.original.emailCustomer}</div>
+      <div className='w-[100px] text-[13px]'>{row.original.id}</div>
     )
   },
+
   {
     accessorKey: 'namaEvent',
     header: ({ column }) => {
-      return <div className='w-[400px]'>Nama Event</div>
+      return <div className='w-[240px] text-[13px]'>Nama Event</div>
     },
-    cell: ({ row }) => <div className='w-[400px]'>{row.original.namaEvent}</div>
+    cell: ({ row }) => (
+      <div className='w-[240px] text-[13px]'>{row.original.namaEvent}</div>
+    )
   },
   {
     accessorKey: 'buktiPembayaran',
     header: ({ column }) => {
-      return <div className='w-[200px]'>Bukti Pembayaran</div>
+      return <div className='w-[150px] text-[13px]'>Bukti Pembayaran</div>
     },
     cell: ({ row }) => {
       const [openModal, setOpenModal] = useState<boolean>(false)
 
       return (
-        <div className='w-[180px]'>
+        <div className='w-[150px] text-[13px]'>
           {row.original.buktiPembayaran ? (
             <button
               type='button'
@@ -93,16 +89,18 @@ export const columns: ColumnDef<TransactionTable>[] = [
   {
     accessorKey: 'totalHarga',
     header: ({ column }) => {
-      return <div className='w-[150px]'>Total Harga</div>
+      return <div className='w-[120px] text-[13px]'>Total Harga</div>
     },
     cell: ({ row }) => (
-      <div className='w-[150px]'>{formatNumber(row.original.totalHarga)}</div>
+      <div className='w-[120px] text-[13px]'>
+        {formatNumber(row.original.totalHarga)}
+      </div>
     )
   },
   {
     accessorKey: 'statusTransaksi',
     header: ({ column }) => {
-      return <div className='w-[220px]'>Status Transaksi</div>
+      return <div className='w-[220px] text-[13px]'>Status Transaksi</div>
     },
     cell: ({ row }) => {
       const statusTransaksi = row.original.statusTransaksi
@@ -110,7 +108,7 @@ export const columns: ColumnDef<TransactionTable>[] = [
       return (
         <div className='w-[220px]'>
           <span
-            className={cn('rounded-md px-3 py-1', {
+            className={cn('rounded-md px-3 py-1 text-[13px]', {
               'bg-red-200 text-red-500':
                 statusTransaksi === 'REJECTED' ||
                 statusTransaksi === 'CANCELED' ||
@@ -136,10 +134,10 @@ export const columns: ColumnDef<TransactionTable>[] = [
   {
     accessorKey: 'tanggalDibuat',
     header: ({ column }) => {
-      return <div className='w-[200px]'>Tanggal Dibuat</div>
+      return <div className='w-[170px] text-[13px]'>Tanggal Dibuat</div>
     },
     cell: ({ row }) => (
-      <div className='w-[200px]'>
+      <div className='w-[170px] text-[13px]'>
         {formatDate(new Date(row.original.tanggalDibuat), {
           includeTime: true,
           includeSecond: true
@@ -181,6 +179,16 @@ export const columns: ColumnDef<TransactionTable>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuItem>
+              <Link
+                href={`/member/o/transactions/${row.original.id}`}
+                target='_blank'
+                aria-label='Detail pembayaran'
+                className='text-dark-primary cursor-pointer py-2'
+              >
+                Detail Pembayaran
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => handleUpdateTransaction(row.original.id, 'DONE')}
               disabled={

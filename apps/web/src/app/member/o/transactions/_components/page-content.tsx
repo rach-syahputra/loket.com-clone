@@ -43,10 +43,6 @@ export default function PageContent() {
 
   const searchableColumns = [
     {
-      id: 'emailCustomer',
-      label: 'Email Customer'
-    },
-    {
       id: 'namaEvent',
       label: 'Nama Event'
     },

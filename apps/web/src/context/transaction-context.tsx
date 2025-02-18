@@ -31,8 +31,6 @@ const TransactionContext = createContext<ITransactionContext | undefined>(
 )
 
 const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter()
-
   const searchParams = useSearchParams()
   const status = searchParams.get('status') || '2'
   const page = searchParams.get('page') || 1
@@ -59,7 +57,6 @@ const TransactionProvider = ({ children }: { children: React.ReactNode }) => {
         setTransactions(
           response.data.transactions.map((transaction) => ({
             id: transaction.id,
-            emailCustomer: transaction.user.email,
             namaEvent: transaction.event.title,
             buktiPembayaran: transaction.paymentProofImage,
             totalHarga: transaction.totalPrice,

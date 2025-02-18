@@ -95,7 +95,6 @@ export default function AttendeeListModal({
           totalPages={totalPages}
           className='place-self-end'
         />
-        <p></p>
       </div>
     </ModalContainer>
   )
