@@ -82,7 +82,7 @@ export default function HeaderRight() {
       <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className='relative flex max-w-[180px] items-center justify-center rounded-full bg-slate-100'
+        className='relative flex items-center justify-center rounded-full bg-slate-100'
       >
         <div className='flex cursor-pointer items-center justify-center'>
           <Image
@@ -93,7 +93,7 @@ export default function HeaderRight() {
             className='h-[30px] w-[30px] rounded-full'
           />
           <div className='hidden items-center justify-center gap-4 px-3 lg:flex'>
-            <p>{truncateText(session?.user?.name || '...', 15)}</p>
+            <p>{truncateText(session?.user?.name || '...', 12)}</p>
             <Icon icon={faChevronRight} className='text-gray-secondary w-2.5' />
           </div>
         </div>

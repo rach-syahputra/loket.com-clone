@@ -31,6 +31,19 @@ export async function fetchRegister(data: RegisterRequest) {
   return await user.json()
 }
 
+export async function fetchRefreshToken(token: string) {
+  const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  const user = await response.json()
+
+  return user.data.accessToken
+}
+
 export async function fetchSwitchRole() {
   const session = await getSession()
   const token = session?.user.accessToken

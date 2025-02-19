@@ -3,7 +3,7 @@ import { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
 import jwt from 'jsonwebtoken'
 
-import { fetchLogin } from './lib/apis/auth.api'
+import { fetchLogin, fetchRefreshToken } from './lib/apis/auth.api'
 import { UserToken } from './lib/interfaces/auth.interface'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -40,6 +40,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.accessToken = session.user.accessToken
       }
 
+      if (session?.user.accessToken) {
+        const nowDate = Math.floor(Date.now() / 1000)
+        const iat = session.user.iat
+
+        // Do refresh token if the token age is 30 minutes or more
+        if (nowDate >= iat + 1800) {
+          const newAccessToken = await fetchRefreshToken(
+            session.user.accessToken
+          )
+
+          token.accessToken = newAccessToken
+        }
+      }
+
       return token
     },
     async session({ session, token }: { session: Session; token: JWT }) {
@@ -53,6 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = decoded.email
         session.user.image = decoded.image
         session.user.roleId = decoded.roleId
+        session.user.iat = decoded.iat
+        session.user.exp = decoded.exp
       }
 
       return session

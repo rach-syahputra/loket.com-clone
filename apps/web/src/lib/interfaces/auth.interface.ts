@@ -15,6 +15,8 @@ export interface UserToken {
   roleId: number
   name: string
   image: string | null
+  iat: number
+  exp: number
 }
 
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>
