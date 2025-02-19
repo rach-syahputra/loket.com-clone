@@ -118,22 +118,25 @@ class TransactionRepository {
 
   async updateTransaction(req: TransactionRepositoryRequest) {
     const transaction = await prisma.$transaction(async (trx) => {
-      if (
-        req.transactionStatus === 'REJECTED' ||
-        req.transactionStatus === 'CANCELED'
-      ) {
-        const transaction = await trx.transactions.findUnique({
-          where: {
-            id: req.transactionId
-          },
-          select: {
-            eventId: true,
-            couponId: true,
-          }
-        })
+      // Get the transaction data before updating
+      const transaction = await trx.transactions.findUnique({
+        where: {
+          id: req.transactionId
+        },
+        select: {
+          eventId: true,
+          couponId: true,
+          createdAt: true
+        }
+      })
 
-        if (transaction) {
-          // If coupon is used on the transaction, set the coupon status back to 'ACTIVE'
+      // If transaction data found, proceed any update
+      if (transaction) {
+        if (
+          req.transactionStatus === 'REJECTED' ||
+          req.transactionStatus === 'CANCELED'
+        ) {
+          // If coupon is used on the transaction, restore the coupon status to 'ACTIVE'
           if (transaction.couponId) {
             await trx.coupon.update({
               where: {
@@ -144,8 +147,7 @@ class TransactionRepository {
               }
             })
           }
-         
-  
+
           // Restore the event available seats
           await trx.event.update({
             where: {
@@ -158,24 +160,25 @@ class TransactionRepository {
             }
           })
         }
-      }
-      const createdAt = new Date(transaction.createdAt); // Ensure it's a Date object
-      const twentySecondsAgo = new Date(Date.now() - 20 * 1000);
-      if (
-        req.transactionStatus === 'WAITING_FOR_PAYMENT' &&
-        !req.paymentProofImage &&
-        new Date(createdAt) < twentySecondsAgo
-      ) {
-        req.transactionStatus = 'EXPIRED';
-      }
-  
-      // ✅ Auto-cancel transactions if organizer doesn't act in 3 days
-      const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-      if (
-        req.transactionStatus === 'WAITING_FOR_ADMIN_CONFIRMATION' &&
-        new Date(createdAt) < threeDaysAgo
-      ) {
-        req.transactionStatus = 'CANCELED';
+
+        const createdAt = new Date(transaction.createdAt) // Ensure it's a Date object
+        const twentySecondsAgo = new Date(Date.now() - 20 * 1000)
+        if (
+          req.transactionStatus === 'WAITING_FOR_PAYMENT' &&
+          !req.paymentProofImage &&
+          new Date(createdAt) < twentySecondsAgo
+        ) {
+          req.transactionStatus = 'EXPIRED'
+        }
+
+        // ✅ Auto-cancel transactions if organizer doesn't act in 3 days
+        const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+        if (
+          req.transactionStatus === 'WAITING_FOR_ADMIN_CONFIRMATION' &&
+          new Date(createdAt) < threeDaysAgo
+        ) {
+          req.transactionStatus = 'CANCELED'
+        }
       }
 
       return await trx.transactions.update({
