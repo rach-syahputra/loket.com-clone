@@ -5,6 +5,7 @@ export interface TransactionRepositoryRequest {
   transactionId: number
   paymentProofImage?: string
   transactionStatus?: TransactionStatus
+
 }
 
 export interface TransactionServiceRequest {

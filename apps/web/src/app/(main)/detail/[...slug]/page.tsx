@@ -84,7 +84,7 @@ export default function DetailPage() {
   if (!event) {
     return (
       <div className="flex h-screen w-screen items-center justify-center">
-        {LoadingDots()}
+          <LoadingDots />
       </div>
     );
   }

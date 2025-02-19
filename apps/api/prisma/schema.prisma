@@ -162,6 +162,7 @@ model Voucher {
   createdAt      DateTime @default(now()) @map("created_at")
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Transactions Transactions[]
 
   @@map("vouchers")
 }
@@ -185,6 +186,7 @@ model Transactions {
   userId            Int               @map("user_id")
   eventId           Int               @map("event_id")
   couponId          Int?              @map("coupon_id")
+  voucherId         Int?              @map("voucher_id")
   transactionStatus TransactionStatus @map("transaction_status")
   paymentProofImage String?           @map("payment_proof_image")
   totalPrice        Int               @map("total_price")
@@ -194,6 +196,7 @@ model Transactions {
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   event  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  voucher Voucher? @relation(fields: [voucherId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
 
   @@map("transactions")
 }

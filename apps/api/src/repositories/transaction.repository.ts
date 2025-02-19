@@ -128,7 +128,7 @@ class TransactionRepository {
           },
           select: {
             eventId: true,
-            couponId: true
+            couponId: true,
           }
         })
 
@@ -144,7 +144,8 @@ class TransactionRepository {
               }
             })
           }
-
+         
+  
           // Restore the event available seats
           await trx.event.update({
             where: {
@@ -157,6 +158,24 @@ class TransactionRepository {
             }
           })
         }
+      }
+      const createdAt = new Date(transaction.createdAt); // Ensure it's a Date object
+      const twentySecondsAgo = new Date(Date.now() - 20 * 1000);
+      if (
+        req.transactionStatus === 'WAITING_FOR_PAYMENT' &&
+        !req.paymentProofImage &&
+        new Date(createdAt) < twentySecondsAgo
+      ) {
+        req.transactionStatus = 'EXPIRED';
+      }
+  
+      // ✅ Auto-cancel transactions if organizer doesn't act in 3 days
+      const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+      if (
+        req.transactionStatus === 'WAITING_FOR_ADMIN_CONFIRMATION' &&
+        new Date(createdAt) < threeDaysAgo
+      ) {
+        req.transactionStatus = 'CANCELED';
       }
 
       return await trx.transactions.update({

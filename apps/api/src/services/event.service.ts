@@ -51,6 +51,10 @@ class EventService {
     return await eventRepository.getAllEvents()
   }
 
+  async getEventById(eventId:number){
+    return await eventRepository.getEventById(eventId)
+  }
+
   async getEventBySlug(slug: string) {
     return await eventRepository.getEventBySlug(slug)
   }

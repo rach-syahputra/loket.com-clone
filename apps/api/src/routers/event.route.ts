@@ -12,6 +12,8 @@ export const eventRouter = () => {
 
   router.get('/event', eventController.getEvent)
   router.get('/event/:slug', eventController.getEventBySlug)
+  router.get('/event/:eventId/transaction',eventController.getEventById)
+
   router.get('/events/reviews',eventController.getEventsWithoutReviews)
   router.get('/events/filter',eventController.filterAll)
   router.patch(

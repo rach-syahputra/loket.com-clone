@@ -39,9 +39,25 @@ class EventController {
         message: 'Event retrieved successfully',
         result
       })
-    } catch (error) {}
+    } catch (error) {
+      next(error)
+    }
   }
+        
+  async getEventById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const eventId =  Number(req.params.eventId)
+      const result = await eventService.getEventById(eventId)
 
+    
+      res.status(200).send({
+        message: 'Event by Id retrieved successfully',
+        result
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
   async filterAll(req: Request, res: Response, next: NextFunction) {
     try {
       // Extract from query
