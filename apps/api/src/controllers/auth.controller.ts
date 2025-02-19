@@ -32,6 +32,20 @@ class AuthController {
     }
   }
 
+  async refreshToken(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const data = await authService.refreshToken(req.user?.email!)
+
+      res.status(200).json({
+        success: true,
+        message: 'Refresh token success.',
+        data
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async confirmEmailForPasswordReset(
     req: Request,
     res: Response,

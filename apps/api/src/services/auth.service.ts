@@ -108,6 +108,42 @@ class AuthService {
     }
   }
 
+  async refreshToken(email: string) {
+    const user = await authRepository.findUserByEmail(email)
+
+    if (user) {
+      const lastLoggedInUser = await authRepository.findLastLoggedInRole(
+        user.id
+      )
+
+      if (lastLoggedInUser) {
+        const userData = {
+          id: user.id,
+          email: user.email,
+          roleId: lastLoggedInUser?.roleId,
+          name: user.name,
+          image: user.pictureUrl
+        }
+
+        const accessToken = await putAccessToken(userData)
+
+        if (accessToken) {
+          await authRepository.updateUserRole({
+            userId: lastLoggedInUser.userId,
+            roleId: lastLoggedInUser.roleId,
+            isActive: true
+          })
+
+          return {
+            accessToken
+          }
+        } else {
+          throw new ResponseError(500, 'Unable to generate access token.')
+        }
+      }
+    }
+  }
+
   async confirEmailForPasswordReset(email: string) {
     const user = await authRepository.findUserByEmail(email)
 
