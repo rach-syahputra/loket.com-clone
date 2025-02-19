@@ -1,6 +1,5 @@
-import { getSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 
-import { handleSignOut } from '@/app/actions/actions'
 import { BASE_URL } from '../constants'
 import {
   CouponsJson,
@@ -23,7 +22,11 @@ export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
     body: JSON.stringify(data)
   })
 
-  return await response.json()
+  const user = await response.json()
+
+  if (user.error?.message === 'jwt is expired') await signOut()
+
+  return user
 }
 
 export async function fetchUpdateUser(data: FormData) {
@@ -40,7 +43,7 @@ export async function fetchUpdateUser(data: FormData) {
 
   const user = await response.json()
 
-  if (user.error?.message === 'jwt is expired') await handleSignOut()
+  if (user.error?.message === 'jwt is expired') await signOut()
 
   return user
 }
@@ -66,7 +69,7 @@ export async function fetchGetUserCoupons(
 
   const coupons = await response.json()
 
-  if (coupons.error?.message === 'jwt is expired') await handleSignOut()
+  if (coupons.error?.message === 'jwt is expired') await signOut()
 
   return coupons
 }
@@ -94,7 +97,7 @@ export async function fetchGetTickets(
 
   const tickets = await response.json()
 
-  if (tickets.error?.message === 'jwt is expired') await handleSignOut()
+  if (tickets.error?.message === 'jwt is expired') await signOut()
 
   return tickets
 }

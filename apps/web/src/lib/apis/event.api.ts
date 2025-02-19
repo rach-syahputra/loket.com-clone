@@ -1,7 +1,6 @@
-import { getSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 
 import { BASE_URL } from '../constants'
-import { handleSignOut } from '@/app/actions/actions'
 
 export async function fetchUpdateEvent(eventId: string, data: FormData) {
   const session = await getSession()
@@ -17,7 +16,7 @@ export async function fetchUpdateEvent(eventId: string, data: FormData) {
 
   const event = await response.json()
 
-  if (event.error?.message === 'jwt is expired') await handleSignOut()
+  if (event.error?.message === 'jwt is expired') await signOut()
 
   return event
 }

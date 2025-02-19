@@ -1,5 +1,4 @@
-import { getSession } from 'next-auth/react'
-import { handleSignOut } from '@/app/actions/actions'
+import { getSession, signOut } from 'next-auth/react'
 
 import { BASE_URL } from '../constants'
 import {
@@ -20,7 +19,7 @@ export async function fetchGetSalesStatistic(): Promise<StatisticJson> {
 
   const salesStatistic = await response.json()
 
-  if (salesStatistic.error?.message === 'jwt is expired') await handleSignOut()
+  if (salesStatistic.error?.message === 'jwt is expired') await signOut()
 
   return salesStatistic
 }
@@ -38,7 +37,7 @@ export async function fetchGetDashboardSummary(): Promise<DashboardSummaryJson> 
 
   const summary = await response.json()
 
-  if (summary.error?.message === 'jwt is expired') await handleSignOut()
+  if (summary.error?.message === 'jwt is expired') await signOut()
 
   return summary
 }

@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 
 import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
@@ -31,7 +31,7 @@ export async function fetchGetEventsByOrganizer(
 
   const events = await response.json()
 
-  if (events.error?.message === 'jwt is expired') await handleSignOut()
+  if (events.error?.message === 'jwt is expired') await signOut()
 
   return events
 }
@@ -78,7 +78,7 @@ export async function fetchGetEventAttendees(
 
   const attendees = await response.json()
 
-  if (attendees.error?.message === 'jwt is expired') await handleSignOut()
+  if (attendees.error?.message === 'jwt is expired') await signOut()
 
   return attendees
 }

@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 
 import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
@@ -77,7 +77,7 @@ export async function fetchUpdateTransaction(
 
   const transactions = await response.json()
 
-  if (transactions.error?.message === 'jwt is expired') await handleSignOut()
+  if (transactions.error?.message === 'jwt is expired') await signOut()
 
   return transactions
 }
