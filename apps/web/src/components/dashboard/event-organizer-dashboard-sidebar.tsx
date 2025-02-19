@@ -6,6 +6,8 @@ import { useSession } from 'next-auth/react'
 import { faMoneyCheck } from '@fortawesome/free-solid-svg-icons'
 
 import { fetchSwitchRole } from '@/lib/apis/auth.api'
+import { useLoadingContext } from '@/context/loading-context'
+import Icon from '../icon'
 import {
   Sidebar,
   SidebarDivider,
@@ -15,7 +17,6 @@ import {
   SidebarMenuLabel,
   SidebarMenuLink
 } from './dashboard-sidebar'
-import Icon from '../icon'
 
 export const EVENT_ORGANIZER_MENU = {
   dashboardMenu: [
@@ -48,20 +49,29 @@ export const EVENT_ORGANIZER_MENU = {
 }
 
 export default function EventOrganizerDashboardSidebar() {
-  const { data: session, update } = useSession()
   const router = useRouter()
+  const { data: session, update } = useSession()
+  const { setIsLoading } = useLoadingContext()
 
   const handleSwitchRole = async () => {
-    const response = await fetchSwitchRole()
+    try {
+      setIsLoading(true)
 
-    if (response.success) {
-      await update({
-        user: {
-          accessToken: response.data.accessToken
-        }
-      })
+      const response = await fetchSwitchRole()
 
-      router.refresh()
+      if (response.success) {
+        await update({
+          user: {
+            accessToken: response.data.accessToken
+          }
+        })
+
+        router.refresh()
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
