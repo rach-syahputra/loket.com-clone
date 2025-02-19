@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react'
 import AuthToggle from './auth/auth-toggle'
 import MobileAuthToggle from './auth/mobile-auth-toggle'
 import DesktopNavigationMenu from './desktop-navigation-menu'
-import UnauthenticatedMenu from './auth/unauthenticated-menu'
+import { UnauthenticatedMenu } from './auth/unauthenticated-menu'
 import { useSearch } from '@/context/search-context'
 
 export default function NavigationBar() {

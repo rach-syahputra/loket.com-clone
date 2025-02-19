@@ -194,7 +194,10 @@ export function EventOrgnizerMobileAuthModalMenu() {
 
       <div className='my-3 h-[1px] w-full bg-gray-200'></div>
 
-      <button className='flex h-[41px] items-center gap-4'>
+      <button
+        onClick={() => signOut()}
+        className='flex h-[41px] items-center gap-4'
+      >
         <div className='flex w-5 items-start'>
           <Image
             src='/ic-logout.svg'

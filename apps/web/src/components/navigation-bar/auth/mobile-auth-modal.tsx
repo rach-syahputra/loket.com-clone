@@ -11,6 +11,7 @@ import {
   EventOrgnizerMobileAuthModalMenu
 } from './mobile-auth-modal-menu'
 import MobileAuthSwitch from './mobile-auth-switch'
+import { MobileUnauthenticatedMenu } from './unauthenticated-menu'
 
 export default function MobileAuthModal() {
   const { data: session } = useSession()
@@ -35,30 +36,37 @@ export default function MobileAuthModal() {
 
       <div className='relative'>
         <Image
-          src='https://assets.loket.com/images/loket-pattern.jpg'
+          src='/loket-pattern.jpg'
           alt='Loket pattern'
           width={850}
           height={283.33}
           className='max-h-[200px] w-full object-cover'
         />
-        <Image
-          src='/auth-toggle-user-icon.svg'
-          alt='Loket pattern'
-          width={100}
-          height={100}
-          className='absolute -bottom-7 left-4 aspect-square w-20'
-        />
+
+        <div className='absolute -bottom-7 left-4 aspect-square w-20 overflow-hidden rounded-full'>
+          <Image
+            src={session?.user.image || '/auth-toggle-user-icon.svg'}
+            alt='Loket pattern'
+            width={100}
+            height={100}
+            className='aspect-square'
+          />
+        </div>
       </div>
 
-      <div className='flex flex-col px-4 pt-14'>
-        <MobileAuthSwitch />
+      {session?.user ? (
+        <div className='flex flex-col px-4 pt-14'>
+          <MobileAuthSwitch />
 
-        {session?.user.roleId === 1 ? (
-          <CustomerMobileAuthModalMenu />
-        ) : (
-          <EventOrgnizerMobileAuthModalMenu />
-        )}
-      </div>
+          {session?.user.roleId === 1 ? (
+            <CustomerMobileAuthModalMenu />
+          ) : (
+            <EventOrgnizerMobileAuthModalMenu />
+          )}
+        </div>
+      ) : (
+        <MobileUnauthenticatedMenu />
+      )}
     </div>
   )
 }
