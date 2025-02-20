@@ -1,5 +1,12 @@
+import { Metadata } from 'next'
+
 import { fetchGetTransactionById } from '@/lib/apis/transaction.api'
 import PageContent from './_components/page-content'
+
+export const metadata: Metadata = {
+  title: 'E-Voucher - LOKET',
+  description: 'E-Voucher - LOKET'
+}
 
 type EVoucherPageProps = {
   params: Promise<{ transactionId: string }>
