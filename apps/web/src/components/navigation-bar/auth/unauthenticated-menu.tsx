@@ -5,21 +5,21 @@ import Button from '@/components/button'
 export function UnauthenticatedMenu() {
   return (
     <div className='flex gap-4'>
-      <Button variant='secondary-outline' asChild>
+      <Button variant='secondary-outline' className='h-10' asChild>
         <Link
           href='/register'
           aria-label='Register page'
-          className='flex h-10 items-center justify-center border-white text-white'
+          className='flex items-center justify-center border-white text-white'
         >
           Daftar
         </Link>
       </Button>
 
-      <Button variant='default' asChild>
+      <Button variant='default' className='h-10' asChild>
         <Link
           href='/login'
           aria-label='Login page'
-          className='flex h-10 items-center justify-center'
+          className='flex items-center justify-center'
         >
           Masuk
         </Link>
@@ -35,7 +35,7 @@ export function MobileUnauthenticatedMenu() {
         <Link
           href='/register'
           aria-label='Register page'
-          className='flex h-10 w-full items-center justify-center'
+          className='flex h-9 w-full items-center justify-center'
         >
           Daftar
         </Link>
@@ -45,7 +45,7 @@ export function MobileUnauthenticatedMenu() {
         <Link
           href='/login'
           aria-label='Login page'
-          className='flex h-10 w-full items-center justify-center'
+          className='flex h-9 w-full items-center justify-center'
         >
           Masuk
         </Link>
