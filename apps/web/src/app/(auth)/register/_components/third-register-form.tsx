@@ -15,6 +15,7 @@ import Button from '@/components/button'
 import FormInput from '@/components/form/form-input'
 import { Form } from '@/components/shadcn-ui/form'
 import RegisterFormHeader from './register-form-header'
+import { handleCredentialsSignin } from '@/app/actions/actions'
 
 export default function ThirdRegisterForm() {
   const router = useRouter()
@@ -49,7 +50,15 @@ export default function ThirdRegisterForm() {
 
         if (response?.success) {
           removeFromLocalStorage('loket-registration-data')
-          router.push('/')
+
+          const login = await handleCredentialsSignin({
+            email: registrationData.email,
+            password: registrationData.password
+          })
+
+          if (login?.error) {
+            form.setError('root', { message: response.error.message })
+          }
         }
       }
     } catch (error) {

@@ -1,5 +1,3 @@
-'use client'
-
 import AuthChar from '../_components/auth-char'
 import LoginForm from './_components/login-form'
 

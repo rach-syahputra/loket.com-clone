@@ -118,7 +118,7 @@ export default function UdpateProfileForm() {
 
   useEffect(() => {
     if (session?.user) {
-      setImagePreview(session?.user?.image || '')
+      setImagePreview(session?.user?.image || '/profile_image_placeholder.png')
       form.setValue('name', session.user.name)
     }
   }, [session, form])
