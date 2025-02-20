@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
+import { OrderType } from '@/lib/interfaces/shared.interface'
 import { fetchGetUserCoupons } from '@/lib/apis/user.api'
 import { Coupons } from '@/lib/interfaces/user.interface'
 import { useNavigationContenxt } from '@/context/navigation-context'
@@ -12,9 +14,9 @@ import {
 import Pagination from '@/components/pagination'
 import CouponCardSkeleton from './coupon-card-skeleton'
 import CouponCard from './coupon-card'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { OrderType } from '@/lib/interfaces/shared.interface'
 import OrderSelect from './order-select'
+import { faTicket } from '@fortawesome/free-solid-svg-icons'
+import Icon from '@/components/icon'
 
 export default function PageContent() {
   const router = useRouter()
@@ -102,7 +104,16 @@ export default function PageContent() {
                 />
               ))
             ) : (
-              ''
+              <div className='col-span-3 mt-6 flex flex-col items-center justify-center gap-4 p-[30px]'>
+                <Icon icon={faTicket} className='text-gray-primary w-14' />
+                <div className='flex flex-col items-center justify-center gap-2 text-center'>
+                  <p className='text-gray-primary'>
+                    Kamu belum memiliki kupon
+                    <br /> kamu bisa mendapatkan kupon dengan cara membagikan
+                    kode referralmu kepada pengguna baru
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </div>

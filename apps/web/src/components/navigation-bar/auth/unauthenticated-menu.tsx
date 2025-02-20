@@ -35,7 +35,7 @@ export function MobileUnauthenticatedMenu() {
         <Link
           href='/register'
           aria-label='Register page'
-          className='flex h-9 w-full items-center justify-center'
+          className='flex h-12 w-full items-center justify-center'
         >
           Daftar
         </Link>
@@ -45,7 +45,7 @@ export function MobileUnauthenticatedMenu() {
         <Link
           href='/login'
           aria-label='Login page'
-          className='flex h-9 w-full items-center justify-center'
+          className='flex h-12 w-full items-center justify-center'
         >
           Masuk
         </Link>
