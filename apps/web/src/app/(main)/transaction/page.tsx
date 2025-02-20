@@ -19,6 +19,8 @@ export default function Transaction() {
   const [timeLeft, setTimeLeft] = useState<number>(7200) // 2 hours in seconds
   const router = useRouter()
   const [events,setEvents]  = useState<event>()
+  const [transactions,setTransactions]  = useState<transaction>()
+
   useEffect(() => {
     if (session?.user) {
       setName(session.user.name || '')
@@ -50,9 +52,18 @@ export default function Transaction() {
 
     }
   }
+  const getTransactionByEvent= async ()=>{
+    const transactionResponse = await fetch(
+      `http://localhost:8000/api/transactions/${eventId}`
+
+    )
+  } 
 
  interface event {
   availableSeats: number
+ }
+ interface transaction {
+  quantity:number
  }
   interface voucher {
     id: number
@@ -64,6 +75,7 @@ export default function Transaction() {
   }
   const searchParams = useSearchParams()
   const eventId = searchParams.get('id')
+  const transactionId = searchParams.get('transactionId')
   const title = searchParams.get('title') || 'Event'
   const price = parseInt(searchParams.get('price') || '0')
   const quantity = parseInt(searchParams.get('quantity') || '1')
@@ -106,14 +118,14 @@ export default function Transaction() {
     try {
       const newAvailableSeats = events!.availableSeats - quantity;
 
-      const eventResponse = await fetch(`http://localhost:8000/api/events/${eventId}`,{
+      const eventResponse = await fetch(`http://localhost:8000/api/transactions/${eventId}`,{
         method: 'PATCH',
         headers:{
           'Content-Type':'application/json',
           Authorization: `Bearer ${session?.user.accessToken}`
         },
         body:JSON.stringify({
-          availableSeats:newAvailableSeats
+          quantity:newAvailableSeats
         })
       })
       const data = await eventResponse.json()
@@ -155,6 +167,7 @@ export default function Transaction() {
       if (paymentProof) {
         formData.append('paymentProofImage', paymentProof)
       }
+      formData.append('transactionId', transactionId ?? '')
 
       const res = await fetch('http://localhost:8000/api/transactions', {
         method: 'POST',
@@ -164,6 +177,13 @@ export default function Transaction() {
       const data = await res.json()
       alert('Transaction created successfully!')
       console.log('Server response:', data)
+
+      if(transactionId){
+        const res = await fetch('http://localhost:8000/api/review/create',{
+          method:'PATCH',
+          
+        })
+      }
     } catch (error) {
       console.error('Error creating transaction:', error)
     }

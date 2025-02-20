@@ -22,6 +22,11 @@ export default function DetailPage() {
     title: string;
     registrationStartDate: string | Date;
     registrationEndDate: string | Date;
+    eventStartDate:string | Date
+    eventEndDate:string | Date
+    eventStartTime:string
+    eventEndTime:string
+
     price: number;
     description: string;
     bannerUrl: string;
@@ -91,13 +96,6 @@ export default function DetailPage() {
 
   const handleBuyTicket = async () => {
     try {
-      router.push(
-        `/transaction?id=${event.id}&title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(
-          event.location.streetAddress + ", " + event.location.city
-        )}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}&bannerUrl=${encodeURIComponent(
-          event.bannerUrl || ""
-        )}`
-      );
       const totalPrice = event.price * ticketQuantity;
       const res = await fetch("http://localhost:8000/api/transactions", {
         method: "POST",
@@ -110,7 +108,16 @@ export default function DetailPage() {
         }),
       });
       const data = await res.json();
+      const transactionId = data.id
       console.log("Transaction created successfully", data);
+      router.push(
+        `/transaction?id=${event.id}&transactionId=${transactionId}&title=${encodeURIComponent(event.title)}&price=${event.price}&quantity=${ticketQuantity}&location=${encodeURIComponent(
+          event.location.streetAddress + ", " + event.location.city
+        )}&startDate=${event.registrationStartDate}&endDate=${event.registrationEndDate}&bannerUrl=${encodeURIComponent(
+          event.bannerUrl || ""
+        )}`
+      );
+     
     } catch (error) {
       console.error("Error creating transaction:", error);
       alert(`Error creating transaction: ${error}`);
@@ -161,9 +168,7 @@ export default function DetailPage() {
                         />
                       </span>
                       <span>
-                        {`${formatTime(event.registrationStartDate)} - ${formatTime(
-                          event.registrationEndDate
-                        )} WIB`}
+                        {`${event.eventStartTime} - ${event.eventEndTime} WIB`}
                       </span>
                     </div>
                     <div className="flex gap-4">
@@ -307,9 +312,8 @@ export default function DetailPage() {
                 <span>
                   <Image src="/clock.png" width={20} height={20} alt="Clock" />
                 </span>
-                <span>{`${formatTime(event.registrationStartDate)} - ${formatTime(
-                  event.registrationEndDate
-                )} WIB`}</span>
+                {`${event.eventStartTime} - ${event.eventEndTime} WIB`}
+
               </div>
               <div className="flex gap-4">
                 <span>

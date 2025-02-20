@@ -180,7 +180,6 @@ export default function CreateEvent() {
           alert('Event Created Successfully')
           resetForm()
           router.push('/')
-          window.location.reload()
         } else {
           const errorData = await response.json()
           console.error('Error Creating Event:', errorData)

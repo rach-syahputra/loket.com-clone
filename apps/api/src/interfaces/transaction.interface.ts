@@ -5,7 +5,7 @@ export interface TransactionRepositoryRequest {
   transactionId: number
   paymentProofImage?: string
   transactionStatus?: TransactionStatus
-
+  quantity:number
 }
 
 export interface TransactionServiceRequest {
@@ -13,6 +13,7 @@ export interface TransactionServiceRequest {
   organizerId: number
   paymentProofImage?: Express.Multer.File
   transactionStatus?: TransactionStatus
+  quantity:number
 }
 
 export interface verifyTransactionOwnershipRequest {

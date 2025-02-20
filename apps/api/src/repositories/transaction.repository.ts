@@ -116,6 +116,8 @@ class TransactionRepository {
     })
   }
 
+  
+
   async updateTransaction(req: TransactionRepositoryRequest) {
     const transaction = await prisma.$transaction(async (trx) => {
       // Get the transaction data before updating
@@ -179,8 +181,22 @@ class TransactionRepository {
         ) {
           req.transactionStatus = 'CANCELED'
         }
+
+        if (req.transactionStatus === 'WAITING_FOR_PAYMENT') {
+          await trx.event.update({
+            where: {
+              id: transaction.eventId
+            },
+            data: {
+              availableSeats: {
+                decrement: req.quantity
+              }
+            }
+          })
+        }
       }
 
+     
       return await trx.transactions.update({
         where: {
           id: req.transactionId
@@ -225,6 +241,46 @@ class TransactionRepository {
       createdAt: convertToUTC7(transaction.createdAt),
       updatedAt: convertToUTC7(transaction.updatedAt)
     }
+  }
+  
+
+  async getReviews(userId:number){
+    const currentDateTime = new Date();
+
+    return await prisma.transactions.findMany({
+      where: {
+        userId: userId, // Only fetch reviews for the logged-in user
+        transactionStatus: 'DONE',
+        event: {
+          eventEndDate: { lte: currentDateTime },
+          eventEndTime: { lte: currentDateTime.toTimeString().split(' ')[0] },
+        },
+        OR: [
+          { review: null },              
+          { review: { status: 'DRAFT' } },
+        ],
+      },
+      select: {
+        event: {
+          select: {
+            id: true,               
+            title: true,  
+            eventStartDate:true,          
+            eventEndDate: true,
+            eventStartTime:true,
+            eventEndTime:true   
+          },
+        },
+        review: {
+          select: {
+            id: true,               
+            status: true,        
+            content: true,          
+            rating: true,          
+          },
+        },
+      },
+    });
   }
 }
 

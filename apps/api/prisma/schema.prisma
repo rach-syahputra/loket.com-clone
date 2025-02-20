@@ -154,7 +154,7 @@ model Event {
 
 model Voucher {
   id             Int      @id @default(autoincrement())
-  title          String
+  title          String 
   eventId        Int      @map("event_id")
   startDate      DateTime @map("start_date")
   endDate        DateTime @map("end_date")
@@ -167,19 +167,27 @@ model Voucher {
   @@map("vouchers")
 }
 
+enum ReviewStatus {
+  DRAFT
+  SUBMITTED
+}
+
 model Review {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
-  eventId   Int      @map("event_id")
-  content   String   @db.Text
-  rating    Decimal
-  createdAt DateTime @default(now()) @map("created_at")
+  id             Int           @id @default(autoincrement())
+  transactionId  Int           @unique // ✅ Required foreign key
+  userId         Int           @map("user_id")
+  eventId        Int           @map("event_id")
+  content        String?        @db.Text
+  rating         Decimal?
+  status         ReviewStatus
+  createdAt      DateTime      @default(now()) @map("created_at")
 
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event          Event         @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transaction    Transactions  @relation(name: "TransactionToReview", fields: [transactionId], references: [id]) // ✅ Required relation
   @@map("reviews")
 }
+
 
 model Transactions {
   id                Int               @id @default(autoincrement())
@@ -197,6 +205,6 @@ model Transactions {
   event  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   voucher Voucher? @relation(fields: [voucherId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
-
+ review            Review?  @relation(name: "TransactionToReview") 
   @@map("transactions")
 }
