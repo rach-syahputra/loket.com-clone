@@ -15,6 +15,7 @@ export interface UserToken {
   roleId: number
   name: string
   image: string | null
+  referralCode: string
   iat: number
   exp: number
 }

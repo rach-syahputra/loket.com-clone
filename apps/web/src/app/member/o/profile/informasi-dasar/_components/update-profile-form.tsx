@@ -17,6 +17,7 @@ import Button from '@/components/button'
 import ProfileImageInput from '@/components/form/profile-image-input'
 import ProfileFormInput from '@/components/form/profile-form-input'
 import { DisabledProfileFormInput } from '@/components/form/disabled-profile-form-input'
+import { ReferralCodeFormInput } from '@/components/form/referral-code-form-input'
 
 export default function UdpateProfileForm() {
   const { data: session, update } = useSession()
@@ -136,6 +137,8 @@ export default function UdpateProfileForm() {
           onInputClick={handleImageUploadClick}
           onInputChange={updateImage}
         />
+
+        <ReferralCodeFormInput value={session?.user.referralCode || ''} />
 
         <DisabledProfileFormInput
           label='Email'

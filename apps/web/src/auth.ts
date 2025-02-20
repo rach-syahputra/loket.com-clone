@@ -67,6 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = decoded.email
         session.user.image = decoded.image
         session.user.roleId = decoded.roleId
+        session.user.referralCode = decoded.referralCode
         session.user.iat = decoded.iat
         session.user.exp = decoded.exp
       }

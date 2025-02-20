@@ -17,6 +17,7 @@ import Button from '@/components/button'
 import ProfileImageInput from '@/components/form/profile-image-input'
 import ProfileFormInput from '@/components/form/profile-form-input'
 import { DisabledProfileFormInput } from '@/components/form/disabled-profile-form-input'
+import { ReferralCodeFormInput } from '@/components/form/referral-code-form-input'
 
 export default function UdpateProfileForm() {
   const { data: session, update } = useSession()
@@ -137,12 +138,14 @@ export default function UdpateProfileForm() {
           onInputChange={updateImage}
         />
 
+        <ReferralCodeFormInput value={session?.user.referralCode || ''} />
+
         <DisabledProfileFormInput
           label='Email'
           value={session?.user.email || ''}
         />
 
-        <ProfileFormInput form={form} type='text' name='name' label='Name' />
+        <ProfileFormInput form={form} type='text' name='name' label='Nama' />
 
         <div className='flex flex-col gap-4 py-4'>
           <span className='text-dark-primary text-[15px] font-medium'>
