@@ -84,7 +84,8 @@ class UserService {
         email: updatedUser.email,
         roleId: req.roleId,
         name: updatedUser.name,
-        image: updatedUser.pictureUrl || ''
+        image: updatedUser.pictureUrl || '',
+        referralCode: updatedUser.referralCode
       })
 
       if (accessToken) {

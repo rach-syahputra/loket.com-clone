@@ -86,7 +86,8 @@ class AuthService {
           email: user.email,
           roleId: lastLoggedInUser.roleId,
           name: user.name,
-          image: user.pictureUrl
+          image: user.pictureUrl,
+          referralCode: user.referralCode
         }
 
         const accessToken = await putAccessToken(userData)
@@ -122,7 +123,8 @@ class AuthService {
           email: user.email,
           roleId: lastLoggedInUser?.roleId,
           name: user.name,
-          image: user.pictureUrl
+          image: user.pictureUrl,
+          referralCode: user.referralCode
         }
 
         const accessToken = await putAccessToken(userData)
@@ -184,7 +186,8 @@ class AuthService {
         email: user.email,
         roleId: user.roleId,
         name: user.name,
-        image: user.image || ''
+        image: user.image || '',
+        referralCode: user.referralCode || ''
       })
 
       if (accessToken) {

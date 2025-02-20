@@ -32,7 +32,8 @@ class UserRepository {
       name: res.name,
       email: res.email,
       pictureUrl: res.pictureUrl,
-      updatedAt: res.updatedAt
+      updatedAt: res.updatedAt,
+      referralCode: res.referralCode
     }
   }
 

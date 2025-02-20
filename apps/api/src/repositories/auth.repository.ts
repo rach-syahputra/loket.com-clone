@@ -199,7 +199,8 @@ class AuthRepository {
           roleId: nextRole.roleId,
           email: user.email,
           name: user.name,
-          image: user.pictureUrl || ''
+          image: user.pictureUrl || '',
+          referralCode: user.referralCode
         }
       }
     })

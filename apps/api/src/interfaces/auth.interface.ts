@@ -39,6 +39,7 @@ export interface Token {
   name: string
   roleId: number
   image: string | null
+  referralCode: string
 }
 
 export interface UpdatePasswordRequest {
