@@ -1,6 +1,6 @@
 import { getSession, signOut } from 'next-auth/react'
 
-import { BASE_URL } from '../constants'
+import { API_BASE_URL } from '../constants'
 import {
   CouponsJson,
   TicketJson,
@@ -13,7 +13,7 @@ export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/users/password-verification`, {
+  const response = await fetch(`${API_BASE_URL}/users/password-verification`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
@@ -33,7 +33,7 @@ export async function fetchUpdateUser(data: FormData) {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/users`, {
+  const response = await fetch(`${API_BASE_URL}/users`, {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`
@@ -55,7 +55,7 @@ export async function fetchGetUserCoupons(
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const url = new URL(`${BASE_URL}/users/coupons`)
+  const url = new URL(`${API_BASE_URL}/users/coupons`)
 
   if (page) url.searchParams.append('page', page.toString())
   if (order) url.searchParams.append('order', order)
@@ -82,7 +82,7 @@ export async function fetchGetTickets(
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const url = new URL(`${BASE_URL}/users/tickets`)
+  const url = new URL(`${API_BASE_URL}/users/tickets`)
 
   if (status) url.searchParams.append('status', status)
   if (page) url.searchParams.append('page', page.toString())

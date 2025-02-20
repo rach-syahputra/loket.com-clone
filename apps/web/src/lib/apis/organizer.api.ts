@@ -8,7 +8,7 @@ import {
   EventsByOrganizerJson,
   EventStatus
 } from '../interfaces/organizer.interface'
-import { BASE_URL } from '../constants'
+import { API_BASE_URL } from '../constants'
 import { OrderType } from '../interfaces/shared.interface'
 
 export async function fetchGetEventsByOrganizer(
@@ -20,7 +20,7 @@ export async function fetchGetEventsByOrganizer(
   const token = session?.user.accessToken
 
   const response = await fetch(
-    `${BASE_URL}/organizers/events?status=${status}&page=${page.toString()}&order=${order}`,
+    `${API_BASE_URL}/organizers/events?status=${status}&page=${page.toString()}&order=${order}`,
     {
       method: 'GET',
       headers: {
@@ -42,7 +42,7 @@ export async function fetchGetEventBySlug(
   const session = await auth()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/organizers/events/${slug}`, {
+  const response = await fetch(`${API_BASE_URL}/organizers/events/${slug}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
@@ -64,7 +64,7 @@ export async function fetchGetEventAttendees(
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const url = new URL(`${BASE_URL}/organizers/events/${slug}/attendees`)
+  const url = new URL(`${API_BASE_URL}/organizers/events/${slug}/attendees`)
 
   if (page) url.searchParams.append('page', page.toString())
   if (order) url.searchParams.append('order', order)

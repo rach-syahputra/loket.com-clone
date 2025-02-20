@@ -2,7 +2,7 @@ import { getSession, signOut } from 'next-auth/react'
 
 import { auth } from '@/auth'
 import { handleSignOut } from '@/app/actions/actions'
-import { BASE_URL } from '../constants'
+import { API_BASE_URL } from '../constants'
 import {
   TransactionDetailJson,
   TransactionsJson,
@@ -19,7 +19,7 @@ export async function fetchGetTransactions(
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const url = new URL(`${BASE_URL}/transactions`)
+  const url = new URL(`${API_BASE_URL}/transactions`)
 
   if (status && status.length > 0)
     url.searchParams.append('status', status.join(','))
@@ -46,12 +46,15 @@ export async function fetchGetTransactionById(
   const session = await auth()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/transactions/${transactionId}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`
+  const response = await fetch(
+    `${API_BASE_URL}/transactions/${transactionId}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
-  })
+  )
 
   const transaction = await response.json()
 
@@ -67,13 +70,16 @@ export async function fetchUpdateTransaction(
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/transactions/${transactionId}`, {
-    method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    body: data
-  })
+  const response = await fetch(
+    `${API_BASE_URL}/transactions/${transactionId}`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: data
+    }
+  )
 
   const transactions = await response.json()
 

@@ -1,6 +1,6 @@
 import { getSession, signOut } from 'next-auth/react'
 
-import { BASE_URL } from '../constants'
+import { API_BASE_URL } from '../constants'
 import {
   DashboardSummaryJson,
   StatisticJson
@@ -10,7 +10,7 @@ export async function fetchGetSalesStatistic(): Promise<StatisticJson> {
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/dashboard/statistics/sales`, {
+  const response = await fetch(`${API_BASE_URL}/dashboard/statistics/sales`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
@@ -28,7 +28,7 @@ export async function fetchGetDashboardSummary(): Promise<DashboardSummaryJson> 
   const session = await getSession()
   const token = session?.user.accessToken
 
-  const response = await fetch(`${BASE_URL}/dashboard/summary`, {
+  const response = await fetch(`${API_BASE_URL}/dashboard/summary`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
