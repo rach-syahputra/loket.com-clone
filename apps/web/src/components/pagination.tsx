@@ -16,6 +16,7 @@ type PaginationProps = {
   totalPages: number
   onPrevious?: () => void
   onNext?: () => void
+  disabled?: boolean
   className?: string
 }
 
@@ -60,6 +61,7 @@ export default function Pagination({
   totalPages,
   onPrevious,
   onNext,
+  disabled,
   className
 }: PaginationProps) {
   return (
@@ -79,7 +81,7 @@ export default function Pagination({
         )}
       >
         <PaginationPrevious
-          onClick={onPrevious}
+          onClick={disabled ? () => {} : onPrevious}
           className={cn({
             hidden: page === 1
           })}
@@ -99,7 +101,9 @@ export default function Pagination({
             return (
               <PaginationItem
                 key={index}
-                onClick={() => onPageChange(displayedPage)}
+                onClick={
+                  disabled ? () => {} : () => onPageChange(displayedPage)
+                }
                 isActive={page === displayedPage}
               >
                 {displayedPage}
@@ -108,7 +112,7 @@ export default function Pagination({
           }
         )}
         <PaginationNext
-          onClick={onNext}
+          onClick={disabled ? () => {} : onNext}
           className={cn({
             hidden: page === totalPages
           })}

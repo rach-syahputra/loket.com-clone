@@ -18,7 +18,7 @@ export default function Button({
       {...props}
       disabled={props.disabled}
       className={cn(
-        'h-12 w-fit rounded-lg px-4 py-2 font-semibold',
+        'h-12 w-fit rounded-lg px-4 py-2 text-center font-semibold',
         props.className,
         {
           'bg-blue-primary hover:bg-blue-secondary text-white transition-all duration-300 ease-in-out':

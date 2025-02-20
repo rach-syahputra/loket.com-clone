@@ -26,12 +26,15 @@ export default function AttendeeListModal({
   className,
   handleClose
 }: AttendeeListModalProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [page, setPage] = useState<number>(1)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [attendees, setAttendees] = useState<AttendeeTable[]>([])
 
   const getEventAttendees = async () => {
     try {
+      setIsLoading(true)
+
       const response = await fetchGetEventAttendees(eventSlug, page)
 
       if (response.success) {
@@ -48,6 +51,8 @@ export default function AttendeeListModal({
       }
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -93,6 +98,7 @@ export default function AttendeeListModal({
           page={Number(page)}
           onPageChange={setPage}
           totalPages={totalPages}
+          disabled={isLoading}
           className='place-self-end'
         />
       </div>

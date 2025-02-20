@@ -33,7 +33,7 @@ export default function EventCard({ event }: EventCardProps) {
           alt='Event banner'
           width={1325}
           height={622}
-          className='my-2 aspect-[1325/622] w-[300px] rounded-lg lg:hidden'
+          className='my-2 aspect-[1325/622] w-[300px] rounded-lg object-cover lg:hidden'
         />
 
         <div className='flex flex-wrap gap-x-6 gap-y-2'>
@@ -71,9 +71,11 @@ export default function EventCard({ event }: EventCardProps) {
           </span>
         </div>
 
-        <div className='flex w-fit items-center justify-center gap-4'>
-          <Button onClick={() => setOpenModal(true)}>Daftar Peserta</Button>
-          <Button variant='outline' asChild>
+        <div className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
+          <Button onClick={() => setOpenModal(true)} className='w-full'>
+            Daftar Peserta
+          </Button>
+          <Button variant='outline' className='w-full' asChild>
             <Link
               href={`/member/o/events/${event.slug}`}
               aria-label='detail and update event'
@@ -89,7 +91,7 @@ export default function EventCard({ event }: EventCardProps) {
         alt='Event banner'
         width={1325}
         height={622}
-        className='aspect-[1325/622] w-[300px] rounded-lg max-lg:hidden'
+        className='aspect-[1325/622] w-[300px] rounded-lg object-cover max-lg:hidden'
       />
 
       <AttendeeListModal
