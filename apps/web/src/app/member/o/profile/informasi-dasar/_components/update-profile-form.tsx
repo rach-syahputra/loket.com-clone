@@ -12,6 +12,7 @@ import {
   ProfileImageSchema,
   UpdateUserFormSchema
 } from '@/lib/validations/user.validation'
+import { useLoadingContext } from '@/context/loading-context'
 import { Form } from '@/components/shadcn-ui/form'
 import Button from '@/components/button'
 import ProfileImageInput from '@/components/form/profile-image-input'
@@ -21,6 +22,7 @@ import { ReferralCodeFormInput } from '@/components/form/referral-code-form-inpu
 
 export default function UdpateProfileForm() {
   const { data: session, update } = useSession()
+  const { setIsLoading } = useLoadingContext()
   const { toast } = useToast()
 
   const [imagePreview, setImagePreview] = useState<string>(
@@ -63,6 +65,8 @@ export default function UdpateProfileForm() {
 
   const onSubmit = async (values: UpdateUserFormSchemaType) => {
     try {
+      setIsLoading(true)
+
       const formData = new FormData()
 
       if (values.name && values.name !== session?.user.name)
@@ -113,6 +117,8 @@ export default function UdpateProfileForm() {
       }
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
