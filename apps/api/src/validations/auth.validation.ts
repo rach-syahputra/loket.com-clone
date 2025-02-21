@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+export const RegisterRequestSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Email format is invalid')
+})
+
 export const RegisterSchema = z.object({
   email: z
     .string()

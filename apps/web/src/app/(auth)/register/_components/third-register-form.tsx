@@ -4,8 +4,12 @@ import { useRouter } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { getLocalStorage, removeFromLocalStorage } from '@/hooks/local-storage'
-import { fetchRegister } from '@/lib/apis/auth.api'
+import {
+  getLocalStorage,
+  removeFromLocalStorage,
+  setLocalStorage
+} from '@/hooks/local-storage'
+import { fetchRegister, fetchRegisterRequest } from '@/lib/apis/auth.api'
 import { ThirdRegisterFormSchema } from '@/lib/validations/auth.validation'
 import {
   RegisterRequest,
@@ -17,7 +21,11 @@ import { Form } from '@/components/shadcn-ui/form'
 import RegisterFormHeader from './register-form-header'
 import { handleCredentialsSignin } from '@/app/actions/actions'
 
-export default function ThirdRegisterForm() {
+type ThirdRegisterFormProps = {
+  setStep: React.Dispatch<React.SetStateAction<number>>
+}
+
+export default function ThirdRegisterForm({ setStep }: ThirdRegisterFormProps) {
   const router = useRouter()
 
   const form = useForm<ThirdRegisterFormSchemaType>({
@@ -32,34 +40,19 @@ export default function ThirdRegisterForm() {
     values
   ) => {
     try {
-      let registrationData: RegisterRequest | null | undefined =
+      const registrationData: RegisterRequest | null | undefined =
         getLocalStorage('loket-registration-data')
 
       if (registrationData) {
-        registrationData = {
+        setLocalStorage('loket-registration-data', {
           ...registrationData,
           name: values.name,
           referralCode: values.referralCode || null
-        }
+        })
 
-        const response = await fetchRegister(registrationData)
+        setStep(4)
 
-        if (response?.error) {
-          form.setError('root', { message: response.error.message })
-        }
-
-        if (response?.success) {
-          removeFromLocalStorage('loket-registration-data')
-
-          const login = await handleCredentialsSignin({
-            email: registrationData.email,
-            password: registrationData.password
-          })
-
-          if (login?.error) {
-            form.setError('root', { message: response.error.message })
-          }
-        }
+        await fetchRegisterRequest({ email: registrationData.email })
       }
     } catch (error) {
       console.error(error)

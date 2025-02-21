@@ -46,3 +46,8 @@ export interface UpdatePasswordRequest {
   email: string
   password: string
 }
+
+export interface RegistrationToken {
+  email: string
+  verificationCode: string
+}

@@ -4,6 +4,20 @@ import authService from '../services/auth.service'
 import { UserRequest } from '../interfaces/auth.interface'
 
 class AuthController {
+  async registerRequest(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await authService.registerRequest(req.body.email)
+
+      res.status(201).json({
+        success: true,
+        message: 'Registration request success.',
+        data
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await authService.register(req.body)

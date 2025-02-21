@@ -5,7 +5,8 @@ import handlebars from 'handlebars'
 
 import {
   EmailPasswordResetBodyData,
-  EmailPaymentBodyData
+  EmailPaymentBodyData,
+  EmailRegisterVerificationBodyData
 } from '../../interfaces/email.interface'
 import { NODEMAILER_PASS, NODEMAILER_USER } from '../../config'
 
@@ -56,6 +57,32 @@ export const sendPasswordResetEmail = async (
   const template = handlebars.compile(templateSource)
 
   const subject = 'Reset Kata Sandi'
+  const html = template(bodyData)
+
+  try {
+    await transporter.sendMail({
+      from: 'Mini Loket',
+      to,
+      subject,
+      html
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const sendRegisterVerificationEmail = async (
+  to: string,
+  bodyData: EmailRegisterVerificationBodyData
+) => {
+  const templatePath = path.join(
+    __dirname,
+    'email-register-verification-template.hbs'
+  )
+  const templateSource = fs.readFileSync(templatePath, 'utf8')
+  const template = handlebars.compile(templateSource)
+
+  const subject = 'Permintaan Pendaftaran ke Mini Loket'
   const html = template(bodyData)
 
   try {

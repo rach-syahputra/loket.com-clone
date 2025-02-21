@@ -12,3 +12,8 @@ export interface EmailPasswordResetBodyData {
   name: string
   token: string
 }
+
+export interface EmailRegisterVerificationBodyData {
+  email: string
+  token: string
+}

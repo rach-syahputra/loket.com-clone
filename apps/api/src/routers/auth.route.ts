@@ -6,6 +6,7 @@ import { verifyToken } from '../middlewares/auth.middleware'
 const router = express.Router()
 
 router.post('/new', authController.register)
+router.post('/new/request', authController.registerRequest)
 router.post('/', authController.login)
 router.get('/refresh-token', verifyToken, authController.refreshToken)
 router.post('/role-switch', verifyToken, authController.switchUserRole)

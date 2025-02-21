@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { format } from 'date-fns'
+import crypto from 'crypto'
 
 export function calculateCouponsExpiryDate(): Date {
   const currentDate = new Date()
@@ -96,4 +96,12 @@ export function formatEventLocation(
   province: string
 ) {
   return `${streetAddress}, ${city}, ${province}`
+}
+
+export function generateVerificationCode() {
+  return crypto
+    .randomBytes(8)
+    .toString('base64')
+    .replace(/[^A-Z]/g, '')
+    .slice(0, 8)
 }

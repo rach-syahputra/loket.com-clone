@@ -10,18 +10,41 @@ import {
 import { validate } from '../helpers/validation.handler'
 import {
   LoginSchema,
+  RegisterRequestSchema,
   RegisterSchema,
   ResetPasswordSchema
 } from '../validations/auth.validation'
-import { generateHashedPassword } from '../helpers/utils'
+import {
+  generateHashedPassword,
+  generateVerificationCode
+} from '../helpers/utils'
 import { ResponseError } from '../helpers/error.handler'
 import {
   putAccessToken,
-  putAccessTokenForPasswordReset
+  putAccessTokenForPasswordReset,
+  putAccessTokenForRegistration
 } from '../helpers/jwt.handler'
-import { sendPasswordResetEmail } from '../helpers/email/email'
+import {
+  sendPasswordResetEmail,
+  sendRegisterVerificationEmail
+} from '../helpers/email/email'
 
 class AuthService {
+  async registerRequest(email: string) {
+    validate(RegisterRequestSchema, { email })
+
+    const verificationCode = generateVerificationCode()
+    const token = await putAccessTokenForRegistration(email)
+
+    await sendRegisterVerificationEmail(email, {
+      email,
+      token
+    })
+
+    return {
+      token
+    }
+  }
   async register(req: RegisterRequest) {
     // REGISTER FLOW:
     // 1. Validate the request.

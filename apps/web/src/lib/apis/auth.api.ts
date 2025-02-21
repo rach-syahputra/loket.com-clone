@@ -4,11 +4,24 @@ import { API_BASE_URL } from '../constants'
 import {
   LoginRequest,
   RegisterRequest,
+  RegisterRequestRequest,
   ResetPasswordRequest
 } from '../interfaces/auth.interface'
 
 export async function fetchLogin(data: LoginRequest) {
   const user = await fetch(`${API_BASE_URL}/auth`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  return await user.json()
+}
+
+export async function fetchRegisterRequest(data: RegisterRequestRequest) {
+  const user = await fetch(`${API_BASE_URL}/auth/new/request`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
