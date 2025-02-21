@@ -55,9 +55,36 @@ export default function SalesChart({ title, className }: SalesChartProps) {
     }
   }
 
+  const updateChartData = async (year: string) => {
+    try {
+      setIsLoading(true)
+
+      const response = await fetchGetSalesStatistic()
+
+      if (response.success) {
+        const sales = response.data.sales
+        const years = sales.map((sale) => sale.year)
+
+        const salesBySelectedYear = sales.find(
+          (sale) => sale.year === year
+        )?.data
+
+        if (salesBySelectedYear) {
+          setChartData(salesBySelectedYear)
+          setYears(years)
+          setSelectedYear(year)
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     getChartData()
-  }, [selectedYear, isMobile, isDesktop])
+  }, [isMobile, isDesktop])
 
   if (isLoading) return <ChartSkeleton />
 
@@ -70,7 +97,7 @@ export default function SalesChart({ title, className }: SalesChartProps) {
             <div className='flex items-center gap-4'>
               <YearSelect
                 value={selectedYear}
-                onValueChange={setSelectedYear}
+                onValueChange={updateChartData}
                 years={years}
               />
               {isMobile && (

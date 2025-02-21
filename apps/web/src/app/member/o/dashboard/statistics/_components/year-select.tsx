@@ -25,7 +25,7 @@ export default function YearSelect({
   years
 }: YearSelectProps) {
   return (
-    <Select defaultValue={years[0]} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className='text-gray-secondary w-[120px]'>
         <SelectValue />
         <Icon icon={faChevronDown} className='w-3' />
