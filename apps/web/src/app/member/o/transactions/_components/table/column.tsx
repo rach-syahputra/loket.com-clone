@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
@@ -18,7 +19,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/shadcn-ui/dropdown-menu'
 import PaymentProofImageModal from '../payment-proof-image-modal'
-import Link from 'next/link'
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

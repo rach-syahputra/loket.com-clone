@@ -19,7 +19,7 @@ export default function PaymentProofImageModal({
         alt='Bukti pembayaran'
         width={500}
         height={500}
-        className='aspect-auto w-auto'
+        className='aspect-auto h-auto max-h-[80vh] w-auto max-w-[80vw]'
       />
     </ModalContainer>
   )
