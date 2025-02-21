@@ -40,6 +40,9 @@ class OrganizerRepository {
           Transactions: {
             include: {
               user: true
+            },
+            where: {
+              transactionStatus: 'DONE'
             }
           }
         },
@@ -123,6 +126,9 @@ class OrganizerRepository {
           Transactions: {
             include: {
               user: true
+            },
+            where: {
+              transactionStatus: 'DONE'
             }
           }
         },
@@ -185,7 +191,8 @@ class OrganizerRepository {
       where: {
         event: {
           slug
-        }
+        },
+        transactionStatus: 'DONE'
       }
     })
 
@@ -197,6 +204,9 @@ class OrganizerRepository {
         Transactions: {
           include: {
             user: true
+          },
+          where: {
+            transactionStatus: 'DONE'
           },
           orderBy: {
             createdAt: ORDER_TYPES.includes(query.order) ? query.order : 'desc'
