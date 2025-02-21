@@ -1,5 +1,5 @@
 import { Pagination } from './shared.interface'
-import { TransactionStatus } from './transaction.interface'
+import { Transaction, TransactionStatus } from './transaction.interface'
 
 export type UpdateUserFormSchemaType = {
   name?: string
@@ -77,5 +77,16 @@ export interface TicketJson {
       pagination: Pagination
       totalTickets: number
     }
+  }
+}
+
+export interface EVoucherJson {
+  success: boolean
+  message: string
+  error?: {
+    message: string
+  }
+  data: {
+    eVoucher: Transaction
   }
 }

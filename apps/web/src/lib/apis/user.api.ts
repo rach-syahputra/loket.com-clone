@@ -1,13 +1,16 @@
 import { getSession, signOut } from 'next-auth/react'
 
+import { auth } from '@/auth'
 import { API_BASE_URL } from '../constants'
 import {
   CouponsJson,
+  EVoucherJson,
   TicketJson,
   TicketStatus,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
 import { OrderType } from '../interfaces/shared.interface'
+import { handleSignOut } from '@/app/actions/actions'
 
 export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
   const session = await getSession()
@@ -100,4 +103,27 @@ export async function fetchGetTickets(
   if (tickets.error?.message === 'jwt is expired') await signOut()
 
   return tickets
+}
+
+export async function fetchGetEVoucher(
+  eVoucherId: number
+): Promise<EVoucherJson> {
+  const session = await auth()
+  const token = session?.user.accessToken
+
+  const response = await fetch(
+    `${API_BASE_URL}/users/e-vouchers/${eVoucherId}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+
+  const eVoucher = await response.json()
+
+  if (eVoucher.error?.message === 'jwt is expired') await handleSignOut()
+
+  return eVoucher
 }

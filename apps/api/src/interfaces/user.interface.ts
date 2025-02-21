@@ -41,3 +41,8 @@ export interface GetTicketsRequest {
     page: number
   }
 }
+
+export interface verifyEVoucherOwnershipRequest {
+  transactionId: number
+  customerId: number
+}

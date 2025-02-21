@@ -89,7 +89,7 @@ class TransactionController {
         organizerId: Number(req.user?.id),
         paymentProofImage: req.file,
         transactionStatus: req.body.transactionStatus,
-        quantity:req.body.quantity
+        quantity: req.body.quantity
       })
 
       res.status(200).send({
@@ -102,16 +102,15 @@ class TransactionController {
     }
   }
 
-  async getReviews (req: UserRequest, res: Response, next: NextFunction){
+  async getReviews(req: UserRequest, res: Response, next: NextFunction) {
     try {
-      const userId = Number(req.body.userId);
+      const userId = Number(req.body.userId)
       const result = await transactionService.getReviews(userId)
 
       res.status(200).send({
-        message:"reviews fetched successfully",
+        message: 'reviews fetched successfully',
         result
       })
-
     } catch (error) {
       next(error)
     }

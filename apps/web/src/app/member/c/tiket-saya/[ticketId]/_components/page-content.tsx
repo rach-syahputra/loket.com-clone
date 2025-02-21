@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import {
   faArrowLeft,
@@ -18,7 +19,6 @@ import {
 import { Transaction } from '@/lib/interfaces/transaction.interface'
 import Icon from '@/components/icon'
 import { DashboardContent } from '@/components/dashboard/dashboard-content'
-import Link from 'next/link'
 
 type PageContentProps = {
   ticket: Transaction

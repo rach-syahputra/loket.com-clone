@@ -8,6 +8,7 @@ import {
   GetCouponsQuery,
   GetTicketsRequest,
   UpdateUserServiceRequest,
+  verifyEVoucherOwnershipRequest,
   VerifyPasswordRequest
 } from '../interfaces/user.interface'
 import userRepository from '../repositories/user.repository'
@@ -126,6 +127,27 @@ class UserService {
 
     return {
       user: tickets
+    }
+  }
+
+  async verifyEVoucherOwnership(req: verifyEVoucherOwnershipRequest) {
+    const eVoucher = await userRepository.getEVoucher(req.transactionId)
+
+    if (!eVoucher) throw new ResponseError(404, 'E-Voucher not found')
+
+    const user = await userRepository.findById(eVoucher.user.id)
+
+    if (user?.id !== req.customerId)
+      throw new ResponseError(401, 'Unauthorized')
+  }
+
+  async getEVoucher(transactionId: number, customerId: number) {
+    await this.verifyEVoucherOwnership({ transactionId, customerId })
+
+    const eVoucher = await userRepository.getEVoucher(transactionId)
+
+    return {
+      eVoucher
     }
   }
 }

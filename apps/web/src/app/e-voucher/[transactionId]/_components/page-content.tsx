@@ -5,17 +5,9 @@ import {
   faLocationDot
 } from '@fortawesome/free-solid-svg-icons'
 
-import {
-  cn,
-  formatDate,
-  formatEventDate,
-  formatEventTime,
-  formatNumber,
-  getTransactionStatusName
-} from '@/lib/utils'
+import { formatDate, formatEventDate, formatEventTime } from '@/lib/utils'
 import { Transaction } from '@/lib/interfaces/transaction.interface'
 import Icon from '@/components/icon'
-import { DashboardContent } from '@/components/dashboard/dashboard-content'
 import { OrderDetail, OrderDetailItem } from './order-detail'
 
 type PageContentProps = {

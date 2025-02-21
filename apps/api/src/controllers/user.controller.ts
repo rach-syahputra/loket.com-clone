@@ -101,6 +101,27 @@ class UserController {
       })
     } catch (error) {}
   }
+
+  async getEVoucher(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const { eVoucherId } = req.params
+
+      if (!eVoucherId) throw new ResponseError(400, 'E-Voucher ID is required')
+
+      const data = await userService.getEVoucher(
+        Number(eVoucherId),
+        Number(req.user?.id)
+      )
+
+      res.status(200).send({
+        success: true,
+        message: 'E-Voucher retrieved successfully',
+        data
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 export default new UserController()

@@ -109,7 +109,7 @@ class TransactionService {
       transactionId: req.transactionId,
       transactionStatus: req.transactionStatus,
       paymentProofImage: paymentProofImage?.secure_url,
-      quantity:req.quantity
+      quantity: req.quantity
     })
 
     const { id, transactionStatus, user, event, createdAt, totalPrice } =
@@ -142,8 +142,9 @@ class TransactionService {
     }
   }
 
-  async getReviews(userId:number) {
+  async getReviews(userId: number) {
     return await transactionRepository.getReviews(userId)
-  }}
+  }
+}
 
 export default new TransactionService()

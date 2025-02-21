@@ -116,8 +116,6 @@ class TransactionRepository {
     })
   }
 
-  
-
   async updateTransaction(req: TransactionRepositoryRequest) {
     const transaction = await prisma.$transaction(async (trx) => {
       // Get the transaction data before updating
@@ -196,7 +194,6 @@ class TransactionRepository {
         }
       }
 
-     
       return await trx.transactions.update({
         where: {
           id: req.transactionId
@@ -242,10 +239,9 @@ class TransactionRepository {
       updatedAt: convertToUTC7(transaction.updatedAt)
     }
   }
-  
 
-  async getReviews(userId:number){
-    const currentDateTime = new Date();
+  async getReviews(userId: number) {
+    const currentDateTime = new Date()
 
     return await prisma.transactions.findMany({
       where: {
@@ -253,34 +249,31 @@ class TransactionRepository {
         transactionStatus: 'DONE',
         event: {
           eventEndDate: { lte: currentDateTime },
-          eventEndTime: { lte: currentDateTime.toTimeString().split(' ')[0] },
+          eventEndTime: { lte: currentDateTime.toTimeString().split(' ')[0] }
         },
-        OR: [
-          { review: null },              
-          { review: { status: 'DRAFT' } },
-        ],
+        OR: [{ review: null }, { review: { status: 'DRAFT' } }]
       },
       select: {
         event: {
           select: {
-            id: true,               
-            title: true,  
-            eventStartDate:true,          
+            id: true,
+            title: true,
+            eventStartDate: true,
             eventEndDate: true,
-            eventStartTime:true,
-            eventEndTime:true   
-          },
+            eventStartTime: true,
+            eventEndTime: true
+          }
         },
         review: {
           select: {
-            id: true,               
-            status: true,        
-            content: true,          
-            rating: true,          
-          },
-        },
-      },
-    });
+            id: true,
+            status: true,
+            content: true,
+            rating: true
+          }
+        }
+      }
+    })
   }
 }
 

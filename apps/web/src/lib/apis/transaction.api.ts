@@ -45,6 +45,7 @@ export async function fetchGetTransactionById(
 ): Promise<TransactionDetailJson> {
   const session = await auth()
   const token = session?.user.accessToken
+  console.log(token)
 
   const response = await fetch(
     `${API_BASE_URL}/transactions/${transactionId}`,

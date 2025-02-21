@@ -1,4 +1,4 @@
-import { fetchGetTransactionById } from '@/lib/apis/transaction.api'
+import { fetchGetEVoucher } from '@/lib/apis/user.api'
 import DashboardHeader from '@/components/dashboard/dashboard-header'
 import PageContent from './_components/page-content'
 
@@ -10,12 +10,12 @@ export default async function TicketDetailPage({
   params
 }: TicketDetailPageProps) {
   const ticketId = (await params).ticketId
-  const ticket = await fetchGetTransactionById(Number(ticketId))
+  const ticket = await fetchGetEVoucher(Number(ticketId))
 
   return (
     <>
       <DashboardHeader title='Tiket Saya' />
-      <PageContent ticket={ticket.data.transaction} />
+      <PageContent ticket={ticket.data.eVoucher} />
     </>
   )
 }

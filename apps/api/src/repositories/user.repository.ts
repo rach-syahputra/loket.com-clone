@@ -209,6 +209,40 @@ class UserRepository {
       }
     })
   }
+
+  async getEVoucher(transactionId: number) {
+    return await prisma.transactions.findUnique({
+      where: {
+        id: transactionId
+      },
+      omit: {
+        eventId: true,
+        userId: true
+      },
+      include: {
+        event: {
+          omit: {
+            locationId: true
+          },
+          include: {
+            location: {
+              omit: {
+                provinceId: true
+              },
+              include: {
+                province: true
+              }
+            }
+          }
+        },
+        user: {
+          omit: {
+            password: true
+          }
+        }
+      }
+    })
+  }
 }
 
 export default new UserRepository()
