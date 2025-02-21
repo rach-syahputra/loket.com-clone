@@ -21,6 +21,7 @@ import { Category } from '@/lib/interfaces/category.interface'
 import { Province } from '@/lib/interfaces/location.interface'
 import { cn, formatEventDate, formatNumber } from '@/lib/utils'
 import { HOURS, MINUTES } from '@/lib/constants'
+import { useLoadingContext } from '@/context/loading-context'
 import {
   Form,
   FormControl,
@@ -37,6 +38,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/shadcn-ui/select'
+import Icon from '@/components/icon'
+import { Textarea } from '@/components/shadcn-ui/textarea'
 import DateInputForm from './date-input-form'
 import {
   EventDateModal,
@@ -45,8 +48,6 @@ import {
   EventDateTrigger,
   EventTimeTab
 } from './event-date'
-import Icon from '@/components/icon'
-import { Textarea } from '@/components/shadcn-ui/textarea'
 import { LocationModal, LocationProvider, LocationTrigger } from './location'
 import {
   EventDescriptionTab,
@@ -69,6 +70,7 @@ export default function UpdateEventForm({
   categories,
   provinces
 }: UpdateEventFormProps) {
+  const { setIsLoading } = useLoadingContext()
   const { toast } = useToast()
 
   const [bannerPreview, setBannerPreview] = useState<string>(
@@ -127,7 +129,10 @@ export default function UpdateEventForm({
 
   const onSubmit = async (values: UpdateEventFormSchemaType) => {
     try {
+      setIsLoading(true)
+
       const formData = new FormData()
+
       formData.append('eventId', values.eventId.toString())
       formData.append('organizerId', values.organizerId.toString())
       if (values.title && values.title !== event.title)
@@ -211,6 +216,8 @@ export default function UpdateEventForm({
       }
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
