@@ -2,30 +2,24 @@
 import { useEffect, useState } from 'react'
 import { CardExplore } from '@/components/cards'
 import { API_BASE_URL } from '@/lib/constants'
+import { Province } from '@/lib/interfaces/location.interface'
+import { Category } from '@/lib/interfaces/category.interface'
+import { TicketType } from '@/lib/interfaces/transaction.interface'
 
-interface Province {
-  id: string
-  name: string
-}
 
-interface Category {
-  id: string
-  name: string
-}
 
-type TicketType = 'FREE' | 'PAID' | null
 
 export default function Explore() {
   const [province, setProvince] = useState<Province[]>([])
   const [category, setCategory] = useState<Category[]>([])
 
-  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
+  const [selectedProvinceId, setSelectedProvinceId] = useState<number| null>(
     null
   )
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   )
-  const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(null)
+  const [selectedTicketType, setSelectedTicketType] = useState<TicketType | null>(null)
 
   const [filterTabActive, setFilterTabActive] = useState(false)
 
@@ -196,8 +190,8 @@ export default function Explore() {
           </div>
 
           <CardExplore
-            selectedProvinceId={selectedProvinceId}
-            selectedCategoryId={selectedCategoryId}
+            selectedProvinceId={String(selectedProvinceId)}
+            selectedCategoryId={String(selectedCategoryId)}
             selectedTicketType={selectedTicketType}
           />
 

@@ -6,30 +6,9 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import LoadingDots from '@/components/loading-dots'
 import { API_BASE_URL } from '@/lib/constants'
+import { Event } from '@/lib/interfaces/event.interface'
 
-interface Event {
-  id: number
-  title: string
-  registrationStartDate: string | Date
-  registrationEndDate: string | Date
-  eventStartDate: string | Date
-  eventEndDate: string | Date
-  eventStartTime: string
-  eventEndTime: string
 
-  price: number
-  description: string
-  bannerUrl: string
-  location: {
-    streetAddress: string
-    city: string
-  }
-  organizerId: number
-  organizer?: {
-    pictureUrl: string
-    name: string
-  }
-}
 export default function DetailPage() {
   const [activeTab, setActiveTab] = useState(1)
   const [event, setEvent] = useState<Event | null>(null)
@@ -86,15 +65,7 @@ export default function DetailPage() {
     }).format(parsedDate)
   }
 
-  function formatTime(date: string | Date): string {
-    if (!date) return ''
-    const parsedDate = new Date(date)
-    return parsedDate.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    })
-  }
+ 
 
 
   const handleBuyTicket = async () => {

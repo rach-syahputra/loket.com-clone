@@ -6,21 +6,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { Coupons } from '@/lib/interfaces/user.interface'
 import { API_BASE_URL } from '@/lib/constants'
+import { voucher } from '@/lib/interfaces/voucher.interface'
+import { Event } from '@/lib/interfaces/event.interface'
 
-interface transaction {
-  quantity: number
-}
-interface voucher {
-  id: number
-  title: string
-  eventId: number
-  startDate: Date
-  endDate: Date
-  discountAmount: number
-}
-interface event {
-  availableSeats: number
-}
+
+
+
 export default function Transaction() {
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
@@ -33,8 +24,7 @@ export default function Transaction() {
   const [vouchers, setVouchers] = useState<voucher[]>([])
   const [timeLeft, setTimeLeft] = useState<number>(7200) 
   const router = useRouter()
-  const [events, setEvents] = useState<event>()
-  const [transactions, setTransactions] = useState<transaction>()
+  const [events, setEvents] = useState<Event>()
   const searchParams = useSearchParams()
   const eventId = searchParams.get('id')
   const title = searchParams.get('title') || 'Event'
@@ -49,12 +39,9 @@ export default function Transaction() {
   const [selectedCoupon, setSelectedCoupon] = useState<string>('Pilih')
   const [selectedCouponpoints, setSelectedCouponPoints] = useState<number>(0)
   const [useVouchers, setUseVouchers] = useState(false)
-  const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(
-    null
-  )
+  const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(null)
   const [selectedVoucher, setSelectedVoucher] = useState<string>('Pilih')
-  const [selectedDiscountAmount, setSelectedDiscountAmount] =
-    useState<number>(0)
+  const [selectedDiscountAmount, setSelectedDiscountAmount] = useState<number>(0)
 
   useEffect(() => {
     if (session?.user) {
@@ -118,11 +105,7 @@ export default function Transaction() {
       setEvents(eventData.result)
     }
   }
-  const getTransactionByEvent = async () => {
-    const transactionResponse = await fetch(
-      `${API_BASE_URL}/transactions/${eventId}`
-    )
-  }
+  
 
   const totalPrice = price * quantity
   const totalPoints = coupons.reduce(

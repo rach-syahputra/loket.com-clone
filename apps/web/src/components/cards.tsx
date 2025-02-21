@@ -4,38 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import LoadingDots from './loading-dots'
+import { CardExploreComponentProps } from '@/lib/interfaces/card.interface'
+import { Event } from '@/lib/interfaces/event.interface'
 
-interface event {
-  id: number
-  slug: string
-  title: string
-  description: string
-  bannerUrl: string
-  registrationStartDate: string | Date
-  registrationEndDate: string | Date
-  eventStartDate: string | Date
-  eventEndDate: string | Date
-  eventStartTime: string
-  eventEndTime: string
-  price: number
-  availableSeats: number
-  locationId: number
-  categoryId: number
-  ticketType: 'FREE' | 'PAID'
-  organizerId: number
-  organizer?: {
-    pictureUrl: string
-    name: string
-  }
-}
-
-type TicketType = 'FREE' | 'PAID' | null
-
-interface CardExploreProps {
-  selectedProvinceId: string | null
-  selectedCategoryId: string | null
-  selectedTicketType: TicketType
-}
 
 
 export function Card() {
@@ -102,8 +73,8 @@ export function CardExplore({
   selectedProvinceId,
   selectedCategoryId,
   selectedTicketType
-}: CardExploreProps) {
-  const [events, setEvents] = useState<event[]>([])
+}: CardExploreComponentProps) {
+  const [events, setEvents] = useState<Event[]>([])
 
   useEffect(() => {
     const fetchData = async () => {

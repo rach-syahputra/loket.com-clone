@@ -10,15 +10,11 @@ import 'react-time-picker/dist/TimePicker.css'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { API_BASE_URL } from '@/lib/constants'
+import { Category } from '@/lib/interfaces/category.interface'
+import { Province } from '@/lib/interfaces/location.interface'
 
-interface Category {
-  id: number
-  name: string
-}
-interface Province {
-  id: number
-  name: string
-}
+
+
 
 export default function CreateEvent() {
   

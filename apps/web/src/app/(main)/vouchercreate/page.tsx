@@ -6,11 +6,9 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'react-time-picker/dist/TimePicker.css'
 import { useRouter } from 'next/navigation'
+import { Event } from '@/lib/interfaces/event.interface'
+import { API_BASE_URL } from '@/lib/constants'
 
-interface EventList {
-  id: number
-  title: string
-}
 
 export default function VoucherCreate() {
   const router = useRouter()
@@ -19,7 +17,7 @@ export default function VoucherCreate() {
   const [endDate, setEndDate] = useState<Date | null>(null)
   const [startTime, setStartTime] = useState<string>('09:00')
   const [endTime, setEndTime] = useState<string>('18:00')
-  const [event, setEvent] = useState<EventList[]>([])
+  const [event, setEvent] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null)
 
   // add 7 hours to the Date and return a valid ISO-8601 string.
@@ -69,7 +67,7 @@ export default function VoucherCreate() {
       }
 
       try {
-        const response = await fetch('http://localhost:8000/api/voucher', {
+        const response = await fetch(`${API_BASE_URL}/voucher`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(voucherData)
@@ -96,11 +94,10 @@ export default function VoucherCreate() {
     }
   })
 
-  // Fetch events from your API.
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const eventResponse = await fetch('http://localhost:8000/api/event')
+        const eventResponse = await fetch(`${API_BASE_URL}/event`)
         const eventData = await eventResponse.json()
         if (eventData.result) {
           setEvent(eventData.result)

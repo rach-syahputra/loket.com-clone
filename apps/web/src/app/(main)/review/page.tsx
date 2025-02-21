@@ -3,25 +3,8 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import LoadingDots from '@/components/loading-dots'
 import { API_BASE_URL } from '@/lib/constants'
+import { ReviewData } from '@/lib/interfaces/review.interface'
 
-interface ReviewData {
-  id: number
-  totalPrice: number
-  event: {
-    id: number
-    title: string
-    eventStartDate: string
-    eventEndDate: string
-    eventStartTime: string
-    eventEndTime: string
-  }
-  review: {
-    id: number
-    status: 'DRAFT' | 'SUBMITTED' | null
-    content: string | null
-    rating: number | null
-  } | null
-}
 
 export default function Review() {
   const [reviews, setReviews] = useState<ReviewData[]>([])
@@ -46,7 +29,6 @@ export default function Review() {
         const data = await response.json()
         setReviews(data.result)
 
-        // Initialize states for ratings and contents
         const initialRatings: { [key: number]: number } = {}
         const initialContents: { [key: number]: string } = {}
         data.result.forEach((reviewData: ReviewData) => {

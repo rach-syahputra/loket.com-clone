@@ -89,12 +89,8 @@ class TransactionController {
         organizerId: Number(req.user?.id),
         paymentProofImage: req.file,
         transactionStatus: req.body.transactionStatus,
-<<<<<<< HEAD
-        quantity: req.body.quantity
-=======
-        quantity:Number(req.body.quantity),
-        totalPrice:Number(req.body.totalPrice)
->>>>>>> ad0b441 (feat:update transaction page)
+        quantity: Number(req.body.quantity),
+        totalPrice: Number(req.body.totalPrice)
       })
 
       res.status(200).send({
@@ -123,15 +119,16 @@ class TransactionController {
 
   async getLatestTransaction(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = Number(req.params.userId);
-      const result = await transactionService.getLatestTransactionForUser(userId);
-  
+      const userId = Number(req.params.userId)
+      const result =
+        await transactionService.getLatestTransactionForUser(userId)
+
       res.status(200).send({
         message: 'Latest transaction fetched successfully',
         result
-      });
+      })
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 }

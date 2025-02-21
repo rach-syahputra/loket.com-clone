@@ -105,4 +105,7 @@ export interface UpdateTransactionJson {
       totalPrice: number
     }
   }
+
+  
 }
+
