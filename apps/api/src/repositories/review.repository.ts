@@ -8,9 +8,9 @@ class reviewRepository{
             userId,
             transactionId,
             eventId,
-            status: 'DRAFT',    // Status set to DRAFT
-            content: '',      // Content is null initially
-            rating: 0,       // Rating is null initially
+            status: 'DRAFT',    
+            content: '',     
+            rating: 0,     
           },
         });
       }

@@ -106,10 +106,11 @@ class TransactionService {
     }
 
     const updatedTransaction = await transactionRepository.updateTransaction({
-      transactionId: req.transactionId,
+      transactionId: Number(req.transactionId),
       transactionStatus: req.transactionStatus,
       paymentProofImage: paymentProofImage?.secure_url,
-      quantity: req.quantity
+      quantity: Number(req.quantity),
+      totalPrice:Number(req.totalPrice)
     })
 
     const { id, transactionStatus, user, event, createdAt, totalPrice } =
@@ -144,6 +145,10 @@ class TransactionService {
 
   async getReviews(userId: number) {
     return await transactionRepository.getReviews(userId)
+  }
+
+  async getLatestTransactionForUser(userId:number) {
+    return await transactionRepository.getLatestTransactionByUser(userId)
   }
 }
 

@@ -5,7 +5,7 @@ class reviewController{
     async createReview(req: Request, res: Response, next: NextFunction){
         try {
             const { userId, transactionId, eventId } = req.body;
-            const result = await reviewService.createReview(userId, transactionId, eventId);
+            const result = await reviewService.createReview(userId, transactionId, Number(eventId));
             
             res.status(200).send({
                 message:"Review created successfully",

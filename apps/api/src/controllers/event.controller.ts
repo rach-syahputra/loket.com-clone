@@ -60,10 +60,8 @@ class EventController {
   }
   async filterAll(req: Request, res: Response, next: NextFunction) {
     try {
-      // Extract from query
       const { provinceId, categoryId, ticketType } = req.query;
   
-      // Convert them to numbers if they exist
       let parsedProvinceId: number | undefined;
       if (provinceId) {
         const tmp = parseInt(provinceId as string, 10);
@@ -80,7 +78,6 @@ class EventController {
         }
       }
   
-      // Now pass the correct numeric types to the service
       const result = await eventService.filterAll({
         provinceId: parsedProvinceId,
         categoryId: parsedCategoryId,

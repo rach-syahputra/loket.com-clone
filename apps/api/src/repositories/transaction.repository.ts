@@ -118,7 +118,6 @@ class TransactionRepository {
 
   async updateTransaction(req: TransactionRepositoryRequest) {
     const transaction = await prisma.$transaction(async (trx) => {
-      // Get the transaction data before updating
       const transaction = await trx.transactions.findUnique({
         where: {
           id: req.transactionId
@@ -130,7 +129,6 @@ class TransactionRepository {
         }
       })
 
-      // If transaction data found, proceed any update
       if (transaction) {
         if (
           req.transactionStatus === 'REJECTED' ||
@@ -161,7 +159,7 @@ class TransactionRepository {
           })
         }
 
-        const createdAt = new Date(transaction.createdAt) // Ensure it's a Date object
+        const createdAt = new Date(transaction.createdAt) 
         const twentySecondsAgo = new Date(Date.now() - 20 * 1000)
         if (
           req.transactionStatus === 'WAITING_FOR_PAYMENT' &&
@@ -171,7 +169,6 @@ class TransactionRepository {
           req.transactionStatus = 'EXPIRED'
         }
 
-        // ✅ Auto-cancel transactions if organizer doesn't act in 3 days
         const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
         if (
           req.transactionStatus === 'WAITING_FOR_ADMIN_CONFIRMATION' &&
@@ -228,7 +225,8 @@ class TransactionRepository {
         },
         data: {
           paymentProofImage: req.paymentProofImage,
-          transactionStatus: req.transactionStatus
+          transactionStatus: req.transactionStatus,
+          totalPrice:req.totalPrice
         }
       })
     })
@@ -245,7 +243,7 @@ class TransactionRepository {
 
     return await prisma.transactions.findMany({
       where: {
-        userId: userId, // Only fetch reviews for the logged-in user
+        userId: userId, 
         transactionStatus: 'DONE',
         event: {
           eventEndDate: { lte: currentDateTime },
@@ -266,14 +264,21 @@ class TransactionRepository {
         },
         review: {
           select: {
-            id: true,
-            status: true,
-            content: true,
-            rating: true
-          }
-        }
-      }
-    })
+            id: true,               
+            status: true,        
+            content: true,          
+            rating: true,          
+          },
+        },
+      },
+    });
+  }
+
+  async getLatestTransactionByUser(userId: number) {
+    return await prisma.transactions.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 }
 

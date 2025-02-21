@@ -3,9 +3,24 @@ import { fetchGetUserCoupons } from '@/lib/apis/user.api'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { title } from 'process'
 import { useEffect, useRef, useState } from 'react'
 import { Coupons } from '@/lib/interfaces/user.interface'
+import { API_BASE_URL } from '@/lib/constants'
+
+interface transaction {
+  quantity: number
+}
+interface voucher {
+  id: number
+  title: string
+  eventId: number
+  startDate: Date
+  endDate: Date
+  discountAmount: number
+}
+interface event {
+  availableSeats: number
+}
 export default function Transaction() {
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
@@ -16,10 +31,30 @@ export default function Transaction() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [coupons, setCoupons] = useState<Coupons[]>([])
   const [vouchers, setVouchers] = useState<voucher[]>([])
-  const [timeLeft, setTimeLeft] = useState<number>(7200) // 2 hours in seconds
+  const [timeLeft, setTimeLeft] = useState<number>(7200) 
   const router = useRouter()
-  const [events,setEvents]  = useState<event>()
-  const [transactions,setTransactions]  = useState<transaction>()
+  const [events, setEvents] = useState<event>()
+  const [transactions, setTransactions] = useState<transaction>()
+  const searchParams = useSearchParams()
+  const eventId = searchParams.get('id')
+  const title = searchParams.get('title') || 'Event'
+  const price = parseInt(searchParams.get('price') || '0')
+  const quantity = parseInt(searchParams.get('quantity') || '1')
+  const location = searchParams.get('location') || 'Unknown Location'
+  const startDate = searchParams.get('startDate') || ''
+  const endDate = searchParams.get('endDate') || ''
+  const bannerUrl = searchParams.get('bannerUrl')
+  const [useCoupons, setUseCoupons] = useState(false)
+  const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null)
+  const [selectedCoupon, setSelectedCoupon] = useState<string>('Pilih')
+  const [selectedCouponpoints, setSelectedCouponPoints] = useState<number>(0)
+  const [useVouchers, setUseVouchers] = useState(false)
+  const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(
+    null
+  )
+  const [selectedVoucher, setSelectedVoucher] = useState<string>('Pilih')
+  const [selectedDiscountAmount, setSelectedDiscountAmount] =
+    useState<number>(0)
 
   useEffect(() => {
     if (session?.user) {
@@ -33,74 +68,67 @@ export default function Transaction() {
     }
   }, [session])
 
+  useEffect(() => {
+    const checkTransactionStatus = async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/transactions/${eventId}`
+        )
+        const data = await res.json()
+        if (data.transactionStatus === 'EXPIRED') {
+          alert('Transaction has expired. Redirecting to homepage.')
+          router.push('/')
+        }
+      } catch (error) {
+        console.error('Error checking transaction status:', error)
+      }
+    }
+
+    checkTransactionStatus()
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer)
+          alert('Transaction time expired! Redirecting...')
+          router.push('/') 
+          return 0
+        }
+        return prevTime - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer) 
+  }, [router, eventId])
   const getVoucher = async () => {
     const voucherResponse = await fetch(
-      `http://localhost:8000/api/voucher/${eventId}`
+      `${API_BASE_URL}/voucher/${eventId}`
     )
     const voucherData = await voucherResponse.json()
     if (voucherData.result) {
       setVouchers(voucherData.result)
     }
   }
-  const getEventById = async ()=>{
+  const getEventById = async () => {
     const eventResponse = await fetch(
-      `http://localhost:8000/api/event/${eventId}/transaction`
+      `${API_BASE_URL}/event/${eventId}/transaction`
     )
     const eventData = await eventResponse.json()
-    if(eventData.result){
+    if (eventData.result) {
       setEvents(eventData.result)
-
     }
   }
-  const getTransactionByEvent= async ()=>{
+  const getTransactionByEvent = async () => {
     const transactionResponse = await fetch(
-      `http://localhost:8000/api/transactions/${eventId}`
-
+      `${API_BASE_URL}/transactions/${eventId}`
     )
-  } 
-
- interface event {
-  availableSeats: number
- }
- interface transaction {
-  quantity:number
- }
-  interface voucher {
-    id: number
-    title: string
-    eventId: number
-    startDate: Date
-    endDate: Date
-    discountAmount: number
   }
-  const searchParams = useSearchParams()
-  const eventId = searchParams.get('id')
-  const transactionId = searchParams.get('transactionId')
-  const title = searchParams.get('title') || 'Event'
-  const price = parseInt(searchParams.get('price') || '0')
-  const quantity = parseInt(searchParams.get('quantity') || '1')
-  const location = searchParams.get('location') || 'Unknown Location'
-  const startDate = searchParams.get('startDate') || ''
-  const endDate = searchParams.get('endDate') || ''
-  const bannerUrl = searchParams.get('bannerUrl')
-  const [useCoupons, setUseCoupons] = useState(false) // Track if the checkbox is checked
-  const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null)
-  const [selectedCoupon, setSelectedCoupon] = useState<string>('Pilih')
-  const [selectedCouponpoints, setSelectedCouponPoints] = useState<number>(0)
-  const [useVouchers, setUseVouchers] = useState(false)
-  const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(
-    null
-  )
-  const [selectedVoucher, setSelectedVoucher] = useState<string>('Pilih')
-  const [selectedDiscountAmount, setSelectedDiscountAmount] =
-    useState<number>(0)
+
   const totalPrice = price * quantity
-  // Sum all points from your vouchers
   const totalPoints = coupons.reduce(
     (acc, voucher) => acc + voucher.discountAmount,
     0
   )
-  // Deduct total points from total price (ensure it doesn't go negative)
   const finalPrice = Math.max(
     totalPrice -
       (selectedCouponId ? selectedCouponpoints : 0) -
@@ -116,31 +144,32 @@ export default function Transaction() {
 
   const updateSeats = async () => {
     try {
-      const newAvailableSeats = events!.availableSeats - quantity;
+      const newAvailableSeats = events!.availableSeats - quantity
 
-      const eventResponse = await fetch(`http://localhost:8000/api/transactions/${eventId}`,{
-        method: 'PATCH',
-        headers:{
-          'Content-Type':'application/json',
-          Authorization: `Bearer ${session?.user.accessToken}`
-        },
-        body:JSON.stringify({
-          quantity:newAvailableSeats
-        })
-      })
+      const eventResponse = await fetch(
+        `${API_BASE_URL}/transactions/${eventId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.user.accessToken}`
+          },
+          body: JSON.stringify({
+            quantity: newAvailableSeats
+          })
+        }
+      )
       const data = await eventResponse.json()
       console.log('Server response:', data)
     } catch (error) {
       console.error('Error patching available seats:', error)
-
     }
-    
   }
 
   const handleBuyTicket = async () => {
     try {
       if (selectedCouponId) {
-        const res = await fetch('http://localhost:8000/api/users/coupons', {
+        const res = await fetch(`${API_BASE_URL}/users/coupons`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -159,6 +188,30 @@ export default function Transaction() {
         console.log(' Coupon status updated successfully', resultData)
       }
 
+     
+
+      const  latestTransactionId = await fetch(`${API_BASE_URL}/transactions/latest/${id}`)
+      const latestTransactionIdData = await latestTransactionId.json()
+      console.log('Latest Transaction Data',latestTransactionIdData)
+      const transactionId = latestTransactionIdData.result?.id
+
+
+      
+      const resReview = await fetch(`${API_BASE_URL}/review/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+          userId:id,
+          eventId:eventId,
+          transactionId:transactionId
+        })
+      })
+      const reviewData = await resReview.json()
+      console.log('review created',reviewData)
+
+
       const formData = new FormData()
       formData.append('userId', id.toString())
       formData.append('eventId', eventId || '')
@@ -167,23 +220,20 @@ export default function Transaction() {
       if (paymentProof) {
         formData.append('paymentProofImage', paymentProof)
       }
-      formData.append('transactionId', transactionId ?? '')
 
-      const res = await fetch('http://localhost:8000/api/transactions', {
-        method: 'POST',
+      const res = await fetch(`${API_BASE_URL}/transactions/${transactionId}`, {
+        method: 'PATCH',
+        headers: {          
+          Authorization: `Bearer ${session?.user.accessToken}`
+        },
         body: formData
       })
 
       const data = await res.json()
-      alert('Transaction created successfully!')
+      alert('Transaksi berhasil dibuat!')
+      router.push('/')
       console.log('Server response:', data)
 
-      if(transactionId){
-        const res = await fetch('http://localhost:8000/api/review/create',{
-          method:'PATCH',
-          
-        })
-      }
     } catch (error) {
       console.error('Error creating transaction:', error)
     }
@@ -212,41 +262,8 @@ export default function Transaction() {
   const handleUseCouponsChange = () => {
     setUseCoupons(!useCoupons) // Toggle the usePoints state
   }
-  
-  useEffect(() => {
-    // Fetch transaction details to check if it's already expired
-    const checkTransactionStatus = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8000/api/transactions/${eventId}`
-        )
-        const data = await res.json()
-        if (data.transactionStatus === 'EXPIRED') {
-          alert('Transaction has expired. Redirecting to homepage.')
-          router.push('/')
-        }
-      } catch (error) {
-        console.error('Error checking transaction status:', error)
-      }
-    }
 
-    checkTransactionStatus()
-
-    // Countdown Timer
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer)
-          alert('Transaction time expired! Redirecting...')
-          router.push('/') // Redirect user after expiration
-          return 0
-        }
-        return prevTime - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer) // Cleanup on unmount
-  }, [router, eventId])
+ 
 
   return (
     <div className='h-full w-full bg-white'>
@@ -526,7 +543,7 @@ export default function Transaction() {
               {formatTime(timeLeft)}
             </span>
             <div className='h-6 border-l border-black'></div>
-            <span>Segera selesaikan pesananmu</span>
+            <span>Segera selesaikan pesanan</span>
           </div>
           <div className='z-50 flex h-[450px] w-[383px] flex-col justify-between gap-4 rounded-lg border p-[30px] text-black'>
             <span>Detail Harga</span>

@@ -9,67 +9,45 @@ import 'react-datepicker/dist/react-datepicker.css'
 import 'react-time-picker/dist/TimePicker.css'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { API_BASE_URL } from '@/lib/constants'
+
+interface Category {
+  id: number
+  name: string
+}
+interface Province {
+  id: number
+  name: string
+}
 
 export default function CreateEvent() {
-  // Define interfaces for data
-  interface Category {
-    id: number
-    name: string
-  }
-  interface Province {
-    id: number
-    name: string
-  }
+  
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
   const [userId, setUserId] = useState(0)
-  // Local state variables for modals
   const [modalDate, setModalDate] = useState(false)
   const [modalTime, setModalTime] = useState(false)
   const [modalLocation, setModalLocation] = useState(false)
   const [modalTicketPaid, setModalTicketPaid] = useState(false)
   const [modalTicketFree, setModalTicketFree] = useState(false)
-
-  // For registration dates
   const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null) // +1 day
-
+  const [endDate, setEndDate] = useState<Date | null>(null) 
   const [startTicketDate, setStartTicketDate] = useState<Date | null>(null)
   const [endTicketDate, setEndTicketDate] = useState<Date | null>(null)
-
-  // Local state for event time inputs (used in the time modal)
   const [localEventStartTime, setLocalEventStartTime] = useState('09:00')
   const [localEventEndTime, setLocalEventEndTime] = useState('18:00')
   const [startTime, setStartTime] = useState<string>('09:00')
   const [endTime, setEndTime] = useState<string>('18:00')
-
-  // For event (ticket) dates
   const [startEventDate, setStartEventDate] = useState<Date | null>(null)
   const [endEventDate, setEndEventDate] = useState<Date | null>(null)
-
-  // For location display (in modalLocation)
   const [displayLocation, setDisplayLocation] = useState('Pilih Lokasi')
   const [displayCity, setDisplayCity] = useState('')
-
-  // For dropdowns
   const [category, setCategory] = useState<Category[]>([])
   const [province, setProvince] = useState<Province[]>([])
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [selectedProvince, setSelectedProvince] = useState<number | null>(null)
-
-  // For ticket type (PAID / FREE)
   const [ticketType, setTicketType] = useState('')
-
-  // Helper: add 7 hours to the Date and return a valid ISO-8601 string.
-  const toAdjustedISOString = (date: Date): string => {
-    const adjustedDate = new Date(date.getTime() + 7 * 60 * 60 * 1000)
-    return adjustedDate.toISOString()
-  }
-
-  // For testing purposes, we prepopulate all required fields.
-  // In production, you might want these fields to be filled via user input.
-
   const [startDateError, setStartDateError] = useState('')
   const [endDateError, setEndDateError] = useState('')
   const [provinceError, setProvinceError] = useState('')
@@ -80,6 +58,90 @@ export default function CreateEvent() {
   const [dropdownCategoryError, setDropdownCategoryError] = useState('')
 
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const categoryResponse = await fetch(
+          `${API_BASE_URL}/categories`
+        )
+        const categoryData = await categoryResponse.json()
+        if (categoryData.data) {
+          setCategory(categoryData.data)
+        }
+        const provinceResponse = await fetch(
+          `${API_BASE_URL}/provinces`
+        )
+        const provinceData = await provinceResponse.json()
+        if (provinceData.data) {
+          setProvince(provinceData.data)
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error)
+      }
+    }
+    if (session?.user) {
+      setName(session.user.name || '')
+      setImage(session.user.image || '')
+      setUserId(session.user.id)
+    }
+
+    fetchData()
+  }, [session])
+
+  // add 7 hours to the Date and return a valid ISO-8601 string.
+  const toAdjustedISOString = (date: Date): string => {
+    const adjustedDate = new Date(date.getTime() + 7 * 60 * 60 * 1000)
+    return adjustedDate.toISOString()
+  }
+
+  const combineDateAndTime = (date: Date, time: string): Date => {
+    const [hours, minutes] = time.split(':').map(Number)
+    const combined = new Date(date)
+    combined.setHours(hours, minutes, 0, 0)
+    return combined
+  }
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState(
+    'https://assets.loket.com/images/banner-event.jpg'
+  )
+
+  const handleBannerClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0]
+      setBannerFile(file)
+      const previewUrl = URL.createObjectURL(file)
+      setBannerPreview(previewUrl)
+    }
+  }
+
+  
+
+  const isPaidModalFilled = () => {
+    return (
+      formik.values.availableSeats !== '' ||
+      formik.values.price !== '' ||
+      startTicketDate !== null ||
+      endTicketDate !== null
+    )
+  }
+
+  const isFreeModalFilled = () => {
+    return (
+      formik.values.availableSeats !== '' || 
+      startEventDate !== null ||
+      endEventDate !== null
+    )
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -127,16 +189,14 @@ export default function CreateEvent() {
       provinceId: Yup.number().required('Provinsi Wajib Diisi')
     }),
     onSubmit: async (values, { resetForm }) => {
-      // Build the eventData and locationData objects
       if (!selectedCategory) {
         setDropdownCategoryError('Kategori Wajib Diisi')
-        return // Prevent submission
+        return 
       }
       const eventData = {
         slug: values.title.toLowerCase().trim().replace(/\s+/g, '-'),
         title: values.title,
         description: values.description,
-        // The bannerUrl will be replaced on the backend if a file is provided
         bannerUrl: 'https://assets.loket.com/images/banner-event.jpg',
         registrationStartDate: values.registrationStartDate,
         registrationEndDate: values.registrationEndDate,
@@ -156,28 +216,25 @@ export default function CreateEvent() {
         provinceId: Number(values.provinceId)
       }
 
-      // ADDED CODE: Create FormData and append JSON data and file
       const formData = new FormData()
       formData.append('eventData', JSON.stringify(eventData))
       formData.append('locationData', JSON.stringify(locationData))
       if (bannerFile) {
         formData.append('banner', bannerFile)
       }
-      // -------------------------------
 
       console.log('Sending FormData payload')
 
       try {
-        const response = await fetch('http://localhost:8000/api/eventcreate', {
+        const response = await fetch(`${API_BASE_URL}/eventcreate`, {
           method: 'POST',
           body: formData
-          // Notice that we do NOT set "Content-Type" here; the browser sets it automatically.
         })
 
         if (response.ok) {
           const data = await response.json()
           console.log('Event Created Successfully:', data)
-          alert('Event Created Successfully')
+          alert('Acara berhasil dibuat!')
           resetForm()
           router.push('/')
         } else {
@@ -191,86 +248,6 @@ export default function CreateEvent() {
       }
     }
   })
-
-  const combineDateAndTime = (date: Date, time: string): Date => {
-    const [hours, minutes] = time.split(':').map(Number)
-    const combined = new Date(date)
-    combined.setHours(hours, minutes, 0, 0)
-    return combined
-  }
-
-  // Create a ref for the file input
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [bannerFile, setBannerFile] = useState<File | null>(null)
-  const [bannerPreview, setBannerPreview] = useState(
-    'https://assets.loket.com/images/banner-event.jpg'
-  )
-  // Function to trigger the file explorer
-  const handleBannerClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
-  }
-
-  // Handle file selection
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0]
-      // Update state for file to be submitted later
-      setBannerFile(file)
-      // Generate a temporary URL to preview the image
-      const previewUrl = URL.createObjectURL(file)
-      setBannerPreview(previewUrl)
-    }
-  }
-
-  // Fetch categories and provinces on mount.
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const categoryResponse = await fetch(
-          'http://localhost:8000/api/categories'
-        )
-        const categoryData = await categoryResponse.json()
-        if (categoryData.data) {
-          setCategory(categoryData.data)
-        }
-        const provinceResponse = await fetch(
-          'http://localhost:8000/api/provinces'
-        )
-        const provinceData = await provinceResponse.json()
-        if (provinceData.data) {
-          setProvince(provinceData.data)
-        }
-      } catch (error) {
-        console.log('Error fetching data:', error)
-      }
-    }
-    if (session?.user) {
-      setName(session.user.name || '')
-      setImage(session.user.image || '')
-      setUserId(session.user.id)
-    }
-
-    fetchData()
-  }, [session])
-
-  const isPaidModalFilled = () => {
-    return (
-      formik.values.availableSeats !== '' ||
-      formik.values.price !== '' ||
-      startTicketDate !== null ||
-      endTicketDate !== null
-    )
-  }
-
-  const isFreeModalFilled = () => {
-    return (
-      formik.values.availableSeats !== '' || // if shared, adjust as needed
-      startEventDate !== null ||
-      endEventDate !== null
-    )
-  }
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -552,7 +529,6 @@ export default function CreateEvent() {
                   href='#'
                   onClick={(e) => {
                     e.preventDefault()
-                    // If the current ticket type is PAID and the paid modal has data, prompt before switching.
                     if (ticketType === 'PAID' && isPaidModalFilled()) {
                       if (
                         !window.confirm(
@@ -561,7 +537,6 @@ export default function CreateEvent() {
                       ) {
                         return
                       } else {
-                        // Clear Paid Ticket modal fields
                         formik.setFieldValue('availableSeats', '')
                         formik.setFieldValue('price', '')
                         formik.setFieldValue('registrationStartDate', '')
@@ -574,7 +549,6 @@ export default function CreateEvent() {
                         setTicketEndDateError('')
                       }
                     }
-                    // Open the Free modal.
                     setModalTicketFree(true)
                     setTicketType('FREE')
                     formik.setFieldValue('ticketType', 'FREE')
@@ -851,7 +825,6 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-4 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Check if streetAddress and city are filled and a province is selected.
                       let valid = true
                       if (!formik.values.streetAddress) {
                         formik.setFieldTouched('streetAddress', true, true)
@@ -879,7 +852,6 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-4 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Reset modal input fields and errors
                       formik.setFieldValue('streetAddress', '')
                       formik.setFieldValue('city', '')
                       formik.setFieldValue('provinceId', 0)
@@ -887,7 +859,6 @@ export default function CreateEvent() {
                       setDisplayLocation('Pilih Lokasi')
                       setDisplayCity('')
                       setProvinceError('')
-                      // Close the modal
                       setModalLocation(false)
                     }}
                   >
@@ -1089,19 +1060,16 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-4 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Reset the fields in the modal
                       formik.setFieldValue('availableSeats', '')
                       formik.setFieldValue('price', '')
                       formik.setFieldValue('registrationStartDate', '')
                       formik.setFieldValue('registrationEndDate', '')
-                      // Reset local states for ticket dates and times
                       setStartTicketDate(null)
                       setEndTicketDate(null)
                       setStartTime('09:00')
                       setEndTime('18:00')
                       setTicketStartDateError('')
                       setTicketEndDateError('')
-                      // Finally, close the modal
                       setModalTicketPaid(false)
                     }}
                   >
@@ -1112,7 +1080,6 @@ export default function CreateEvent() {
             </div>
           )}
 
-          {/* MODAL for Ticket (Free) details */}
           {/* MODAL for Ticket (Free) details */}
           {modalTicketFree && (
             <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
@@ -1285,7 +1252,6 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-2 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Reset all free ticket modal fields and errors
                       formik.setFieldValue('availableSeats', '')
                       formik.setFieldValue('registrationStartDate', '')
                       formik.setFieldValue('registrationEndDate', '')
@@ -1306,7 +1272,7 @@ export default function CreateEvent() {
           )}
 
           {/* Footer with submit button */}
-          <div className='fixed bottom-0 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full'>
+          <div className=' z-50 fixed bottom-0 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full'>
             <div className='flex justify-center sm:items-center sm:justify-between'>
               <p className='hidden text-[14px] text-black md:block'>
                 <span className='text-[24px] font-semibold text-black'>

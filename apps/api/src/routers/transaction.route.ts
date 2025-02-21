@@ -11,6 +11,8 @@ router.post(
   transactionController.createTransaction
 )
 router.get('/', verifyToken, transactionController.getTransactions)
+router.get('/latest/:userId', transactionController.getLatestTransaction);
+
 router.get(
   '/:transactionId',
   verifyToken,
