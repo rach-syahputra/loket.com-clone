@@ -52,7 +52,8 @@ class DashboardRepository {
         where: {
           event: {
             organizerId
-          }
+          },
+          transactionStatus: 'DONE'
         }
       })
 
