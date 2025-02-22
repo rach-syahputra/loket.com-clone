@@ -23,7 +23,8 @@ export const handleCredentialsSignin = async (
         case 'CredentialsSignin':
           return {
             error: {
-              message: 'Email atau password salah'
+              message: 'Email atau password salah',
+              originalMessage: error.message
             }
           }
         case 'AccessDenied':
