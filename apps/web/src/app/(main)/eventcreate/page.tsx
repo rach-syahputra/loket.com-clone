@@ -13,11 +13,7 @@ import { API_BASE_URL } from '@/lib/constants'
 import { Category } from '@/lib/interfaces/category.interface'
 import { Province } from '@/lib/interfaces/location.interface'
 
-
-
-
 export default function CreateEvent() {
-  
   const { data: session, status } = useSession()
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
@@ -28,7 +24,7 @@ export default function CreateEvent() {
   const [modalTicketPaid, setModalTicketPaid] = useState(false)
   const [modalTicketFree, setModalTicketFree] = useState(false)
   const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null) 
+  const [endDate, setEndDate] = useState<Date | null>(null)
   const [startTicketDate, setStartTicketDate] = useState<Date | null>(null)
   const [endTicketDate, setEndTicketDate] = useState<Date | null>(null)
   const [localEventStartTime, setLocalEventStartTime] = useState('09:00')
@@ -58,16 +54,12 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categoryResponse = await fetch(
-          `${API_BASE_URL}/categories`
-        )
+        const categoryResponse = await fetch(`${API_BASE_URL}/categories`)
         const categoryData = await categoryResponse.json()
         if (categoryData.data) {
           setCategory(categoryData.data)
         }
-        const provinceResponse = await fetch(
-          `${API_BASE_URL}/provinces`
-        )
+        const provinceResponse = await fetch(`${API_BASE_URL}/provinces`)
         const provinceData = await provinceResponse.json()
         if (provinceData.data) {
           setProvince(provinceData.data)
@@ -94,7 +86,7 @@ export default function CreateEvent() {
   const combineDateAndTime = (date: Date, time: string): Date => {
     const [hours, minutes] = time.split(':').map(Number)
     const combined = new Date(date)
-    combined.setHours(hours, minutes, 0, 0)
+    combined.setHours(hours || 0, minutes, 0, 0)
     return combined
   }
 
@@ -110,7 +102,6 @@ export default function CreateEvent() {
     }
   }
 
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0]
@@ -119,8 +110,6 @@ export default function CreateEvent() {
       setBannerPreview(previewUrl)
     }
   }
-
-  
 
   const isPaidModalFilled = () => {
     return (
@@ -133,7 +122,7 @@ export default function CreateEvent() {
 
   const isFreeModalFilled = () => {
     return (
-      formik.values.availableSeats !== '' || 
+      formik.values.availableSeats !== '' ||
       startEventDate !== null ||
       endEventDate !== null
     )
@@ -187,7 +176,7 @@ export default function CreateEvent() {
     onSubmit: async (values, { resetForm }) => {
       if (!selectedCategory) {
         setDropdownCategoryError('Kategori Wajib Diisi')
-        return 
+        return
       }
       const eventData = {
         slug: values.title.toLowerCase().trim().replace(/\s+/g, '-'),
@@ -675,7 +664,6 @@ export default function CreateEvent() {
           {modalTime && (
             <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
               <div className='relative w-[300px] rounded-xl bg-white p-4'>
-             
                 <div className='flex flex-col gap-4'>
                   <label htmlFor='eventStartTime'>
                     Waktu Mulai (Klik Logo Jam)
@@ -1268,7 +1256,7 @@ export default function CreateEvent() {
           )}
 
           {/* Footer with submit button */}
-          <div className=' z-50 fixed bottom-0 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full'>
+          <div className='fixed bottom-0 z-50 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full'>
             <div className='flex justify-center sm:items-center sm:justify-between'>
               <p className='hidden text-[14px] text-black md:block'>
                 <span className='text-[24px] font-semibold text-black'>
