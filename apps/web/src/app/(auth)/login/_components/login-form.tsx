@@ -27,6 +27,7 @@ export default function LoginForm() {
 
       if (response?.error) {
         form.setError('root', { message: response.error.message })
+        console.error(response.error.originalMessage)
       }
     } catch (error) {
       console.error(error)
