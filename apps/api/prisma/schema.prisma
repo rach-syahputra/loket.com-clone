@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum PointStatus {
+enum CouponStatus {
   ACTIVE
   USED
   EXPIRED
@@ -22,11 +22,6 @@ enum PointStatus {
 enum TicketType {
   PAID
   FREE
-}
-
-enum DiscountType {
-  PERCENTAGE
-  FIXED
 }
 
 enum TransactionStatus {
@@ -48,12 +43,11 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  UserRoles    UserRole?
-  referred     Point[]        @relation("Referred")
-  referrer     Point[]        @relation("Referrer")
+  UserRoles    UserRole[]
   Event        Event[]
   Review       Review[]
   Transactions Transactions[]
+  Coupon       Coupon[]
 
   @@map("users")
 }
@@ -63,38 +57,37 @@ model Role {
   name      String
   createdAt DateTime @default(now()) @map("created_at")
 
-  UserRoles UserRole?
+  UserRoles UserRole[]
 
   @@map("roles")
 }
 
 model UserRole {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique @map("user_id")
-  roleId    Int      @unique @map("role_id")
+  userId    Int      @map("user_id")
+  roleId    Int      @map("role_id")
   isActive  Boolean  @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onUpdate: Cascade)
 
+  @@id([userId, roleId])
   @@map("user_roles")
 }
 
-model Point {
-  id               Int         @id @default(autoincrement())
-  referredId       Int         @unique @map("referred_id")
-  referrerId       Int         @unique @map("referrer_id")
-  points           Int
-  pointsExpiryDate DateTime    @map("points_expiry_date")
-  status           PointStatus
-  createdAt        DateTime    @default(now()) @map("created_at")
+model Coupon {
+  id             Int          @id @default(autoincrement())
+  userId         Int          @map("user_id")
+  discountAmount Int          @map("discount_amount")
+  expiryDate     DateTime     @map("expiry_date")
+  status         CouponStatus
+  createdAt      DateTime     @default(now()) @map("created_at")
 
-  referred User @relation("Referred", fields: [referredId], references: [id])
-  referrer User @relation("Referrer", fields: [referrerId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Transactions Transactions[]
 
-  @@map("points")
+  @@map("coupons")
 }
 
 model Province {
@@ -113,7 +106,7 @@ model Location {
   provinceId    Int      @map("province_id")
   createdAt     DateTime @default(now()) @map("created_at")
 
-  province Province @relation(fields: [provinceId], references: [id])
+  province Province @relation(fields: [provinceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Event    Event[]
 
   @@map("locations")
@@ -138,6 +131,8 @@ model Event {
   registrationEndDate   DateTime   @map("registration_end_date")
   eventStartDate        DateTime   @map("event_start_date")
   eventEndDate          DateTime   @map("event_end_date")
+  eventStartTime        String     @default("00:00") @map("event_start_time")
+  eventEndTime          String     @default("00:00") @map("event_end_time")
   price                 Int
   availableSeats        Int        @map("available_seats")
   locationId            Int        @map("location_id")
@@ -147,58 +142,69 @@ model Event {
   createdAt             DateTime   @default(now()) @map("created_at")
   updatedAt             DateTime   @updatedAt @map("updated_at")
 
-  location     Location       @relation(fields: [locationId], references: [id])
-  category     Category       @relation(fields: [categoryId], references: [id])
-  organizer    User           @relation(fields: [organizerId], references: [id])
-  Promotion    Promotion[]
+  location     Location       @relation(fields: [locationId], references: [id], onUpdate: Cascade)
+  category     Category       @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
+  organizer    User           @relation(fields: [organizerId], references: [id], onUpdate: Cascade)
+  Voucher      Voucher[]
   Review       Review[]
   Transactions Transactions[]
 
   @@map("events")
 }
 
-model Promotion {
-  id             Int          @id @default(autoincrement())
-  title          String
-  eventId        Int          @map("event_id")
-  voucherCode    String       @unique @map("voucher_code")
-  startDate      DateTime     @map("start_date")
-  endDate        DateTime     @map("end_date")
-  discountAmount Int          @map("discount_amount")
-  discountType   DiscountType @map("discount_type")
-  createdAt      DateTime     @default(now()) @map("created_at")
+model Voucher {
+  id             Int      @id @default(autoincrement())
+  title          String 
+  eventId        Int      @map("event_id")
+  startDate      DateTime @map("start_date")
+  endDate        DateTime @map("end_date")
+  discountAmount Int      @map("discount_amount")
+  createdAt      DateTime @default(now()) @map("created_at")
 
-  event Event @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Transactions Transactions[]
 
-  @@map("promotions")
+  @@map("vouchers")
+}
+
+enum ReviewStatus {
+  DRAFT
+  SUBMITTED
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
-  eventId   Int      @map("event_id")
-  content   String   @db.Text
-  rating    Decimal
-  createdAt DateTime @default(now()) @map("created_at")
+  id             Int           @id @default(autoincrement())
+  transactionId  Int           @unique // ✅ Required foreign key
+  userId         Int           @map("user_id")
+  eventId        Int           @map("event_id")
+  content        String?        @db.Text
+  rating         Decimal?
+  status         ReviewStatus
+  createdAt      DateTime      @default(now()) @map("created_at")
 
-  user  User  @relation(fields: [userId], references: [id])
-  event Event @relation(fields: [eventId], references: [id])
-
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event          Event         @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transaction    Transactions  @relation(name: "TransactionToReview", fields: [transactionId], references: [id]) // ✅ Required relation
   @@map("reviews")
 }
+
 
 model Transactions {
   id                Int               @id @default(autoincrement())
   userId            Int               @map("user_id")
   eventId           Int               @map("event_id")
+  couponId          Int?              @map("coupon_id")
+  voucherId         Int?              @map("voucher_id")
   transactionStatus TransactionStatus @map("transaction_status")
   paymentProofImage String?           @map("payment_proof_image")
   totalPrice        Int               @map("total_price")
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  user  User  @relation(fields: [userId], references: [id])
-  event Event @relation(fields: [eventId], references: [id])
-
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event  Event   @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  voucher Voucher? @relation(fields: [voucherId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
+ review            Review?  @relation(name: "TransactionToReview") 
   @@map("transactions")
 }

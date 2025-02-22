@@ -13,7 +13,9 @@
       "types/*": ["src/types/*"],
       "lib/*": ["src/lib/*"],
       "public/*": ["public/*"]
-    }
+    },
+    "declarationMap": false,
+    "declaration": false
   },
   "include": [
     "**/*.ts",

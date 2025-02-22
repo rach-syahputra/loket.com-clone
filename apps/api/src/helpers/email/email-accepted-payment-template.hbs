@@ -1,0 +1,273 @@
+<html>
+  <body style='font-family: Arial, sans-serif;'>
+    <div
+      style='width:100%;height:100%;background-color:#f0f6ff;padding-top:30px'
+    >
+      <center
+        style='width:100%;table-layout:fixed;padding-bottom:60px;color: #151416;'
+      >
+        <table style='border-spacing:0;margin-top:30px;margin-bottom:24px'>
+          <tbody>
+            <tr>
+              <td style='padding:0'>
+                <img
+                  src='https://res.cloudinary.com/dlicymktd/image/upload/v1739592141/loket-logo_m1k2ow.png'
+                  alt=''
+                  style='width:152px;height:40px;border:0'
+                  class='CToWUd'
+                  data-bit='iit'
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table
+          width='100%'
+          style='border-spacing:0;background-color:#ffffff;margin:0 auto;width:100%;max-width:600px;font-family:sans-serif;color:#494a4a;border-radius:12px'
+        >
+          <tbody>
+            <tr>
+              <td
+                height='8'
+                style='background-color:#152955;border-top-left-radius:100px;border-top-right-radius:100px;padding:0'
+              >
+              </td>
+            </tr>
+            <tr>
+              <td
+                style='padding:32px 32px 24px 32px;font-size:14px;line-height:20px;letter-spacing:0.003em;font-style:normal;font-weight:400;color:#151416'
+              >
+                <h2 style='font-size:21px;font-weight:600;color: #151416;'>Hore,
+                  kamu berhasil dapat tiket!</h2>
+                Halo
+                <b style='color: #151416;'>{{customerName}}</b>,
+                <br />
+                Terima kasih sudah memesan tiket
+                {{eventTitle}}
+                di Loket.
+                <br />
+                <br />
+                <span style='color: #151416;'>
+                  Proses pemesanan dan pembayaran kamu telah kami terima! Tiket
+                  untuk event ini sudah kami terbitkan, ya.
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 24px 32px'>
+                <table
+                  width='100%'
+                  style='background-color:#f5f7fa;border-radius:8px;font-weight:400;font-size:14px;letter-spacing:0.003em;color:#494a4a;border-spacing:0'
+                >
+                  <tbody>
+                    <tr>
+                      <td style='padding:26px 24px'>
+                        <table width='100%' style='border-spacing:0'>
+                          <tbody>
+                            <tr>
+                              <td style='padding:10px 0px'>Status Pesanan</td>
+                              <td style='padding:10px 0px' align='right'>
+                                <div
+                                  style='padding:4px 12px;border-radius:4px;border:1px solid #2e8544;background-color:#e7f9eb;color:#2e8544;display:inline;font-size:12px;font-weight:500'
+                                >
+                                  PAID</div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style='padding:10px 0px'>Nomor Pesanan</td>
+                              <td
+                                style='padding:10px 0px;font-weight:500;color:black'
+                                align='right'
+                              >
+                                <span>{{transactionId}}</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style='padding:10px 0px'>Tanggal Pesanan</td>
+                              <td
+                                style='padding:10px 0px;font-weight:500;color:black'
+                                align='right'
+                              >
+                                {{transactionDateTime}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 24px 32px;box-sizing:border-box'>
+                <a
+                  href='http://localhost:3000/'
+                  style='font-weight:500;display:block;width:100%;text-align:center;font-size:14px;color:white;background-color:#0049cc;text-decoration:none;padding:12px 0px;letter-spacing:0.001em;border-radius:8px'
+                  target='_blank'
+                >Lihat E-Voucher</a>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 24px 32px'>
+                <div
+                  style='width:100%;height:1px;background-color:#dbdfe7'
+                ></div>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 0px 32px'>
+                <h1
+                  style='font-size:18px;font-weight:600;letter-spacing:0.001em'
+                >{{eventTitle}}</h1>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style='padding:0px 32px 24px 32px;font-size:14px;color:#494a4a;font-style:normal;letter-spacing:0.003em'
+              >
+                <table width='100%' style='border-spacing:0'>
+                  <tbody>
+                    <tr>
+                      <td width='30%' style='padding:8px 0px'>Jadwal Event</td>
+                      <td width='2%' style='padding:0'>:</td>
+                      <td width='68%' style='padding:8px 0px;color:#151416'>
+                        {{eventSchedule}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width='30%' style='padding:8px 0px'>Lokasi Event</td>
+                      <td width='2%' style='padding:0'>:</td>
+                      <td width='68%' style='padding:8px 0px;color:#151416'>
+                        {{eventLocation}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width='30%' style='padding:8px 0px'>Jumlah Tiket</td>
+                      <td width='2%' style='padding:0'>:</td>
+                      <td width='68%' style='padding:8px 0px;color:#151416'>
+                        1 x Tiket
+                        <br />
+                        <span style='color:#8e919b;margin-top:4px'>Total Harga:
+                          {{totalPrice}}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 24px 32px'>
+                <div
+                  style='width:100%;height:1px;background-color:#dbdfe7'
+                ></div>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 0px 32px'>
+                <h1
+                  style='font-size:18px;font-weight:600;letter-spacing:0.001em'
+                >Ringkasan Pesanan<br /></h1>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0px 32px 32px 32px'>
+
+                <table
+                  style='border-spacing:0;background-color:#ffffff;margin:0 auto;width:100%;max-width:600px;font-family:sans-serif;color:#494a4a;border-radius:12px'
+                >
+                  <thead>
+                    <tr>
+                      <th
+                        align='left'
+                        colspan='2'
+                        style='padding:12px;background-color:#f5f7fa;border-top:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;font-size:14px;font-weight:500;letter-spacing:0.001em;border-left:1px solid #dbdfe7;border-top-left-radius:8px'
+                      >
+                        Ringkasan
+                      </th>
+                      <th
+                        align='left'
+                        style='padding:12px;background-color:#f5f7fa;border-top:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;font-size:14px;font-weight:500;letter-spacing:0.001em'
+                      >
+                        Harga per Tiket
+                      </th>
+                      <th
+                        align='left'
+                        style='padding:12px;background-color:#f5f7fa;border-top:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;font-size:14px;font-weight:500;letter-spacing:0.001em'
+                      >
+                        Kuantitas
+                      </th>
+                      <th
+                        align='left'
+                        style='padding:12px;background-color:#f5f7fa;border-top:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;font-size:14px;font-weight:500;letter-spacing:0.001em;border-right:1px solid #dbdfe7;border-top-right-radius:8px'
+                      >
+                        Jumlah
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <tr
+                      style='vertical-align:top;text-align:left;padding:0'
+                      align='left'
+                    >
+                      <td
+                        colspan='2'
+                        align='left'
+                        style='padding:12px;font-size:14px;font-weight:500;border-left:1px solid #dbdfe7'
+                      >
+                        {{eventTitle}}
+                      </td>
+                      <td
+                        align='left'
+                        style='padding:12px;font-size:14px;font-weight:500'
+                      >
+                        Rp.
+                        {{totalPrice}}
+                      </td>
+                      <td
+                        align='left'
+                        style='padding:12px;font-size:14px;font-weight:500'
+                      >
+                        1
+                      </td>
+                      <td
+                        align='right'
+                        style='padding:12px;font-size:14px;font-weight:500;border-right:1px solid #dbdfe7'
+                      >
+                        Rp.
+                        {{totalPrice}}
+                      </td>
+                    </tr>
+
+                    <tr
+                      style='vertical-align:top;text-align:left;padding:0'
+                      align='left'
+                    >
+                      <td
+                        colspan='4'
+                        style='padding:12px;font-size:16px;font-weight:600;border-left:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;border-top:1px solid #dbdfe7;letter-spacing:0.001em;border-bottom-left-radius:8px'
+                      ><b>Grand Total</b></td>
+                      <td
+                        align='right'
+                        id='m_7662459212414249462grand-total-sum'
+                        style='padding:12px;font-size:16px;font-weight:600;border-right:1px solid #dbdfe7;border-bottom:1px solid #dbdfe7;border-top:1px solid #dbdfe7;letter-spacing:0.001em;border-bottom-right-radius:8px'
+                      >
+                        <b>
+                          Rp.
+                          {{totalPrice}}
+                        </b>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+                <br />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </center>
+    </div>
+  </body>
+</html>

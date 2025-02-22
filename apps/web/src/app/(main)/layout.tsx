@@ -1,4 +1,5 @@
-import NavigationBar from '@/components/navigation-bar'
+import NavigationBar from '@/components/navigation-bar/navigation-bar'
+import Overlay from '@/components/overlay'
 
 export default function MainLayout({
   children
@@ -8,7 +9,10 @@ export default function MainLayout({
   return (
     <>
       <NavigationBar />
-      <main>{children}</main>
+      <main className='relative'>
+        {children}
+        <Overlay />
+      </main>
     </>
   )
 }
