@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation'
 import { Event } from '@/lib/interfaces/event.interface'
 import { API_BASE_URL } from '@/lib/constants'
 
-
 export default function VoucherCreate() {
   const router = useRouter()
 
@@ -29,7 +28,7 @@ export default function VoucherCreate() {
   const combineDateAndTime = (date: Date, time: string): Date => {
     const [hours, minutes] = time.split(':').map(Number)
     const combined = new Date(date)
-    combined.setHours(hours, minutes, 0, 0)
+    combined.setHours(hours || 0, minutes, 0, 0)
     return combined
   }
 
