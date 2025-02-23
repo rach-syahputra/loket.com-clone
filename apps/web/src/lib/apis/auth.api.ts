@@ -49,7 +49,8 @@ export async function fetchRefreshToken(token: string) {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const user = await response.json()
@@ -66,7 +67,8 @@ export async function fetchSwitchRole() {
     headers: {
       'Content-type': 'application/json',
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   return await response.json()

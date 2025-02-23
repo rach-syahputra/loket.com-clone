@@ -11,6 +11,7 @@ export async function fetchUpdateEvent(eventId: string, data: FormData) {
     headers: {
       Authorization: `Bearer ${token}`
     },
+    credentials: 'include',
     body: data
   })
 

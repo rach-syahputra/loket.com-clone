@@ -14,7 +14,8 @@ export async function fetchGetSalesStatistic(): Promise<StatisticJson> {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const salesStatistic = await response.json()
@@ -32,7 +33,8 @@ export async function fetchGetDashboardSummary(): Promise<DashboardSummaryJson> 
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const summary = await response.json()
