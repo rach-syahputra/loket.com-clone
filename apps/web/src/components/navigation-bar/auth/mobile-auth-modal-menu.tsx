@@ -34,8 +34,8 @@ export function CustomerMobileAuthModalMenu() {
         )
       },
       {
-        href: '/member/c/voucher-saya',
-        label: 'Voucher Saya',
+        href: '/member/c/kupon-saya',
+        label: 'Kupon Saya',
         icon: (
           <Image
             src='/ic-ticket.svg'
@@ -131,6 +131,10 @@ export function EventOrgnizerMobileAuthModalMenu() {
         href: '/member/o/dashboard',
         label: 'Dashboard',
         group: 'Dashboard'
+      },
+      {
+        href: '/member/o/transactions',
+        label: 'Transaksi'
       },
       {
         href: '/member/o/events',
