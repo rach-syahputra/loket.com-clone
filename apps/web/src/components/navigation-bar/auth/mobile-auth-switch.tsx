@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
+import { useLoadingContext } from '@/context/loading-context'
 import { useNavigationContenxt } from '@/context/navigation-context'
 import Icon from '@/components/icon'
 import { fetchSwitchRole } from '@/lib/apis/auth.api'
@@ -13,22 +14,31 @@ export default function MobileAuthSwitch() {
   const { data: session, update } = useSession()
   const router = useRouter()
   const { setOpenAuthModal } = useNavigationContenxt()
+  const { setIsLoading } = useLoadingContext()
 
   const switchedRole =
     session?.user.roleId === 1 ? 'Event Organizer' : 'Customer'
 
   const handleSwitchRole = async () => {
-    const response = await fetchSwitchRole()
+    try {
+      setIsLoading(true)
 
-    if (response.success) {
-      await update({
-        user: {
-          accessToken: response.data.accessToken
-        }
-      })
+      const response = await fetchSwitchRole()
 
-      router.refresh()
-      setOpenAuthModal(false)
+      if (response.success) {
+        await update({
+          user: {
+            accessToken: response.data.accessToken
+          }
+        })
+
+        router.refresh()
+        setOpenAuthModal(false)
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
