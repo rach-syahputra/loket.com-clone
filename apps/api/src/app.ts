@@ -25,7 +25,6 @@ export class App {
 
   private configure() {
     this.app.use(cors(corsOptions))
-    this.app.options('*', cors(corsOptions))
     this.app.use(express.json())
   }
 
