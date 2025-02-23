@@ -25,7 +25,16 @@ export class App {
 
   private configure() {
     this.app.use(cors(corsOptions))
-    this.app.options('*', cors(corsOptions))
+    this.app.options('*', (req, res) => {
+      res.header('Access-Control-Allow-Origin', 'https://mini-loket.vercel.app')
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, OPTIONS'
+      )
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+      res.header('Access-Control-Allow-Credentials', 'true')
+      res.sendStatus(204)
+    })
     this.app.use(express.json())
   }
 
