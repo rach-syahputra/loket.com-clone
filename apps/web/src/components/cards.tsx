@@ -6,8 +6,7 @@ import { useEffect, useState } from 'react'
 import LoadingDots from './loading-dots'
 import { CardExploreComponentProps } from '@/lib/interfaces/card.interface'
 import { Event } from '@/lib/interfaces/event.interface'
-
-
+import { API_BASE_URL } from '@/lib/constants'
 
 export function Card() {
   const { events } = useSearch()
@@ -68,7 +67,6 @@ export function Card() {
   )
 }
 
-
 export function CardExplore({
   selectedProvinceId,
   selectedCategoryId,
@@ -91,7 +89,7 @@ export function CardExplore({
         }
 
         const response = await fetch(
-          `http://localhost:8000/api/events/filter?${params.toString()}`
+          `${API_BASE_URL}/events/filter?${params.toString()}`
         )
         const data = await response.json()
 
