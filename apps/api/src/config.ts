@@ -9,8 +9,9 @@ config({ path: resolve(__dirname, `../${envFile}`), override: true })
 
 export const PORT = process.env.PORT || 8000
 export const corsOptions: CorsOptions = {
-  origin: ['http://localhost:3000', 'https://mini-loket.vercel.app'],
+  origin: ['https://mini-loket.vercel.app', 'http://localhost:3000'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200,
   credentials: true
 }
 
