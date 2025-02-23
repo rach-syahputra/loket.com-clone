@@ -25,7 +25,8 @@ export async function fetchGetEventsByOrganizer(
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      credentials: 'include'
     }
   )
 
@@ -46,7 +47,8 @@ export async function fetchGetEventBySlug(
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const event = await response.json()
@@ -73,7 +75,8 @@ export async function fetchGetEventAttendees(
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const attendees = await response.json()

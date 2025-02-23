@@ -22,6 +22,7 @@ export async function fetchVerifyPassword(data: VerifyPasswordRequest) {
       'Content-type': 'application/json',
       Authorization: `Bearer ${token}`
     },
+    credentials: 'include',
     body: JSON.stringify(data)
   })
 
@@ -41,6 +42,7 @@ export async function fetchUpdateUser(data: FormData) {
     headers: {
       Authorization: `Bearer ${token}`
     },
+    credentials: 'include',
     body: data
   })
 
@@ -67,7 +69,8 @@ export async function fetchGetUserCoupons(
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const coupons = await response.json()
@@ -95,7 +98,8 @@ export async function fetchGetTickets(
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const tickets = await response.json()
@@ -117,7 +121,8 @@ export async function fetchGetEVoucher(
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      credentials: 'include'
     }
   )
 

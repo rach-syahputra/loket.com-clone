@@ -30,7 +30,8 @@ export async function fetchGetTransactions(
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    credentials: 'include'
   })
 
   const transactions = await response.json()
@@ -45,7 +46,6 @@ export async function fetchGetTransactionById(
 ): Promise<TransactionDetailJson> {
   const session = await auth()
   const token = session?.user.accessToken
-  console.log(token)
 
   const response = await fetch(
     `${API_BASE_URL}/transactions/${transactionId}`,
@@ -53,7 +53,8 @@ export async function fetchGetTransactionById(
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      credentials: 'include'
     }
   )
 
@@ -78,6 +79,7 @@ export async function fetchUpdateTransaction(
       headers: {
         Authorization: `Bearer ${token}`
       },
+      credentials: 'include',
       body: data
     }
   )
