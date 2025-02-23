@@ -9,6 +9,7 @@ import { searchRouter } from './search.route'
 import { reviewRouter } from './review.route'
 import transactionRouter from './transaction.route'
 import dashboardRouter from './dashboard.route'
+import pingRouter from './ping.route'
 import { voucherRouter } from './voucher.route'
 
 const apiRouter = Router()
@@ -24,5 +25,6 @@ apiRouter.use('/users', userRouter)
 apiRouter.use('/organizers', organizerRouter)
 apiRouter.use('/transactions', transactionRouter)
 apiRouter.use('/dashboard', dashboardRouter)
+apiRouter.use('/ping', pingRouter)
 
 export default apiRouter
