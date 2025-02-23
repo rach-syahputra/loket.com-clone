@@ -1,3 +1,4 @@
+import { CorsOptions } from 'cors'
 import { config } from 'dotenv'
 import { resolve } from 'path'
 
@@ -7,8 +8,9 @@ const envFile = NODE_ENV === 'development' ? '.env.local' : '.env'
 config({ path: resolve(__dirname, `../${envFile}`), override: true })
 
 export const PORT = process.env.PORT || 8000
-export const corsOptions = {
-  origin: ['http://localhost:3000', 'https://mini-loket.vercel.app']
+export const corsOptions: CorsOptions = {
+  origin: ['http://localhost:3000', 'https://mini-loket.vercel.app'],
+  credentials: true
 }
 
 export const JWT_ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET || ''
