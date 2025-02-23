@@ -11,7 +11,6 @@ export const PORT = process.env.PORT || 8000
 export const corsOptions: CorsOptions = {
   origin: ['http://localhost:3000', 'https://mini-loket.vercel.app'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  preflightContinue: true,
   credentials: true
 }
 
