@@ -19,7 +19,7 @@ import {
 } from '@/lib/validations/event.validation'
 import { Category } from '@/lib/interfaces/category.interface'
 import { Province } from '@/lib/interfaces/location.interface'
-import { cn, formatEventDate, formatNumber } from '@/lib/utils'
+import { cn, convertToUTC7, formatEventDate, formatNumber } from '@/lib/utils'
 import { HOURS, MINUTES } from '@/lib/constants'
 import { useLoadingContext } from '@/context/loading-context'
 import {
@@ -104,6 +104,12 @@ export default function UpdateEventForm({
       ticketType: event.ticketType
     }
   })
+
+  const eventStartDate = form.watch('eventStartDate')
+  const isPast =
+    eventStartDate && new Date(eventStartDate) < convertToUTC7(new Date())
+      ? true
+      : false
 
   const handleBannerUploadClick = () => {
     bannerInputRef.current?.click()
@@ -607,7 +613,7 @@ export default function UpdateEventForm({
 
         <EventDetailsProvider activeTicketType={event.ticketType}>
           <TicketCategoryTab>
-            <div className='grid grid-cols-2 gap-4 py-7 lg:grid-cols-3'>
+            <div className='grid gap-4 py-7 sm:grid-cols-2 lg:grid-cols-3'>
               <TicketCategoryButton
                 label='Berbayar'
                 isActive={form.watch('ticketType') === 'PAID'}
@@ -625,7 +631,7 @@ export default function UpdateEventForm({
               />
             </div>
             <PaidTicketForm>
-              <div className='grid grid-cols-2 gap-8'>
+              <div className='grid gap-8 sm:grid-cols-2'>
                 <FormField
                   control={form.control}
                   name='availableSeats'
@@ -723,7 +729,7 @@ export default function UpdateEventForm({
         <div className='w-full px-4 lg:px-0'>
           <Button
             type='submit'
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || isPast}
             className='w-full'
           >
             Simpan Perubahan

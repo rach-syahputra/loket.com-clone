@@ -47,7 +47,7 @@ class TransactionService {
 
     if (!transaction) throw new ResponseError(404, 'Transaction not found')
 
-    const event = await eventRepository.getEventById(transaction.event.id)
+    const event = await eventRepository.getEventById(transaction.event?.id!)
 
     if (event?.organizerId !== req.organizerId)
       throw new ResponseError(401, 'Unauthorized')
@@ -110,7 +110,7 @@ class TransactionService {
       transactionStatus: req.transactionStatus,
       paymentProofImage: paymentProofImage?.secure_url,
       quantity: Number(req.quantity),
-      totalPrice:Number(req.totalPrice)
+      totalPrice: Number(req.totalPrice)
     })
 
     const { id, transactionStatus, user, event, createdAt, totalPrice } =
@@ -147,7 +147,7 @@ class TransactionService {
     return await transactionRepository.getReviews(userId)
   }
 
-  async getLatestTransactionForUser(userId:number) {
+  async getLatestTransactionForUser(userId: number) {
     return await transactionRepository.getLatestTransactionByUser(userId)
   }
 }

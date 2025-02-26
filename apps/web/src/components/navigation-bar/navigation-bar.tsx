@@ -10,7 +10,8 @@ import MobileAuthToggle from './auth/mobile-auth-toggle'
 import DesktopNavigationMenu from './desktop-navigation-menu'
 import { UnauthenticatedMenu } from './auth/unauthenticated-menu'
 import { useSearch } from '@/context/search-context'
-
+import { useRouter } from 'next/navigation'
+  
 export default function NavigationBar() {
   const { data: session, status, update } = useSession()
   const [query, setQuery] = useState('')
@@ -46,18 +47,25 @@ export default function NavigationBar() {
     setQuery(e.target.value)
   }
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (query.trim() === '') {
-      setEvents(allEvents)
-    } else {
-      const filteredEvents = allEvents.filter((event) =>
-        event.title.toLowerCase().includes(query.toLowerCase())
-      )
-      setEvents(filteredEvents)
-    }
-  }
+  // const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault()
+  //   if (query.trim() === '') {
+  //     setEvents(allEvents)
+  //   } else {
+  //     const filteredEvents = allEvents.filter((event) =>
+  //       event.title.toLowerCase().includes(query.toLowerCase())
+  //     )
+  //     setEvents(filteredEvents)
+  //   }
+  // }
+  const router = useRouter();
 
+  // New handleFormSubmit (STEP 3, part 2)
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Redirect user to home with the search query
+    router.push(`/?search=${encodeURIComponent(query)}`);
+  };
   return (
     <>
       <nav className='bg-navy-primary relative z-40 grid h-20 w-full grid-cols-[1fr_auto] items-center justify-center gap-10 px-4 lg:px-10'>

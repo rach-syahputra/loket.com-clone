@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+
 import NavigationBar from '@/components/navigation-bar/navigation-bar'
 import Overlay from '@/components/overlay'
 
@@ -10,8 +12,10 @@ export default function MainLayout({
     <>
       <NavigationBar />
       <main className='relative'>
-        {children}
-        <Overlay />
+        <Suspense>
+          {children}
+          <Overlay />
+        </Suspense>
       </main>
     </>
   )

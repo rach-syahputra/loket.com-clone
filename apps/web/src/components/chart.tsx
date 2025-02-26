@@ -37,7 +37,10 @@ export function Chart({ data, chartLegend, barColor }: ChartProps) {
   } satisfies ChartConfig
 
   return (
-    <ChartContainer config={chartConfig} className='w-full'>
+    <ChartContainer
+      config={chartConfig}
+      className='w-full max-sm:aspect-auto max-sm:h-[250px]'
+    >
       <BarChart
         accessibilityLayer
         data={data}

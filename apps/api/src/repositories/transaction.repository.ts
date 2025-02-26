@@ -83,7 +83,7 @@ class TransactionRepository {
   }
 
   async getTransactionById(transactionId: number) {
-    return await prisma.transactions.findUnique({
+    const transaction = await prisma.transactions.findUnique({
       where: {
         id: transactionId
       },
@@ -114,6 +114,12 @@ class TransactionRepository {
         }
       }
     })
+
+    return {
+      ...transaction,
+      createdAt: convertToUTC7(transaction?.createdAt!),
+      updatedAt: convertToUTC7(transaction?.updatedAt!)
+    }
   }
 
   async updateTransaction(req: TransactionRepositoryRequest) {
@@ -159,7 +165,7 @@ class TransactionRepository {
           })
         }
 
-        const createdAt = new Date(transaction.createdAt) 
+        const createdAt = new Date(transaction.createdAt)
         const twentySecondsAgo = new Date(Date.now() - 20 * 1000)
         if (
           req.transactionStatus === 'WAITING_FOR_PAYMENT' &&
@@ -226,7 +232,7 @@ class TransactionRepository {
         data: {
           paymentProofImage: req.paymentProofImage,
           transactionStatus: req.transactionStatus,
-          totalPrice:req.totalPrice
+          totalPrice: req.totalPrice
         }
       })
     })
@@ -243,7 +249,7 @@ class TransactionRepository {
 
     return await prisma.transactions.findMany({
       where: {
-        userId: userId, 
+        userId: userId,
         transactionStatus: 'DONE',
         event: {
           eventEndDate: { lte: currentDateTime },
@@ -264,21 +270,21 @@ class TransactionRepository {
         },
         review: {
           select: {
-            id: true,               
-            status: true,        
-            content: true,          
-            rating: true,          
-          },
-        },
-      },
-    });
+            id: true,
+            status: true,
+            content: true,
+            rating: true
+          }
+        }
+      }
+    })
   }
 
   async getLatestTransactionByUser(userId: number) {
     return await prisma.transactions.findFirst({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
+      orderBy: { createdAt: 'desc' }
+    })
   }
 }
 

@@ -2,13 +2,15 @@
 
 import { useRef } from 'react'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 
-import { useNavigationContenxt } from '@/context/navigation-context'
 import { cn } from '@/lib/utils'
+import { useNavigationContenxt } from '@/context/navigation-context'
 import AuthDropdownMenu from './auth-dropdown-menu'
 
 export default function AuthToggle() {
   const { openDropdown, setOpenDropdown } = useNavigationContenxt()
+  const { data: session } = useSession()
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleMouseEnter = () => {
@@ -33,11 +35,11 @@ export default function AuthToggle() {
     >
       <div className='flex aspect-square cursor-pointer items-center justify-center overflow-hidden rounded-full'>
         <Image
-          src='/auth-toggle-user-icon.svg'
+          src={session?.user.image || '/auth-toggle-user-icon.svg'}
           alt='User icon'
-          width={30}
-          height={30}
-          className='h-[30px] w-[30px]'
+          width={60}
+          height={60}
+          className='h-[30px] w-[30px] object-cover'
         />
       </div>
 
