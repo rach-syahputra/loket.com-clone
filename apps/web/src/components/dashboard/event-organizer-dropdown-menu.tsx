@@ -8,6 +8,17 @@ export default function EventOrganizerDropdownMenu() {
   return (
     <>
       <ul className='flex w-full flex-col'>
+        <li className='flex w-full items-center overflow-hidden rounded-md md:hidden'>
+          <Link
+            href='/'
+            aria-label='Halaman utama'
+            className='text-gray-primary hover:text-gray-secondary flex h-11 w-full items-center justify-between px-3 text-sm hover:bg-gray-200'
+          >
+            Home
+            <Icon icon={faChevronRight} className='text-gray-secondary w-2' />
+          </Link>
+        </li>
+
         {EVENT_ORGANIZER_MENU.dashboardMenu.map((item, index) => (
           <li
             key={index}

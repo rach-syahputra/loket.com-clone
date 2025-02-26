@@ -48,7 +48,7 @@ export default function NavbarDropdownMenu({
   return (
     <div
       className={cn(
-        'shadow-default absolute right-0 top-12 z-10 flex w-[320px] flex-col items-center justify-center gap-2 rounded-md bg-white p-4 opacity-100 transition-all duration-300 ease-in-out',
+        'shadow-default absolute right-0 top-12 z-10 flex w-[250px] flex-col items-center justify-center gap-2 rounded-md bg-white p-4 opacity-100 transition-all duration-300 ease-in-out sm:w-[320px]',
         className
       )}
     >

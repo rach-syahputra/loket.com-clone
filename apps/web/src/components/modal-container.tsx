@@ -27,7 +27,9 @@ export default function ModalContainer({
         onClick={handleClose}
         className='bg-dark-primary fixed left-0 top-0 h-screen w-full opacity-80'
       ></div>
-      <div className='z-20 max-sm:w-full'>{children}</div>
+      <div className='z-20 flex items-center justify-center max-sm:w-full'>
+        {children}
+      </div>
     </div>
   )
 }
