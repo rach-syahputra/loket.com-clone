@@ -607,7 +607,7 @@ export default function UpdateEventForm({
 
         <EventDetailsProvider activeTicketType={event.ticketType}>
           <TicketCategoryTab>
-            <div className='grid grid-cols-2 gap-4 py-7 lg:grid-cols-3'>
+            <div className='grid gap-4 py-7 sm:grid-cols-2 lg:grid-cols-3'>
               <TicketCategoryButton
                 label='Berbayar'
                 isActive={form.watch('ticketType') === 'PAID'}
@@ -625,7 +625,7 @@ export default function UpdateEventForm({
               />
             </div>
             <PaidTicketForm>
-              <div className='grid grid-cols-2 gap-8'>
+              <div className='grid gap-8 sm:grid-cols-2'>
                 <FormField
                   control={form.control}
                   name='availableSeats'

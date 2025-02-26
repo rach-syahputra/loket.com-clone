@@ -218,6 +218,7 @@ export function EventDateTab({ children }: EventDateTabProps) {
       <div className='flex h-full flex-col justify-between'>
         <div className='flex flex-col gap-10'>{children}</div>
         <Button
+          type='button'
           onClick={() => setActiveTab('time')}
           className='h-10 w-full font-medium'
         >
@@ -235,10 +236,15 @@ export function EventTimeTab({ children }: EventTimeTabProps) {
       <div className='flex h-full flex-col justify-between'>
         <div className='flex w-full flex-col gap-10'>{children}</div>
         <div className='flex items-center gap-4'>
-          <Button onClick={() => setActiveTab('date')} className='h-10 px-5'>
+          <Button
+            type='button'
+            onClick={() => setActiveTab('date')}
+            className='h-10 px-5'
+          >
             <Icon icon={faChevronLeft} className='w-2.5' />
           </Button>
           <Button
+            type='button'
             onClick={() => setOpenModal(false)}
             className='h-10 w-full font-medium'
           >
