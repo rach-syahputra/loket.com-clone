@@ -49,7 +49,7 @@ export default function MobileAuthModal() {
             alt='Loket pattern'
             width={100}
             height={100}
-            className='aspect-square'
+            className='aspect-square object-cover'
           />
         </div>
       </div>
