@@ -6,6 +6,7 @@ import {
 } from '../interfaces/event.interface'
 import { Location } from '../interfaces/location.interface'
 import { generateSlug } from '../helpers/utils'
+import { Prisma } from '@prisma/client'
 class EventRepository {
   async createEvent(eventData: EventCreate) {
     return await prisma.event.create({
@@ -106,9 +107,17 @@ class EventRepository {
   }
 
   async filterAll(filters: FilterOptions) {
-
+    const titleCondition = filters.search
+    ? {
+        title: {
+          contains: filters.search,
+          mode: Prisma.QueryMode.insensitive
+        }
+      }
+    : {}
     const events = await prisma.event.findMany({
       where: {
+        ...titleCondition,
         location: filters.provinceId
           ? { provinceId: filters.provinceId }
           : undefined,

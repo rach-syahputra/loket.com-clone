@@ -70,4 +70,5 @@ export interface FilterOptions {
   categoryId?: number;
   ticketType?: 'FREE' | 'PAID';
   provinceId?: number;
+  search?:string
 }
