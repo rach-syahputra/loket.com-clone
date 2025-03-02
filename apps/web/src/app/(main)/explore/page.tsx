@@ -68,7 +68,7 @@ export default function Explore() {
       {/* Lokasi (Province) */}
       <details
         tabIndex={0}
-        className='collapse-arrow rounded-box collapse z-50'
+        className='collapse-arrow rounded-box collapse '
       >
         <summary className='collapse-title text-lg font-medium text-black'>
           Lokasi
