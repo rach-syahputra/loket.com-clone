@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { useRouter, usePathname } from 'next/navigation'
 
 import AuthToggle from './auth/auth-toggle'
 import MobileAuthToggle from './auth/mobile-auth-toggle'
 import DesktopNavigationMenu from './desktop-navigation-menu'
 import { UnauthenticatedMenu } from './auth/unauthenticated-menu'
 import { useSearch } from '@/context/search-context'
-import { useRouter } from 'next/navigation'
-  
+
 export default function NavigationBar() {
   const { data: session, status, update } = useSession()
   const [query, setQuery] = useState('')
@@ -21,10 +21,14 @@ export default function NavigationBar() {
   // NEW: State to control visibility of the mobile search bar
   const [mobileSearchVisible, setMobileSearchVisible] = useState(false)
 
+  const router = useRouter()
+  const pathname = usePathname()
+
   useEffect(() => {
     update()
   }, [])
 
+  // Debounce the query
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query)
@@ -32,40 +36,27 @@ export default function NavigationBar() {
     return () => clearTimeout(handler)
   }, [query])
 
-  useEffect(() => {
-    if (debouncedQuery.trim() === '') {
-      setEvents(allEvents)
-    } else {
-      const filteredEvents = allEvents.filter((event) =>
-        event.title.toLowerCase().includes(debouncedQuery.toLowerCase())
-      )
-      setEvents(filteredEvents)
-    }
-  }, [debouncedQuery, allEvents, setEvents])
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+    const newQuery = e.target.value
+    setQuery(newQuery)
+    // Immediately navigate to the explore page with the current search value
+    if (pathname !== '/explore') {
+      router.push(`/explore?search=${encodeURIComponent(newQuery)}`)
+    } else {
+      // If already on explore, update the URL parameter (without a full navigation)
+      router.replace(`/explore?search=${encodeURIComponent(newQuery)}`)
+    }
   }
 
-  // const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault()
-  //   if (query.trim() === '') {
-  //     setEvents(allEvents)
-  //   } else {
-  //     const filteredEvents = allEvents.filter((event) =>
-  //       event.title.toLowerCase().includes(query.toLowerCase())
-  //     )
-  //     setEvents(filteredEvents)
-  //   }
-  // }
-  const router = useRouter();
+  // You can remove any debounce logic from here because the explore page will handle it.
 
-  // New handleFormSubmit (STEP 3, part 2)
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Redirect user to home with the search query
-    router.push(`/?search=${encodeURIComponent(query)}`);
-  };
+    e.preventDefault()
+    if (query.trim() !== '') {
+      router.push(`/explore?search=${encodeURIComponent(query)}`)
+    }
+  }
+
   return (
     <>
       <nav className='bg-navy-primary relative z-40 grid h-20 w-full grid-cols-[1fr_auto] items-center justify-center gap-10 px-4 lg:px-10'>
