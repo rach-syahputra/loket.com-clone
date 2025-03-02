@@ -163,7 +163,7 @@ export default function Explore() {
 
   return (
     <div className='min-h-screen w-full bg-white  '>
-      <div className='block gap-4 sm:flex sm:gap-0 px-[20px] sm:px-0 pt-[20px] sm:pt-0 pb-[80px] sm:pb-[60px] lg:pb-0 sm:mb-[20px]'>
+      <div className='block gap-4 sm:flex sm:gap-0 px-[20px] sm:px-0 pt-[20px] sm:pt-0 pb-[80px] sm:pb-[60px] xl:pb-0 sm:mb-[20px]'>
         {/* Desktop Filter Panel */}
         <div className='relative sticky top-0 z-40 hidden min-h-[100%] border bg-white p-[50px] sm:block sm:w-[230px] md:p-[20px] lg:w-[300px]'>
           <span className='text-[20px] font-bold text-black'>Filter</span>

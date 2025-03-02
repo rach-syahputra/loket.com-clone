@@ -410,7 +410,7 @@ export default function CreateEvent() {
                           </span>
                         </div>
                       ) : (
-                        <span className='text-black'>Pilih Tanggal</span>
+                        <span className='text-black cursor-pointer'>Pilih Tanggal</span>
                       )}
                     </div>
                   </div>
@@ -422,7 +422,7 @@ export default function CreateEvent() {
                       <Image src='/clock.png' width={20} height={20} alt='' />
                       {formik.values.eventStartTime &&
                       formik.values.eventEndTime ? (
-                        <div className='flex gap-2'>
+                        <div className='flex gap-2 cursor-pointer'>
                           <span className='font-light text-black'>
                             {`${formik.values.eventStartTime} - ${formik.values.eventEndTime}`}
                           </span>
@@ -446,12 +446,12 @@ export default function CreateEvent() {
                       onClick={() => setModalLocation(true)}
                     >
                       <Image
-                        src='/calendar.png'
+                        src='/ic-location.png'
                         width={20}
                         height={20}
                         alt=''
                       />
-                      <span className='font-light text-black'>
+                      <span className='font-light text-black cursor-pointer'>
                         {displayLocation === 'Pilih Lokasi'
                           ? displayLocation
                           : `${displayLocation}, ${displayCity}`}
@@ -579,7 +579,7 @@ export default function CreateEvent() {
           )}
           <div className='px-[20px]'>
             <textarea
-              className='h-[200px] w-screen text-black sm:h-[400px] xl:w-[900px]'
+              className='h-[200px] min-w-[330px] sm:w-[700px] text-black sm:h-[400px] xl:w-[900px]'
               name='description'
               id='description'
               onBlur={formik.handleBlur}
