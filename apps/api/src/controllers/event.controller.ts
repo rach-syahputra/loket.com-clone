@@ -60,7 +60,7 @@ class EventController {
   }
   async filterAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const { provinceId, categoryId, ticketType } = req.query;
+      const { provinceId, categoryId, ticketType,search } = req.query;
   
       let parsedProvinceId: number | undefined;
       if (provinceId) {
@@ -82,6 +82,7 @@ class EventController {
         provinceId: parsedProvinceId,
         categoryId: parsedCategoryId,
         ticketType: ticketType as 'FREE' | 'PAID' | undefined,
+        search: (search as string) || ''
       });
   
       res.status(200).send({
