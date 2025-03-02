@@ -11,7 +11,7 @@ import MobileAuthToggle from './auth/mobile-auth-toggle'
 import DesktopNavigationMenu from './desktop-navigation-menu'
 import { UnauthenticatedMenu } from './auth/unauthenticated-menu'
 import { useSearch } from '@/context/search-context'
-  
+
 export default function NavigationBar() {
   const { data: session, status, update } = useSession()
   const [query, setQuery] = useState('')
@@ -26,7 +26,7 @@ export default function NavigationBar() {
 
   useEffect(() => {
     update()
-  }, [update])
+  }, [])
 
   // Debounce the query
   useEffect(() => {
@@ -51,12 +51,11 @@ export default function NavigationBar() {
   // You can remove any debounce logic from here because the explore page will handle it.
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (query.trim() !== '') {
       router.push(`/explore?search=${encodeURIComponent(query)}`)
     }
-  };
-
+  }
 
   return (
     <>
