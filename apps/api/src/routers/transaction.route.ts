@@ -11,7 +11,7 @@ router.post(
   transactionController.createTransaction
 )
 router.get('/', verifyToken, transactionController.getTransactions)
-router.get('/latest/:userId', transactionController.getLatestTransaction);
+router.get('/latest/:userId', transactionController.getLatestTransaction)
 
 router.get(
   '/:transactionId',
@@ -22,7 +22,7 @@ router.patch(
   '/:transactionId',
   verifyToken,
   uploadPaymentProofImage.single('paymentProofImage'),
-  transactionController.update
+  transactionController.updateTransaction
 )
 
 export default router

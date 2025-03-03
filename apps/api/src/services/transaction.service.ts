@@ -3,6 +3,7 @@ import transactionRepository from '../repositories/transaction.repository'
 import { ResponseError } from '../helpers/error.handler'
 import eventRepository from '../repositories/event.repository'
 import {
+  GetTranasctionByIdRequest,
   GetTransactionsQuery,
   TransactionServiceRequest,
   verifyTransactionOwnershipRequest
@@ -47,21 +48,35 @@ class TransactionService {
 
     if (!transaction) throw new ResponseError(404, 'Transaction not found')
 
-    const event = await eventRepository.getEventById(transaction.event?.id!)
+    if (req.user.roleId === 1) {
+      if (transaction.user?.id !== req.user.id)
+        throw new ResponseError(401, 'Unauthorized')
+    } else if (req.user.roleId === 2) {
+      const event = await eventRepository.getEventById(transaction.event?.id!)
 
-    if (event?.organizerId !== req.organizerId)
+      if (event?.organizerId !== req.user.id)
+        throw new ResponseError(401, 'Unauthorized')
+    } else {
       throw new ResponseError(401, 'Unauthorized')
+    }
   }
 
   async getTransactions(organizerId: number, query: GetTransactionsQuery) {
     return await transactionRepository.getTransactions(organizerId, query)
   }
 
-  async getTransactionById(transactionId: number, organizerId: number) {
-    await this.verifyTransactionOwnership({ transactionId, organizerId })
+  async getTransactionById(req: GetTranasctionByIdRequest) {
+    await this.verifyTransactionOwnership({
+      transactionId: req.transactionId,
+      user: {
+        id: req.user.id,
+        roleId: req.user.roleId
+      }
+    })
 
-    const transaction =
-      await transactionRepository.getTransactionById(transactionId)
+    const transaction = await transactionRepository.getTransactionById(
+      req.transactionId
+    )
 
     return {
       transaction
@@ -72,8 +87,11 @@ class TransactionService {
     validate(UpdateTransactionSchema, req)
 
     await this.verifyTransactionOwnership({
-      organizerId: req.organizerId,
-      transactionId: req.transactionId
+      transactionId: req.transactionId,
+      user: {
+        id: req.user.id,
+        roleId: req.user.roleId
+      }
     })
 
     let paymentProofImage
@@ -109,8 +127,7 @@ class TransactionService {
       transactionId: Number(req.transactionId),
       transactionStatus: req.transactionStatus,
       paymentProofImage: paymentProofImage?.secure_url,
-      quantity: Number(req.quantity),
-      totalPrice: Number(req.totalPrice)
+      quantity: Number(req.quantity)
     })
 
     const { id, transactionStatus, user, event, createdAt, totalPrice } =
