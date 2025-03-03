@@ -59,7 +59,7 @@ export default function NavigationBar() {
 
   return (
     <>
-      <nav className='bg-navy-primary relative z-40 grid h-20 w-full grid-cols-[1fr_auto] items-center justify-center gap-10 px-4 lg:px-10'>
+      <nav className='bg-navy-primary relative z-[100] grid h-20 w-full grid-cols-[1fr_auto] items-center justify-center gap-10 px-4 lg:px-10'>
         <div className='flex h-full w-full items-center gap-[60px]'>
           <Link href='/'>
             <Image
@@ -86,7 +86,7 @@ export default function NavigationBar() {
                   type='search'
                   id='search-dropdown'
                   className='z-20 block w-full rounded-md border border-s-2 border-gray-300 border-s-gray-50 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:border-s-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500'
-                  placeholder='Cari brand, produk, atau seller'
+                  placeholder='Cari tiket konser, workshop, pertandingan dan lainnya'
                   value={query}
                   onChange={handleInputChange}
                   required
@@ -163,7 +163,7 @@ export default function NavigationBar() {
                 type='search'
                 id='mobile-search-dropdown'
                 className='block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
-                placeholder='Cari brand, produk, atau seller'
+                placeholder='Cari tiket konser, workshop, pertandingan dan lainnya'
                 value={query}
                 onChange={handleInputChange}
                 required

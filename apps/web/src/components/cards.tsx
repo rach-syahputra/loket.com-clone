@@ -138,7 +138,7 @@ export function CardExplore({
       {eventExplore.length > 0
         ? eventExplore.map((event) => (
             <Link key={event.id} href={`/detail/${event.slug}`}>
-              <div className='flex min-h-[353.4px] min-w-[300px] flex-col rounded-[10px] border sm:w-[290px]'>
+              <div className='flex min-h-[353.4px] min-w-[300px] sm:min-w-[270px] xl:min-w-[300px] flex-col rounded-[10px] border '>
                 <div className='flex flex-grow flex-col'>
                   <div className='relative h-[137px] w-full'>
                     <Image
