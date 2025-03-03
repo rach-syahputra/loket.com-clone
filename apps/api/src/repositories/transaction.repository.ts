@@ -231,8 +231,7 @@ class TransactionRepository {
         },
         data: {
           paymentProofImage: req.paymentProofImage,
-          transactionStatus: req.transactionStatus,
-          totalPrice: req.totalPrice
+          transactionStatus: req.transactionStatus
         }
       })
     })

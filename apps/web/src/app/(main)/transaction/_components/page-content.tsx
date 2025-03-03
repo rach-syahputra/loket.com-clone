@@ -9,6 +9,7 @@ import { Coupons } from '@/lib/interfaces/user.interface'
 import { API_BASE_URL } from '@/lib/constants'
 import { voucher } from '@/lib/interfaces/voucher.interface'
 import { Event } from '@/lib/interfaces/event.interface'
+import toast from 'react-hot-toast'
 
 export default function Transaction() {
   const { data: session, status } = useSession()
@@ -62,7 +63,7 @@ export default function Transaction() {
         const res = await fetch(`${API_BASE_URL}/transactions/${eventId}`)
         const data = await res.json()
         if (data.transactionStatus === 'EXPIRED') {
-          alert('Transaction has expired. Redirecting to homepage.')
+          toast.error('Transaksi sudah kadaluwarsa, dialihkan ke halaman utama')
           router.push('/')
         }
       } catch (error) {
@@ -76,7 +77,7 @@ export default function Transaction() {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer)
-          alert('Transaction time expired! Redirecting...')
+          toast.error('Waktu transaksi telah usai! dialihkan...')
           router.push('/')
           return 0
         }
@@ -160,7 +161,7 @@ export default function Transaction() {
         })
         const resultData = await res.json()
         if (!res.ok) {
-          alert('Failed to apply coupon.')
+          toast.error('Gagal menggunakan kupon')
           return
         }
 
@@ -206,7 +207,8 @@ export default function Transaction() {
       })
 
       const data = await res.json()
-      alert('Transaksi berhasil dibuat!')
+      toast.success('Transaksi berhasil dibuat!')
+      
       router.push('/')
       console.log('Server response:', data)
     } catch (error) {

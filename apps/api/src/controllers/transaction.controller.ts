@@ -67,10 +67,13 @@ class TransactionController {
       if (!transactionId)
         throw new ResponseError(400, 'Transaction ID is required')
 
-      const data = await transactionService.getTransactionById(
-        Number(transactionId),
-        Number(req.user?.id)
-      )
+      const data = await transactionService.getTransactionById({
+        transactionId: Number(transactionId),
+        user: {
+          id: req.user?.id!,
+          roleId: req.user?.roleId!
+        }
+      })
 
       res.status(200).send({
         success: true,
@@ -82,15 +85,17 @@ class TransactionController {
     }
   }
 
-  async update(req: UserRequest, res: Response, next: NextFunction) {
+  async updateTransaction(req: UserRequest, res: Response, next: NextFunction) {
     try {
       const data = await transactionService.updateTransaction({
         transactionId: Number(req.params.transactionId),
-        organizerId: Number(req.user?.id),
+        user: {
+          id: req.user?.id!,
+          roleId: req.user?.roleId!
+        },
         paymentProofImage: req.file,
         transactionStatus: req.body.transactionStatus,
-        quantity: Number(req.body.quantity),
-        totalPrice: Number(req.body.totalPrice)
+        quantity: Number(req.body.quantity) || undefined
       })
 
       res.status(200).send({

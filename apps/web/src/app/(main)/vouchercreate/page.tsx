@@ -8,6 +8,7 @@ import 'react-time-picker/dist/TimePicker.css'
 import { useRouter } from 'next/navigation'
 import { Event } from '@/lib/interfaces/event.interface'
 import { API_BASE_URL } from '@/lib/constants'
+import toast from 'react-hot-toast'
 
 export default function VoucherCreate() {
   const router = useRouter()
@@ -75,7 +76,7 @@ export default function VoucherCreate() {
         if (response.ok) {
           const data = await response.json()
           console.log('Voucher Created Successfully:', data)
-          alert('Voucher berhasil dibuat')
+          toast.success('Voucher berhasil dibuat')
           resetForm()
           router.push('/')
           setStartDate(null)
@@ -84,11 +85,12 @@ export default function VoucherCreate() {
         } else {
           const errorData = await response.json()
           console.error('Error Creating Voucher:', errorData)
-          alert('Error Creating Voucher')
+          toast.error('Error membuat voucher')
         }
       } catch (error) {
         console.error('Network Error:', error)
-        alert('A Network Error Occurred, Please Try Again')
+        toast.error('Terjadi kesalahan jaringan, silakan coba lagi.')
+
       }
     }
   })

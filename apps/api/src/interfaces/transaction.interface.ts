@@ -1,26 +1,38 @@
 import { TransactionStatus } from '@prisma/client'
 import { OrderType } from './shared.interface'
 
+export interface GetTranasctionByIdRequest {
+  transactionId: number
+  user: {
+    id: number
+    roleId: number
+  }
+}
+
 export interface TransactionRepositoryRequest {
   transactionId: number
   paymentProofImage?: string
   transactionStatus?: TransactionStatus
-  quantity:number,
-  totalPrice:number
+  quantity?: number
 }
 
 export interface TransactionServiceRequest {
   transactionId: number
-  organizerId: number
+  user: {
+    id: number
+    roleId: number
+  }
   paymentProofImage?: Express.Multer.File
   transactionStatus?: TransactionStatus
-  quantity:number,
-  totalPrice:number
+  quantity?: number
 }
 
 export interface verifyTransactionOwnershipRequest {
   transactionId: number
-  organizerId: number
+  user: {
+    id: number
+    roleId: number
+  }
 }
 
 export interface GetTransactionsQuery {

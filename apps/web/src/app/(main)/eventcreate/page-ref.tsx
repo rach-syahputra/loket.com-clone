@@ -13,14 +13,18 @@ import { API_BASE_URL } from '@/lib/constants'
 import { Category } from '@/lib/interfaces/category.interface'
 import { Province } from '@/lib/interfaces/location.interface'
 import toast from 'react-hot-toast'
+
+// Import SweetAlert2 and its React wrapper
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)
 
-
 export default function CreateEvent() {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  // Component states
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
   const [userId, setUserId] = useState(0)
@@ -35,8 +39,8 @@ export default function CreateEvent() {
   const [endTicketDate, setEndTicketDate] = useState<Date | null>(null)
   const [localEventStartTime, setLocalEventStartTime] = useState('09:00')
   const [localEventEndTime, setLocalEventEndTime] = useState('18:00')
-  const [startTime, setStartTime] = useState<string>('09:00')
-  const [endTime, setEndTime] = useState<string>('18:00')
+  const [startTime, setStartTime] = useState('09:00')
+  const [endTime, setEndTime] = useState('18:00')
   const [startEventDate, setStartEventDate] = useState<Date | null>(null)
   const [endEventDate, setEndEventDate] = useState<Date | null>(null)
   const [displayLocation, setDisplayLocation] = useState('Pilih Lokasi')
@@ -54,8 +58,12 @@ export default function CreateEvent() {
   const [freeStartDateError, setFreeStartDateError] = useState('')
   const [freeEndDateError, setFreeEndDateError] = useState('')
   const [dropdownCategoryError, setDropdownCategoryError] = useState('')
-  const router = useRouter()
 
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState('https://assets.loket.com/images/banner-event.jpg')
+
+  // Fetch categories and provinces
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,11 +86,10 @@ export default function CreateEvent() {
       setImage(session.user.image || '')
       setUserId(session.user.id)
     }
-
     fetchData()
   }, [session])
 
-  // add 7 hours to the Date and return a valid ISO-8601 string.
+  // Utility functions
   const toAdjustedISOString = (date: Date): string => {
     const adjustedDate = new Date(date.getTime() + 7 * 60 * 60 * 1000)
     return adjustedDate.toISOString()
@@ -94,12 +101,6 @@ export default function CreateEvent() {
     combined.setHours(hours || 0, minutes, 0, 0)
     return combined
   }
-
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [bannerFile, setBannerFile] = useState<File | null>(null)
-  const [bannerPreview, setBannerPreview] = useState(
-    'https://assets.loket.com/images/banner-event.jpg'
-  )
 
   const handleBannerClick = () => {
     if (fileInputRef.current) {
@@ -133,6 +134,7 @@ export default function CreateEvent() {
     )
   }
 
+  // SweetAlert2 confirmation helper function
   const confirmDialog = async (message: string): Promise<boolean> => {
     const result = await MySwal.fire({
       title: 'Konfirmasi',
@@ -167,24 +169,16 @@ export default function CreateEvent() {
     validationSchema: Yup.object({
       title: Yup.string().required('Judul Wajib Diisi'),
       description: Yup.string().required('Deskripsi Wajib Diisi'),
-      registrationStartDate: Yup.string().required(
-        'Tanggal Mulai Registrasi Wajib Diisi'
-      ),
-      registrationEndDate: Yup.string().required(
-        'Tanggal Akhir Registrasi Wajib Diisi'
-      ),
+      registrationStartDate: Yup.string().required('Tanggal Mulai Registrasi Wajib Diisi'),
+      registrationEndDate: Yup.string().required('Tanggal Akhir Registrasi Wajib Diisi'),
       eventStartDate: Yup.string().required('Tanggal Mulai Acara Wajib Diisi'),
       eventEndDate: Yup.string().required('Tanggal Akhir Acara Wajib Diisi'),
       eventStartTime: Yup.string().required('Waktu Mulai Acara Wajib Diisi'),
       eventEndTime: Yup.string().required('Waktu Berakhir Wajib Diisi'),
       price: Yup.number().min(0).required('Harga Wajib Diisi'),
-      availableSeats: Yup.number()
-        .min(50, 'Jumlah Tiket Minimal 50')
-        .required('Jumlah Kursi Wajib Diisi'),
+      availableSeats: Yup.number().min(50, 'Jumlah Tiket Minimal 50').required('Jumlah Kursi Wajib Diisi'),
       categoryId: Yup.number().required('Kategori Wajib Diisi'),
-      ticketType: Yup.string()
-        .oneOf(['PAID', 'FREE'])
-        .required('Tipe Tiket Wajib Diisi'),
+      ticketType: Yup.string().oneOf(['PAID', 'FREE']).required('Tipe Tiket Wajib Diisi'),
       organizerId: Yup.number().required('Organizer Wajib Diisi'),
       streetAddress: Yup.string().required('Alamat Wajib Diisi'),
       city: Yup.string().required('Kota Wajib Diisi'),
@@ -236,7 +230,7 @@ export default function CreateEvent() {
         if (response.ok) {
           const data = await response.json()
           console.log('Event Created Successfully:', data)
-          toast.success('Acara berhasil dibuat!')          
+          toast.success('Acara berhasil dibuat!')
           resetForm()
           router.push('/')
         } else {
@@ -275,12 +269,20 @@ export default function CreateEvent() {
                 className='rounded-t-[20px] object-cover md:rounded-t-[70px] lg:rounded-t-[20px]'
               />
               <div
-                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[355px] xl:left-[415px]`}
+                className={`${
+                  bannerPreview === 'https://assets.loket.com/images/banner-event.jpg'
+                    ? 'block'
+                    : 'hidden'
+                } absolute bottom-[80px] left-[165px] flex flex-col gap-4 sm:bottom-[180px] sm:left-[355px] xl:left-[415px]`}
               >
                 <Image src='/add.png' width={60} height={128} alt='' />
               </div>
               <div
-                className={`${bannerPreview == 'https://assets.loket.com/images/banner-event.jpg' ? 'block' : 'hidden'} absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[230px] xl:left-[290px]`}
+                className={`${
+                  bannerPreview === 'https://assets.loket.com/images/banner-event.jpg'
+                    ? 'block'
+                    : 'hidden'
+                } absolute bottom-[50px] left-[100px] flex flex-col gap-4 sm:bottom-[130px] sm:left-[230px] xl:left-[290px]`}
               >
                 <span className='text-[13px] sm:text-[24px]'>
                   Unggah gambar/poster/banner
@@ -305,9 +307,7 @@ export default function CreateEvent() {
 
               {/* Category Dropdown */}
               {dropdownCategoryError && (
-                <div className='text-sm text-red-500'>
-                  {dropdownCategoryError}
-                </div>
+                <div className='text-sm text-red-500'>{dropdownCategoryError}</div>
               )}
               <details className='dropdown z-[39]'>
                 <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-2 font-light text-[#ADBAD1] hover:bg-white'>
@@ -324,7 +324,7 @@ export default function CreateEvent() {
                         onClick={() => {
                           setSelectedCategory(null)
                           formik.setFieldValue('categoryId', null)
-                          setDropdownCategoryError('Kategori Wajib Diisi') // Trigger validation immediately
+                          setDropdownCategoryError('Kategori Wajib Diisi')
                         }}
                       >
                         Pilih Kategori
@@ -349,17 +349,8 @@ export default function CreateEvent() {
                 </div>
               </details>
 
-              {/* Show error below the dropdown */}
               {formik.touched.categoryId && formik.errors.categoryId && (
-                <div className='text-sm text-red-500'>
-                  {formik.errors.categoryId}
-                </div>
-              )}
-
-              {formik.touched.categoryId && formik.errors.categoryId && (
-                <div className='text-sm text-red-500'>
-                  {formik.errors.categoryId}
-                </div>
+                <div className='text-sm text-red-500'>{formik.errors.categoryId}</div>
               )}
 
               <hr />
@@ -386,12 +377,7 @@ export default function CreateEvent() {
                       className='flex items-center gap-4'
                       onClick={() => setModalDate(true)}
                     >
-                      <Image
-                        src='/calendar.png'
-                        width={20}
-                        height={20}
-                        alt=''
-                      />
+                      <Image src='/calendar.png' width={20} height={20} alt='' />
                       {startDate && endDate ? (
                         <div className='flex flex-col gap-2'>
                           <span className='font-light text-black'>
@@ -410,7 +396,7 @@ export default function CreateEvent() {
                           </span>
                         </div>
                       ) : (
-                        <span className='text-black cursor-pointer'>Pilih Tanggal</span>
+                        <span className='text-black'>Pilih Tanggal</span>
                       )}
                     </div>
                   </div>
@@ -422,7 +408,7 @@ export default function CreateEvent() {
                       <Image src='/clock.png' width={20} height={20} alt='' />
                       {formik.values.eventStartTime &&
                       formik.values.eventEndTime ? (
-                        <div className='flex gap-2 cursor-pointer'>
+                        <div className='flex gap-2'>
                           <span className='font-light text-black'>
                             {`${formik.values.eventStartTime} - ${formik.values.eventEndTime}`}
                           </span>
@@ -445,13 +431,8 @@ export default function CreateEvent() {
                       className='flex items-center gap-4'
                       onClick={() => setModalLocation(true)}
                     >
-                      <Image
-                        src='/ic-location.png'
-                        width={20}
-                        height={20}
-                        alt=''
-                      />
-                      <span className='font-light text-black cursor-pointer'>
+                      <Image src='/calendar.png' width={20} height={20} alt='' />
+                      <span className='font-light text-black'>
                         {displayLocation === 'Pilih Lokasi'
                           ? displayLocation
                           : `${displayLocation}, ${displayCity}`}
@@ -468,7 +449,6 @@ export default function CreateEvent() {
                     <div className='h-[58px] w-[58px] overflow-hidden rounded-full border'>
                       <Image src={image || ''} width={58} height={58} alt='' />
                     </div>
-
                     <span className='font-light text-black'>{name}</span>
                   </div>
                 </div>
@@ -485,14 +465,11 @@ export default function CreateEvent() {
                 href='#'
                 onClick={async (e) => {
                   e.preventDefault()
-                  // If the current ticket type is FREE and the free modal has data, prompt before switching.
                   if (ticketType === 'FREE' && isFreeModalFilled()) {
                     const confirmed = await confirmDialog(
                       'Anda hanya bisa memilih 1 tiket. Anda telah mengisi tipe tiket gratis. Jika Anda ingin melanjutkan ke tipe tiket berbayar, maka input di tiket gratis akan dihapus. Apakah Anda ingin melanjutkannya?'
                     )
-                    if (!confirmed) return{
-
-                    }
+                    if (!confirmed) return
                     else {
                       // Clear Free Ticket modal fields
                       formik.setFieldValue('availableSeats', '')
@@ -511,7 +488,7 @@ export default function CreateEvent() {
                   formik.setFieldValue('ticketType', 'PAID')
                 }}
               >
-                <div className=' flex h-[90px] w-[300px] items-center justify-between rounded-lg border bg-white p-[20px] xl:w-[400px]'>
+                <div className='flex h-[90px] w-[300px] items-center justify-between rounded-lg border bg-white p-[20px] xl:w-[400px]'>
                   <div className='flex flex-col gap-1 text-black'>
                     <span>Buat Tiket</span>
                     <span className='font-semibold'>Berbayar</span>
@@ -536,7 +513,7 @@ export default function CreateEvent() {
                         'Anda hanya bisa memilih 1 tiket. Anda telah mengisi tipe tiket berbayar. Jika Anda ingin melanjutkan ke tipe tiket gratis, maka input di tiket berbayar akan dihapus. Apakah Anda ingin melanjutkannya?'
                       )
                       if (!confirmed) return
-                       else {
+                      else {
                         formik.setFieldValue('availableSeats', '')
                         formik.setFieldValue('price', '')
                         formik.setFieldValue('registrationStartDate', '')
@@ -579,7 +556,7 @@ export default function CreateEvent() {
           )}
           <div className='px-[20px]'>
             <textarea
-              className='h-[200px] min-w-[330px] sm:w-[700px] text-black sm:h-[400px] xl:w-[900px]'
+              className='h-[200px] w-screen text-black sm:h-[400px] xl:w-[900px]'
               name='description'
               id='description'
               onBlur={formik.handleBlur}
@@ -658,7 +635,6 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-4 w-full rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Reset local date states and clear Formik values and error messages
                       setStartDate(null)
                       setEndDate(null)
                       formik.setFieldValue('eventStartDate', '')
@@ -680,9 +656,7 @@ export default function CreateEvent() {
             <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
               <div className='relative w-[300px] rounded-xl bg-white p-4'>
                 <div className='flex flex-col gap-4'>
-                  <label htmlFor='eventStartTime'>
-                    Waktu Mulai (Klik Logo Jam)
-                  </label>
+                  <label htmlFor='eventStartTime'>Waktu Mulai (Klik Logo Jam)</label>
                   <div className='relative'>
                     <div className='pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3.5'>
                       <svg
@@ -709,9 +683,7 @@ export default function CreateEvent() {
                       required
                     />
                   </div>
-                  <label htmlFor='eventEndTime'>
-                    Waktu Berakhir (Klik Logo Jam)
-                  </label>
+                  <label htmlFor='eventEndTime'>Waktu Berakhir (Klik Logo Jam)</label>
                   <div className='relative'>
                     <div className='pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3.5'>
                       <svg
@@ -742,16 +714,12 @@ export default function CreateEvent() {
                     type='button'
                     className='mt-4 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
-                      // Update Formik's time fields from local state
-                      formik.setFieldValue(
-                        'eventStartTime',
-                        localEventStartTime
-                      )
+                      formik.setFieldValue('eventStartTime', localEventStartTime)
                       formik.setFieldValue('eventEndTime', localEventEndTime)
                       setModalTime(false)
                     }}
                   >
-                    Simpan dan Keluar
+                    Simpan
                   </button>
                 </div>
               </div>
@@ -764,12 +732,9 @@ export default function CreateEvent() {
               <div className='relative h-auto w-[300px] rounded-xl bg-white'>
                 <div className='flex flex-col gap-4 p-[20px]'>
                   <label>Alamat</label>
-                  {formik.touched.streetAddress &&
-                    formik.errors.streetAddress && (
-                      <div className='text-red-500'>
-                        {formik.errors.streetAddress}
-                      </div>
-                    )}
+                  {formik.touched.streetAddress && formik.errors.streetAddress && (
+                    <div className='text-red-500'>{formik.errors.streetAddress}</div>
+                  )}
                   <input
                     type='text'
                     name='streetAddress'
@@ -797,8 +762,7 @@ export default function CreateEvent() {
                   <details className='dropdown'>
                     <summary className='btn btn-ghost m-0 flex w-full justify-start border bg-white p-2 font-light text-black shadow hover:bg-white'>
                       {selectedProvince
-                        ? province.find((prov) => prov.id === selectedProvince)
-                            ?.name
+                        ? province.find((prov) => prov.id === selectedProvince)?.name
                         : 'Pilih Provinsi'}
                     </summary>
                     <ul className='menu dropdown-content rounded-box z-[1] max-h-[230px] w-full overflow-y-auto bg-white p-2 shadow'>
@@ -811,7 +775,7 @@ export default function CreateEvent() {
                               e.preventDefault()
                               setSelectedProvince(prov.id)
                               formik.setFieldValue('provinceId', prov.id)
-                              setProvinceError('') // Clear any previous error
+                              setProvinceError('')
                             }}
                           >
                             {prov.name}
@@ -838,7 +802,6 @@ export default function CreateEvent() {
                         valid = false
                       }
                       if (!valid) return
-                      // Clear the province error and close the modal.
                       setProvinceError('')
                       setModalLocation(false)
                       setDisplayLocation(formik.values.streetAddress)
@@ -874,12 +837,9 @@ export default function CreateEvent() {
               <div className='relative h-auto w-[300px] rounded-xl bg-white'>
                 <div className='flex flex-col gap-4 p-[20px]'>
                   <label>Jumlah Tiket</label>
-                  {formik.touched.availableSeats &&
-                    formik.errors.availableSeats && (
-                      <div className='text-red-500'>
-                        {formik.errors.availableSeats}
-                      </div>
-                    )}
+                  {formik.touched.availableSeats && formik.errors.availableSeats && (
+                    <div className='text-red-500'>{formik.errors.availableSeats}</div>
+                  )}
                   <input
                     type='number'
                     name='availableSeats'
@@ -904,9 +864,7 @@ export default function CreateEvent() {
                   />
                   <label>Tanggal Mulai</label>
                   {ticketStartDateError && (
-                    <div className='text-sm text-red-500'>
-                      {ticketStartDateError}
-                    </div>
+                    <div className='text-sm text-red-500'>{ticketStartDateError}</div>
                   )}
                   <DatePicker
                     selected={startTicketDate}
@@ -914,10 +872,7 @@ export default function CreateEvent() {
                       setStartTicketDate(date)
                       if (date && startTime) {
                         const combined = combineDateAndTime(date, startTime)
-                        formik.setFieldValue(
-                          'registrationStartDate',
-                          toAdjustedISOString(combined)
-                        )
+                        formik.setFieldValue('registrationStartDate', toAdjustedISOString(combined))
                       }
                     }}
                     className='w-full rounded border p-2'
@@ -949,14 +904,8 @@ export default function CreateEvent() {
                       onChange={(e) => {
                         setStartTime(e.target.value)
                         if (startTicketDate) {
-                          const combined = combineDateAndTime(
-                            startTicketDate,
-                            e.target.value
-                          )
-                          formik.setFieldValue(
-                            'registrationStartDate',
-                            toAdjustedISOString(combined)
-                          )
+                          const combined = combineDateAndTime(startTicketDate, e.target.value)
+                          formik.setFieldValue('registrationStartDate', toAdjustedISOString(combined))
                         }
                       }}
                       required
@@ -964,9 +913,7 @@ export default function CreateEvent() {
                   </div>
                   <label>Tanggal Berakhir</label>
                   {ticketEndDateError && (
-                    <div className='text-sm text-red-500'>
-                      {ticketEndDateError}
-                    </div>
+                    <div className='text-sm text-red-500'>{ticketEndDateError}</div>
                   )}
                   <DatePicker
                     selected={endTicketDate}
@@ -974,10 +921,7 @@ export default function CreateEvent() {
                       setEndTicketDate(date)
                       if (date && endTime) {
                         const combined = combineDateAndTime(date, endTime)
-                        formik.setFieldValue(
-                          'registrationEndDate',
-                          toAdjustedISOString(combined)
-                        )
+                        formik.setFieldValue('registrationEndDate', toAdjustedISOString(combined))
                       }
                     }}
                     className='w-full rounded border p-2'
@@ -1009,14 +953,8 @@ export default function CreateEvent() {
                       onChange={(e) => {
                         setEndTime(e.target.value)
                         if (endTicketDate) {
-                          const combined = combineDateAndTime(
-                            endTicketDate,
-                            e.target.value
-                          )
-                          formik.setFieldValue(
-                            'registrationEndDate',
-                            toAdjustedISOString(combined)
-                          )
+                          const combined = combineDateAndTime(endTicketDate, e.target.value)
+                          formik.setFieldValue('registrationEndDate', toAdjustedISOString(combined))
                         }
                       }}
                       required
@@ -1027,16 +965,6 @@ export default function CreateEvent() {
                     className='mt-4 rounded-lg bg-[#0049CC] py-2 text-white'
                     onClick={() => {
                       let valid = true
-                      // Validate availableSeats and price as before.
-                      if (!formik.values.availableSeats) {
-                        formik.setFieldTouched('availableSeats', true, true)
-                        valid = false
-                      }
-                      if (!formik.values.price) {
-                        formik.setFieldTouched('price', true, true)
-                        valid = false
-                      }
-                      // Validate ticket dates using local state.
                       if (!startTicketDate) {
                         setTicketStartDateError('Tanggal Mulai Wajib Diisi')
                         valid = false
@@ -1085,12 +1013,9 @@ export default function CreateEvent() {
               <div className='relative h-auto w-[300px] rounded-xl bg-white'>
                 <div className='flex flex-col gap-4 p-[20px]'>
                   <label>Jumlah Tiket</label>
-                  {formik.touched.availableSeats &&
-                    formik.errors.availableSeats && (
-                      <div className='text-red-500'>
-                        {formik.errors.availableSeats}
-                      </div>
-                    )}
+                  {formik.touched.availableSeats && formik.errors.availableSeats && (
+                    <div className='text-red-500'>{formik.errors.availableSeats}</div>
+                  )}
                   <input
                     type='number'
                     name='availableSeats'
@@ -1102,9 +1027,7 @@ export default function CreateEvent() {
                   />
                   <label>Tanggal Mulai</label>
                   {ticketStartDateError && (
-                    <div className='text-sm text-red-500'>
-                      {ticketStartDateError}
-                    </div>
+                    <div className='text-sm text-red-500'>{ticketStartDateError}</div>
                   )}
                   <DatePicker
                     selected={startTicketDate}
@@ -1112,10 +1035,7 @@ export default function CreateEvent() {
                       setStartTicketDate(date)
                       if (date && startTime) {
                         const combined = combineDateAndTime(date, startTime)
-                        formik.setFieldValue(
-                          'registrationStartDate',
-                          toAdjustedISOString(combined)
-                        )
+                        formik.setFieldValue('registrationStartDate', toAdjustedISOString(combined))
                       } else {
                         formik.setFieldValue('registrationStartDate', '')
                       }
@@ -1149,14 +1069,8 @@ export default function CreateEvent() {
                       onChange={(e) => {
                         setStartTime(e.target.value)
                         if (startTicketDate) {
-                          const combined = combineDateAndTime(
-                            startTicketDate,
-                            e.target.value
-                          )
-                          formik.setFieldValue(
-                            'registrationStartDate',
-                            toAdjustedISOString(combined)
-                          )
+                          const combined = combineDateAndTime(startTicketDate, e.target.value)
+                          formik.setFieldValue('registrationStartDate', toAdjustedISOString(combined))
                         }
                       }}
                       required
@@ -1164,9 +1078,7 @@ export default function CreateEvent() {
                   </div>
                   <label>Tanggal Berakhir</label>
                   {ticketEndDateError && (
-                    <div className='text-sm text-red-500'>
-                      {ticketEndDateError}
-                    </div>
+                    <div className='text-sm text-red-500'>{ticketEndDateError}</div>
                   )}
                   <DatePicker
                     selected={endTicketDate}
@@ -1174,10 +1086,7 @@ export default function CreateEvent() {
                       setEndTicketDate(date)
                       if (date && endTime) {
                         const combined = combineDateAndTime(date, endTime)
-                        formik.setFieldValue(
-                          'registrationEndDate',
-                          toAdjustedISOString(combined)
-                        )
+                        formik.setFieldValue('registrationEndDate', toAdjustedISOString(combined))
                       } else {
                         formik.setFieldValue('registrationEndDate', '')
                       }
@@ -1211,14 +1120,8 @@ export default function CreateEvent() {
                       onChange={(e) => {
                         setEndTime(e.target.value)
                         if (endTicketDate) {
-                          const combined = combineDateAndTime(
-                            endTicketDate,
-                            e.target.value
-                          )
-                          formik.setFieldValue(
-                            'registrationEndDate',
-                            toAdjustedISOString(combined)
-                          )
+                          const combined = combineDateAndTime(endTicketDate, e.target.value)
+                          formik.setFieldValue('registrationEndDate', toAdjustedISOString(combined))
                         }
                       }}
                       required
@@ -1245,7 +1148,7 @@ export default function CreateEvent() {
                       setModalTicketFree(false)
                     }}
                   >
-                    Simpan dan Keluar
+                    Simpan
                   </button>
                   <button
                     type='button'
@@ -1271,7 +1174,7 @@ export default function CreateEvent() {
           )}
 
           {/* Footer with submit button */}
-          <div className='fixed bottom-0 z-40 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full w-full'>
+          <div className='fixed bottom-0 z-40 h-[70px] border-t bg-white px-[20px] py-[15px] md:px-[80px] lg:px-[100px] xl:w-full'>
             <div className='flex justify-center sm:items-center sm:justify-between'>
               <p className='hidden text-[14px] text-black md:block'>
                 <span className='text-[24px] font-semibold text-black'>
